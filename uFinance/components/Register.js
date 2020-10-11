@@ -30,17 +30,23 @@ class Register extends Component{
                         style={styles.input}
                         placeholder='Password'
                         underlineColorAndroid='transparent'
+                        secureTextEntry={true}
                     />
                     <Text style={styles.formtxt}>Confirm Password:</Text>
                     <TextInput
                         style={styles.input}
                         placeholder='Password'
                         underlineColorAndroid='transparent'
+                        secureTextEntry={true}
                     />
                     <View style={styles.buttonArea}>
-                      <TouchableOpacity style={styles.btn}>
-                          <Text style={styles.btntext}>Sign Up</Text>
-                      </TouchableOpacity>
+                        <TouchableOpacity style={styles.btn}>
+                            <Text style={styles.btntext}>Sign Up</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.Loginbtn}
+                        onPress={() => this.props.navigation.navigate('login')}>
+                            <Text style={styles.btntext}>Already have an account? Login</Text>
+                        </TouchableOpacity>
                   </View>
                 </View>
             </View>
@@ -105,6 +111,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
     },
+    Loginbtn: {
+        width: WIDTH-55,
+        height: 45,
+        borderRadius: 25,
+        fontSize: 16,
+        backgroundColor: '#0057d4',
+        color: 'black',
+        marginTop: 5,
+        marginHorizontal: 25,
+        justifyContent: 'center',
+      },
 });
 
 export default Register 

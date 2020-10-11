@@ -33,6 +33,7 @@ class Login extends Component {
                       style={styles.input}
                       placeholder='Password'
                       underlineColorAndroid='transparent'
+                      secureTextEntry={true}
                   />
                   <View style={styles.buttonArea}>
                       <TouchableOpacity style={styles.Loginbtn}>
