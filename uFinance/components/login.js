@@ -38,7 +38,8 @@ class Login extends Component {
                       <TouchableOpacity style={styles.Loginbtn}>
                           <Text style={styles.btntext}>Login</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.btn}>
+                      <TouchableOpacity style={styles.btn}
+                      onPress={() => this.props.navigation.navigate('register')}>
                           <Text style={styles.btntext}>Sign Up</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={styles.btn}>

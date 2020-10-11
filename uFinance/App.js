@@ -18,6 +18,7 @@ import HomeScreen from './components/Home.js'
 import Profile from './components/Profile.js'
 import Group from './components/Groups.js'
 import Login from './components/login.js'
+import Register from './components/Register.js'
 
 const Stack = createStackNavigator();
 
@@ -26,7 +27,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator headerMode='none'>
         <Stack.Screen name='login' component={Login}/>
-        <Stack.Screen name='register' component={Login}/>
+        <Stack.Screen name='register' component={Register}/>
       </Stack.Navigator>
       {/* <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} 
