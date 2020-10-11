@@ -1,99 +1,39 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
 import 'react-native-gesture-handler';
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
-  Button,
   TouchableOpacity,
 } from 'react-native';
 
 import {
-  Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-// import styles from './styles/styles.js'
-
-
-const HomeScreen = ({navigation}) =>{
-  return (
-    <View style={styles.btnContainer}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Profile')}
-        style={styles.btn}
-      >
-        <Text>Profile</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Groups')}
-        style={styles.btn}
-      >
-        <Text>Groups</Text>
-      </TouchableOpacity>
-
-    </View>
-  )
-}
-function Profile({navigation}) {
-  return (
-    <View style={styles.btnContainer}>
-      <Text>Profile</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.btn}>
-          <Text>Home</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.btn}>
-          <Text>Prev</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-function Group({navigation}) {
-  return (
-    <View style={styles.btnContainer}>
-      <Text>Profile</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text>Home</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.goBack()} >
-          <Text>Prev</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+import HomeScreen from './components/Home.js'
+import Profile from './components/Profile.js'
+import Group from './components/Groups.js'
+import Login from './components/login.js'
 
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator headerMode='none'>
+        <Stack.Screen name='login' component={Login}/>
+        <Stack.Screen name='register' component={Login}/>
+      </Stack.Navigator>
+      {/* <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} 
         options={{title:'Dashboard'}}/>
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Groups" component={Group} />
-      </Stack.Navigator>
-      {/* <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Details" component={DetailsScreen} />
-      </Drawer.Navigator> */}
+      </Stack.Navigator> */}
     </NavigationContainer>
   );
 };
