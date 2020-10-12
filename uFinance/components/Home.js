@@ -1,34 +1,43 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { changeLogged } from '../store/actions/logged.js';
+import { bindActionCreators } from 'redux';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
-const HomeScreen = ({navigation}) =>{
+class HomeScreen extends Component{
+  render(){
     return (
       <View style={styles.btnContainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => this.props.navigation.navigate('Profile')}
           style={styles.btn}
         >
           <Text>Profile</Text>
         </TouchableOpacity>
   
         <TouchableOpacity
-          onPress={() => navigation.navigate('Groups')}
+          onPress={() => this.props.navigation.navigate('Groups')}
           style={styles.btn}
         >
           <Text>Groups</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => this.props.changeLogged(false)}
+          style={styles.btn}
+        >
+          <Text>Logout</Text>
+        </TouchableOpacity>
   
       </View>
     )
+  }
+    
 }
 
 const styles = StyleSheet.create({
@@ -46,4 +55,17 @@ const styles = StyleSheet.create({
     },
 });
   
-export default HomeScreen;
+
+// redux
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+});
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    changeLogged,
+  }, dispatch)
+);
+
+// export default HomeScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
