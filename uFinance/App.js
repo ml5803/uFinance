@@ -17,6 +17,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './components/Home.js'
 import Profile from './components/Profile.js'
 import Group from './components/Groups.js'
+import CreateGroup from './components/CreateGroup.js'
+import IndividualGroup from './components/IndividualGroup.js'
+import IndividualGroupSettings from './components/IndividualGroupSettings.js'
+import GroupPayment from './components/GroupPayment.js'
 import Login from './components/login.js'
 import Register from './components/Register.js'
 import { connect } from 'react-redux';
@@ -46,6 +50,12 @@ class App extends Component {
               options={{title:'Dashboard'}}/>
               <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="Groups" component={Group} />
+              <Stack.Screen name="CreateGroup" component={CreateGroup} />
+              <Stack.Screen name="IndividualGroup" component={IndividualGroup} />
+              <Stack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
+              <Stack.Screen name="GroupPayment" component={GroupPayment} />
+
+
             </Stack.Navigator>
           ) :
           (

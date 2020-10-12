@@ -24,8 +24,16 @@ class HomeScreen extends Component{
           onPress={() => this.props.navigation.navigate('Groups')}
           style={styles.btn}
         >
-          <Text>Groups</Text>
+          <Text>View Group</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('CreateGroup')}
+          style={styles.btn}
+        >
+          <Text>Create Group</Text>
+        </TouchableOpacity>
+
 
         <TouchableOpacity
           onPress={() => this.props.changeLogged(false)}
