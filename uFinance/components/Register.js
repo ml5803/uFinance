@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Dimensions,
 } from 'react-native';
-import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 
 const { width: WIDTH } = Dimensions.get('window')
 

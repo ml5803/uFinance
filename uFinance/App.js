@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -19,24 +19,45 @@ import Profile from './components/Profile.js'
 import Group from './components/Groups.js'
 import Login from './components/login.js'
 import Register from './components/Register.js'
+import { connect } from 'react-redux';
+import { changeLogged } from './store/actions/logged.js';
+import { bindActionCreators } from 'redux';
 
 const Stack = createStackNavigator();
 
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator headerMode='none'>
-        <Stack.Screen name='login' component={Login}/>
-        <Stack.Screen name='register' component={Register}/>
-      </Stack.Navigator>
-      {/* <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} 
-        options={{title:'Dashboard'}}/>
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Groups" component={Group} />
-      </Stack.Navigator> */}
-    </NavigationContainer>
-  );
+class App extends Component {
+  // constructor(){
+  //   super()
+  //   this.state={
+  //     loggedin: false,
+  //   }
+  // }
+
+  render(){
+    // let { loginState, actions } = this.props;
+    // console.log('loggedin:',this.props.loginState.loggedin)
+    // console.log(this.props.loggedin)
+
+    return (
+        <NavigationContainer>
+          {this.props.loginState.loggedin ? (
+            <Stack.Navigator>
+              <Stack.Screen name="Home" component={HomeScreen} 
+              options={{title:'Dashboard'}}/>
+              <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="Groups" component={Group} />
+            </Stack.Navigator>
+          ) :
+          (
+            <Stack.Navigator headerMode='none'>
+              <Stack.Screen name='login' component={Login}/>
+              <Stack.Screen name='register' component={Register}/>
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      );
+  }
+  
 };
 
 const styles = StyleSheet.create({
@@ -90,4 +111,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+});
+
+// export default App;
+export default connect(mapStateToProps)(App);

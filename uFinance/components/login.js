@@ -11,11 +11,22 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 import { TextInput } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { changeLogged } from '../store/actions/logged.js';
+import { bindActionCreators } from 'redux';
+
 
 const { width: WIDTH } = Dimensions.get('window')
 
 class Login extends Component {
+  updateLogged(){
+    this.props.changeLogged(true)
+  }
+
   render(){
+    // let { loginState, actions } = this.props;
+    console.log('loggedin in login.js:', this.props.loginState.loggedin)
+
     return (
       <View style={styles.container}>
           <View style={styles.logo}>
@@ -36,7 +47,8 @@ class Login extends Component {
                       secureTextEntry={true}
                   />
                   <View style={styles.buttonArea}>
-                      <TouchableOpacity style={styles.Loginbtn}>
+                      <TouchableOpacity style={styles.Loginbtn}
+                      onPress={() => this.updateLogged()}>
                           <Text style={styles.btntext}>Login</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={styles.btn}
@@ -127,4 +139,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+// redux
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+});
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    changeLogged,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export default Login;
