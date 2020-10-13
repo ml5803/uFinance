@@ -4,10 +4,13 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
 import { bindActionCreators } from 'redux';
+
+const { width: WIDTH } = Dimensions.get('window')
 
 class HomeScreen extends Component{
   render(){
@@ -19,7 +22,7 @@ class HomeScreen extends Component{
         >
           <Text>Profile</Text>
         </TouchableOpacity>
-  
+
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Groups')}
           style={styles.btn}
@@ -44,14 +47,16 @@ const styles = StyleSheet.create({
     btnContainer:{
       flex: 1,
       justifyContent:"center",
-      alignItems: "center",
+      // alignItems: "center",
       paddingHorizontal: 10,
     },
     btn:{
       backgroundColor: '#DDDDDD',
       alignItems: 'center',
-      padding: 10,
-      margin: 5,
+      width: WIDTH-150,
+      height: 45,
+      marginTop: 5,
+      marginHorizontal: 67,
     },
 });
   
