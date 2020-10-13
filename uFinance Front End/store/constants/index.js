@@ -1,0 +1,1 @@
+export const LOGGED_CHANGE = 'LOGGED_CHANGE'

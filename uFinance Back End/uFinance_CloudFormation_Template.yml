@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  uFinanceUserCredentialsReadCapacity:
+    Type: String
+    Default: 5
+  uFinanceUserCredentialsWriteCapacity:
+    Type: String
+    Default: 5
+
+Resources:
+  uFinanceImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+
+  uFinanceAPIG:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: "uFinanceAPIG"
+
+  uFinanceAPIGDeployment:
+    DependsOn: [uFinanceAPIGRegister]
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref uFinanceAPIG
+      Description: Deploy APIG for uFinance
+      StageName: test
+
+  #WILL CHANGE INTEGRATION TYPES TO LAMBDAS ONCE WE MAKE THEM
+    
+  uFinanceAPIGRegisterResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: register
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGRegister:
+      DependsOn: uFinanceAPIGRegisterResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: register
+        ResourceId: !Ref uFinanceAPIGRegisterResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+
+  uFinanceAPIGLoginResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: login
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGLogin:
+      DependsOn: uFinanceAPIGLoginResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: register
+        ResourceId: !Ref uFinanceAPIGLoginResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+
+  #WILL NEED TO ADD MORE API PATHS 
+  #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
+
+  uFinanceUserCredentials:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "Email"
+          AttributeType: "S"
+        - AttributeName: "Password"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "Email"
+          KeyType: "HASH"
+        - AttributeName: "Password"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref uFinanceUserCredentialsReadCapacity
+        WriteCapacityUnits: !Ref uFinanceUserCredentialsWriteCapacity
+      TableName: "uFinanceUserCredentials"
+
+  #WILL NEED ADDITIONAL TABLES TO SUPPORT FUNCTIONALITY
+
+  #WILL NEED TO ADD LAMBDA RESOURCES AND ASSIGN HANDLERS
+
+  #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
+
+Outputs:
+  BucketName:
+    Value: !Ref uFinanceImageBucket
+    Description: Image bucket for uFinance
+  RootAPIGId:
+    Value: !GetAtt uFinanceAPIG.RootResourceId
+  
