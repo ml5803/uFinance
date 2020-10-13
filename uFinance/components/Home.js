@@ -10,41 +10,45 @@ import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
 import { bindActionCreators } from 'redux';
 
-const { width: WIDTH } = Dimensions.get('window')
-
 class HomeScreen extends Component{
   render(){
     return (
-      <View style={styles.btnContainer}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('Profile')}
-          style={styles.btn}
-        >
-          <Text>Profile</Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.topContainer}></View>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Profile')}
+            style={styles.btn}
+          >
+            <Text>Profile</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('Groups')}
-          style={styles.btn}
-        >
-          <Text>View Group</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Groups')}
+            style={styles.btn}
+          >
+            <Text>View Group</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('CreateGroup')}
-          style={styles.btn}
-        >
-          <Text>Create Group</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('CreateGroup')}
+            style={styles.btn}
+          >
+            <Text>Create Group</Text>
+          </TouchableOpacity>
 
 
-        <TouchableOpacity
-          onPress={() => this.props.changeLogged(false)}
-          style={styles.btn}
-        >
-          <Text>Logout</Text>
-        </TouchableOpacity>
-  
+          <TouchableOpacity
+            onPress={() => this.props.changeLogged(false)}
+            style={styles.btn}
+          >
+            <Text>Logout</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.groupContainer}>
+
+        </View>
       </View>
     )
   }
@@ -52,20 +56,36 @@ class HomeScreen extends Component{
 }
 
 const styles = StyleSheet.create({
-    btnContainer:{
+    container: {
       flex: 1,
-      justifyContent:"center",
+      backgroundColor: '#333',
+    },
+    topContainer: {
+      flex: 1
+    },  
+    btnContainer:{
+      flex: 3,
+      justifyContent: 'space-around',
       // alignItems: "center",
       paddingHorizontal: 10,
+      // backgroundColor: 'yellow',
     },
     btn:{
-      backgroundColor: '#DDDDDD',
+      backgroundColor: 'white',
+      justifyContent: 'center',
       alignItems: 'center',
-      width: WIDTH-150,
-      height: 45,
-      marginTop: 5,
-      marginHorizontal: 67,
+      width: '50%',
+      height: 40,
+      marginHorizontal: '25%',
+      borderRadius: 10,
+      borderColor: 'black',
+      borderWidth: 1,
     },
+    groupContainer: {
+      flex: 2,
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    }
 });
   
 
