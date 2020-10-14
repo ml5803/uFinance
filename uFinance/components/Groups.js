@@ -5,38 +5,52 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
+import template1 from '../styles/template1.js'
 
 function Group({navigation}) {
     return (
-      <View style={styles.btnContainer}>
-        <Text>Groups</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.btn}>
-            <Text>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.btn}>
-            <Text>Prev</Text>
-        </TouchableOpacity>
+      <View style={template1.container}>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btn}
+          >
+            <Text style={template1.btnText}>GroupA</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+          >
+            <Text style={template1.btnText}>GroupB</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+          >
+            <Text style={template1.btnText}>GroupC</Text>
+          </TouchableOpacity>
+        </View>        
       </View>
     );
 }
 
 const styles = StyleSheet.create({
-    btnContainer:{
-      flex: 1,
-      justifyContent:"center",
-      alignItems: "center",
-      paddingHorizontal: 10,
-    },
-    btn:{
-      backgroundColor: '#DDDDDD',
-      alignItems: 'center',
-      padding: 10,
-      margin: 5,
-    },
+  btnContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btn:{
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '50%',
+    height: 50,
+    marginHorizontal: '25%',
+    borderRadius: 10,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginTop: '5%',
+  },
+
 });
   
 export default Group;

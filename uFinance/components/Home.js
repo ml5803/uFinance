@@ -20,21 +20,21 @@ class HomeScreen extends Component{
             onPress={() => this.props.navigation.navigate('Profile')}
             style={styles.btn}
           >
-            <Text>Profile</Text>
+            <Text style={styles.btnText}>Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Groups')}
             style={styles.btn}
           >
-            <Text>View Group</Text>
+            <Text style={styles.btnText}>View Group</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('CreateGroup')}
             style={styles.btn}
           >
-            <Text>Create Group</Text>
+            <Text style={styles.btnText}>Create Group</Text>
           </TouchableOpacity>
 
 
@@ -42,7 +42,7 @@ class HomeScreen extends Component{
             onPress={() => this.props.changeLogged(false)}
             style={styles.btn}
           >
-            <Text>Logout</Text>
+            <Text style={styles.btnText}>Logout</Text>
           </TouchableOpacity>
         </View>
 
@@ -58,24 +58,25 @@ class HomeScreen extends Component{
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#333',
+      backgroundColor: '#364661',
     },
     topContainer: {
-      flex: 1
+      flex: 1,
+      // backgroundColor: '#f57280',
     },  
     btnContainer:{
       flex: 3,
       justifyContent: 'space-around',
       // alignItems: "center",
       paddingHorizontal: 10,
-      // backgroundColor: 'yellow',
+      // backgroundColor: '#0dc9b6',
     },
     btn:{
       backgroundColor: 'white',
       justifyContent: 'center',
       alignItems: 'center',
       width: '50%',
-      height: 40,
+      height: 50,
       marginHorizontal: '25%',
       borderRadius: 10,
       borderColor: 'black',
@@ -85,7 +86,11 @@ const styles = StyleSheet.create({
       flex: 2,
       justifyContent: 'center',
       alignItems: 'flex-start',
+    },
+    btnText: {
+      fontSize: 20,
     }
+    
 });
   
 
