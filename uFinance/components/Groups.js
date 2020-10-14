@@ -28,6 +28,13 @@ function Group({navigation}) {
           >
             <Text style={template1.btnText}>GroupC</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('IndividualGroupSettings')}
+            style={styles.btn}
+          >
+            <Text style={template1.btnText}>Settings</Text>
+          </TouchableOpacity>
         </View>        
       </View>
     );

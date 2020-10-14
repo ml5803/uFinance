@@ -31,7 +31,6 @@ class CreateGroup extends Component {
     console.log(this.state.numMembers)
     return (
       <ScrollView style={template1.container}>
-        {/* <View style={template1.topContainer}></View> */}
         <View style={styles.nameContainer}>
           <Text style={styles.boxText}>Group Name</Text>
           <TextInput
