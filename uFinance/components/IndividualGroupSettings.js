@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableHighlight,
   ScrollView,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
@@ -13,23 +14,29 @@ class IndividualGroupSettings extends Component {
   constructor(){
     super()
     this.state={
+      GroupName: '',
       oldMembers: ['Jerry', 'Bob', 'Calvin'],
-      newMembers: ['']
+      newMembers: [''],
+      toDelete: [0, 0, 0]
     }
   }
 
-  updateOldNames(email, index){
-    let newlst = this.state.oldMembers
-    newlst[index] = email
-    this.setState({oldMembers: newlst})
+  updateGroupName(newName){
+    let newlst = this.state.GroupName
+    newlst = newName
+    this.setState({GroupName: newlst})
   }
   updateNewNames(email, index){
     let newlst = this.state.newMembers
     newlst[index] = email
     this.setState({newMembers: newlst})
   }
-  addBoxtoOld(){
-    this.setState({oldMembers: this.state.oldMembers.concat('')})
+  updateToDelete(index){
+    let newlst = this.state.toDelete
+    if (newlst[index] == 1){ newlst[index] = 0 }
+    else{ newlst[index] = 1 } 
+    console.log(newlst, '-----', index)
+    this.setState({toDelete: newlst})
   }
   addBox(){
     this.setState({newMembers: this.state.newMembers.concat('')})
@@ -41,44 +48,44 @@ class IndividualGroupSettings extends Component {
   }
 
   render(){
-    console.log(this.state.oldMembers)
+    console.log(this.state.GroupName)
     return (
       <ScrollView style={template1.container}>
+        {/* Edit Group Section ---- */}
         <View style={styles.nameContainer}>
           <Text style={styles.boxText}>Edit Group Name</Text>
           <TextInput
             style={styles.inputBox}
             placeholder='Imposter'
             underlineColorAndroid='transparent'
+            onChangeText={(newName) => this.updateGroupName(newName)}
           />
         </View>
+
+        {/* Delete Members Section --- */}
         <View style={styles.boxContainer}>
           <Text style={styles.boxText}>Delete Members</Text>
           {
             this.state.oldMembers.map((name, index) => (
-              <TextInput
-                key={index}
-                style={styles.inputBox}
-                underlineColorAndroid='transparent'
-                onChangeText={(email) => this.updateOldNames(email, index)}
+              <TouchableHighlight
+                key={'old'+index}
+                style={[styles.memberBox, {backgroundColor: this.state.toDelete[index] ? 'gray' : 'white'}]}
+                underlayColor={'gray'}
+                onPress={() => this.updateToDelete(index)}
               ><Text>{name}</Text>
-              </TextInput>
-              
+              </TouchableHighlight>
             ))
           }
-          <TouchableOpacity style={styles.addButton}
-          onPress={() => this.addBoxtoOld()}>
-            <Text style={styles.boxText}>Add Another Member</Text>
-          </TouchableOpacity>
         </View>
 
+        {/* Add Members Section --- */}
         <View style={styles.boxContainer}>
           <Text style={styles.boxText}>Add Members</Text>
           {
             this.state.newMembers.map((name, index) => (
               <View style={styles.InputBoxWithDelete}>
                 <TextInput
-                  key={index}
+                  key={'new'+index}
                   style={styles.input}
                   underlineColorAndroid='transparent'
                   onChangeText={(email) => this.updateNewNames(email, index)}
@@ -95,6 +102,7 @@ class IndividualGroupSettings extends Component {
           </TouchableOpacity>
         </View>
 
+        {/* Submit Button --- */}
         <View style={styles.boxContainer}>
           <TouchableOpacity style={styles.submitbtn}>
             <Text style={styles.boxText}>Submit</Text>
@@ -135,6 +143,18 @@ const styles = StyleSheet.create({
   InputBoxWithDelete: {
     backgroundColor: 'white',
     justifyContent: 'center',
+    flexDirection: 'row',
+    width: '50%',
+    height: 50,
+    marginHorizontal: '25%',
+    borderRadius: 10,
+    color: 'black',
+    marginBottom: "2%",
+  },
+  memberBox:{
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
     width: '50%',
     height: 50,
