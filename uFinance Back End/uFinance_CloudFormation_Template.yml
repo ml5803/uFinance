@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  uFinanceUserCredentialsReadCapacity:
+  DBUsername: 
     Type: String
-    Default: 5
-  uFinanceUserCredentialsWriteCapacity:
+    Default: ""
+  DBPassword:
     Type: String
-    Default: 5
+    Default: ""
 
 Resources:
   uFinanceImageBucket:
@@ -70,25 +70,42 @@ Resources:
   #WILL NEED TO ADD MORE API PATHS 
   #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
 
-  uFinanceUserCredentials:
-    Type: AWS::DynamoDB::Table
+  uFinanceDB:
+    Type: AWS::RDS::DBInstance
     Properties:
-      AttributeDefinitions:
-        - AttributeName: "Email"
-          AttributeType: "S"
-        - AttributeName: "Password"
-          AttributeType: "S"
-      KeySchema:
-        - AttributeName: "Email"
-          KeyType: "HASH"
-        - AttributeName: "Password"
-          KeyType: "RANGE"
-      ProvisionedThroughput:
-        ReadCapacityUnits: !Ref uFinanceUserCredentialsReadCapacity
-        WriteCapacityUnits: !Ref uFinanceUserCredentialsWriteCapacity
-      TableName: "uFinanceUserCredentials"
+      DBName: "uFinance"
+      Engine: MySQL
+      EngineVersion: 8.0.20
+      Port: 3306
+      PubliclyAccessible: True
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: 20
+      MasterUsername:
+        Ref: DBUsername
+      MasterUserPassword:
+        Ref: DBPassword
+      
+  DBSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      DBSecurityGroupIngress:
+        EC2SecurityGroupName:
+          Ref: WebServerSecurityGroup
+      GroupDescription: Frontend Access
 
-  #WILL NEED ADDITIONAL TABLES TO SUPPORT FUNCTIONALITY
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access via port 80 and SSH access
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '3306'
+        ToPort: '3306'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
 
   #WILL NEED TO ADD LAMBDA RESOURCES AND ASSIGN HANDLERS
 
@@ -100,4 +117,7 @@ Outputs:
     Description: Image bucket for uFinance
   RootAPIGId:
     Value: !GetAtt uFinanceAPIG.RootResourceId
-  
+  DBEndpoint:
+    Value: !GetAtt uFinanceDB.Endpoint.Address
+  DBPort:
+    Value: !GetAtt uFinanceDB.Endpoint.Port
