@@ -70,6 +70,7 @@ Resources:
   #WILL NEED TO ADD MORE API PATHS 
   #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
 
+  #mySQL Database
   uFinanceDB:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -108,6 +109,56 @@ Resources:
         CidrIp: 0.0.0.0/0
 
   #WILL NEED TO ADD LAMBDA RESOURCES AND ASSIGN HANDLERS
+
+  #Lambda Permissions
+  RootRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+
+  RolePolicies: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyName: "uFinanceFullAccess"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Action: "*"
+            Resource: "*"
+      Roles: 
+        - 
+          Ref: "RootRole"
+
+  UploadS3Lambda: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Upload File to S3 
+      FunctionName: UploadImageBucket
+      MemorySize: 512 
+      Handler: lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+      Code: 
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Hello from Cloudformation!')
+              }
 
   #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
 
