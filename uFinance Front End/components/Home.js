@@ -9,11 +9,12 @@ import {
 import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
 import { bindActionCreators } from 'redux';
+import LinearGradient from 'react-native-linear-gradient';
 
 class HomeScreen extends Component{
   render(){
     return (
-      <View style={styles.container}>
+      <LinearGradient style={styles.container} colors={['#264d73', '#00cca3']}>
         <View style={styles.topContainer}></View>
         <View style={styles.btnContainer}>
           <TouchableOpacity
@@ -42,14 +43,14 @@ class HomeScreen extends Component{
             onPress={() => this.props.changeLogged(false)}
             style={styles.btn}
           >
-            <Text style={styles.btnText}>Logouts</Text>
+            <Text style={styles.btnText}>Logout</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.groupContainer}>
 
         </View>
-      </View>
+      </LinearGradient>
     )
   }
 
@@ -58,7 +59,7 @@ class HomeScreen extends Component{
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#364661',
+      // backgroundColor: '#364661',
     },
     topContainer: {
       flex: 1,
@@ -72,14 +73,14 @@ const styles = StyleSheet.create({
       // backgroundColor: '#0dc9b6',
     },
     btn:{
-      backgroundColor: 'white',
+      // backgroundColor: 'white',
       justifyContent: 'center',
       alignItems: 'center',
       width: '50%',
       height: 50,
       marginHorizontal: '25%',
-      borderRadius: 10,
-      borderColor: 'black',
+      borderRadius: 25,
+      borderColor: 'white',
       borderWidth: 1,
     },
     groupContainer: {
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
       alignItems: 'flex-start',
     },
     btnText: {
+      color: 'white',
       fontSize: 20,
     }
 

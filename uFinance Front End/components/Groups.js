@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import template1 from '../styles/template1.js'
+import LinearGradient from 'react-native-linear-gradient';
 
 function Group({navigation}) {
     return (
-      <View style={template1.container}>
+      <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}>
         <View style={styles.btnContainer}>
           <TouchableOpacity
             style={styles.btn}
@@ -36,7 +37,7 @@ function Group({navigation}) {
             <Text style={template1.btnText}>Settings</Text>
           </TouchableOpacity>
         </View>        
-      </View>
+      </LinearGradient>
     );
 }
 
@@ -46,14 +47,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btn:{
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     width: '50%',
     height: 50,
     marginHorizontal: '25%',
-    borderRadius: 10,
-    borderColor: 'black',
+    borderRadius: 25,
+    borderColor: 'white',
     borderWidth: 1,
     marginTop: '5%',
   },

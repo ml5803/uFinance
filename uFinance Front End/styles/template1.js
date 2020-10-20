@@ -5,7 +5,7 @@ import {
 const template1 = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#364661',
+      // backgroundColor: '#364661',
     },
     topContainer: {
       flex: 1,
@@ -25,8 +25,8 @@ const template1 = StyleSheet.create({
       width: '50%',
       height: 50,
       marginHorizontal: '25%',
-      borderRadius: 10,
-      borderColor: 'black',
+      borderRadius: 25,
+      borderColor: 'white',
       borderWidth: 1,
     },
     groupContainer: {
@@ -35,6 +35,7 @@ const template1 = StyleSheet.create({
       alignItems: 'flex-start',
     },
     btnText: {
+      color: 'white',
       fontSize: 20,
     }
     
