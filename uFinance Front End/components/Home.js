@@ -38,7 +38,6 @@ class HomeScreen extends Component{
             <Text style={styles.btnText}>Create Group</Text>
           </TouchableOpacity>
 
-
           <TouchableOpacity
             onPress={() => this.props.changeLogged(false)}
             style={styles.btn}

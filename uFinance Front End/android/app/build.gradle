@@ -210,6 +210,8 @@ dependencies {
 
     // link linear gradient 
     implementation project(':react-native-linear-gradient')
+    // link fontawesome/icons
+    implementation project(':react-native-vector-icons')
 }
 
 // Run this once to be able to run the application with BUCK
@@ -220,4 +222,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
+// apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle"); // font awesome/icons
