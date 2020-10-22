@@ -73,9 +73,8 @@ class CreateGroup extends Component {
             <Text style={styles.boxText}>Add Members</Text>
             {
               this.state.Members.map((name, index) => (
-                <View style={styles.InputBoxWithDelete}>
+                <View style={styles.InputBoxWithDelete} key={'new'+index}>
                   <TextInput
-                    key={'new'+index}
                     style={styles.input}
                     underlineColorAndroid='transparent'
                     onChangeText={(email) => this.updateNames(email, index)}
