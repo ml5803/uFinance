@@ -141,12 +141,12 @@ Resources:
         - 
           Ref: "RootRole"
 
-  UploadS3Lambda: 
+  TestLambda: 
     Type: AWS::Lambda::Function
     Properties:
-      Description: Upload File to S3 
-      FunctionName: UploadImageBucket
-      MemorySize: 512 
+      Description: Testing Lambda functionality 
+      FunctionName: TestLambda
+      MemorySize: 1 
       Handler: lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
@@ -159,6 +159,17 @@ Resources:
                   'statusCode': 200,
                   'body': json.dumps('Hello from Cloudformation!')
               }
+
+  UploadS3Image: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Uploading images from S3. 
+      FunctionName: UploadImage
+      MemorySize: 1 
+      Handler: handlers.
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900
 
   #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
 
