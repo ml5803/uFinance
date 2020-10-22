@@ -127,10 +127,12 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
     },
     buttonArea: {
+        justifyContent: 'center',
+        alignItems: 'center',
         marginTop: 20,
     },
     btn: {
-        width: WIDTH-55,
+        width: 350,
         height: 45,
         borderRadius: 25,
         fontSize: 16,
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     Loginbtn: {
-        width: WIDTH-55,
+        width: 350,
         height: 45,
         borderRadius: 25,
         fontSize: 16,

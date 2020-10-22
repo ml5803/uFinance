@@ -4,15 +4,14 @@ import {
 
 const template1 = StyleSheet.create({
     container: {
+      // height: '100%',
       flex: 1,
-      // backgroundColor: '#364661',
+      backgroundColor: '#364661',
     },
     topContainer: {
-      flex: 1,
       // backgroundColor: '#f57280',
     },  
     btnContainer:{
-      flex: 3,
       justifyContent: 'space-around',
       // alignItems: "center",
       paddingHorizontal: 10,
@@ -30,7 +29,6 @@ const template1 = StyleSheet.create({
       borderWidth: 1,
     },
     groupContainer: {
-      flex: 2,
       justifyContent: 'center',
       alignItems: 'flex-start',
     },

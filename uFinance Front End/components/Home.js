@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
@@ -15,41 +16,44 @@ class HomeScreen extends Component{
   render(){
     return (
       <LinearGradient style={styles.container} colors={['#264d73', '#00cca3']}>
-        <View style={styles.topContainer}></View>
-        <View style={styles.btnContainer}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Profile')}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Profile</Text>
-          </TouchableOpacity>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+          <View style={styles.topContainer}></View>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Profile')}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>Profile</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Groups')}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>View Group</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Groups')}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>View Group</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('CreateGroup')}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Create Group</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('CreateGroup')}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>Create Group</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.props.changeLogged(false)}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={() => this.props.changeLogged(false)}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.groupContainer}>
+          <View style={styles.groupContainer}>
 
-        </View>
+          </View>
+        </ScrollView>
       </LinearGradient>
+      
     )
   }
 
@@ -65,14 +69,14 @@ const styles = StyleSheet.create({
       // backgroundColor: '#f57280',
     },
     btnContainer:{
-      flex: 3,
-      justifyContent: 'space-around',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: '5%',
+      paddingBottom: '10%',
       // alignItems: "center",
-      paddingHorizontal: 10,
       // backgroundColor: '#0dc9b6',
     },
     btn:{
-      // backgroundColor: 'white',
       justifyContent: 'center',
       alignItems: 'center',
       width: '50%',
@@ -81,6 +85,7 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       borderColor: 'white',
       borderWidth: 1,
+      marginTop: 10,
     },
     groupContainer: {
       flex: 2,
