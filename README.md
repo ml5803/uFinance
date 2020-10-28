@@ -8,7 +8,7 @@ npx react-native run-android<br>
 ## Navigation Documentation
 https://reactnavigation.org/docs/drawer-based-navigation
 
-##SAM Deployment
-sam build
-sam package
+## SAM Deployment
+sam build <br />
+sam package <br />
 sam deploy --guided 
