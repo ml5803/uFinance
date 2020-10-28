@@ -20,7 +20,7 @@ Resources:
       Name: "uFinanceAPIG"
 
   uFinanceAPIGDeployment:
-    DependsOn: [uFinanceAPIGRegister]
+    DependsOn: [uFinanceAPIGRegister, uFinanceAPIGLogin]
     Type: 'AWS::ApiGateway::Deployment'
     Properties:
       RestApiId: !Ref uFinanceAPIG
@@ -46,7 +46,10 @@ Resources:
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
-          Type: MOCK
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterAuthLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
 
   uFinanceAPIGLoginResource:
     Type: AWS::ApiGateway::Resource
@@ -65,7 +68,10 @@ Resources:
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
-          Type: MOCK
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
 
   #WILL NEED TO ADD MORE API PATHS 
   #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
@@ -122,6 +128,7 @@ Resources:
             Principal: 
               Service: 
                 - "lambda.amazonaws.com"
+                - "apigateway.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
       Path: "/"
@@ -148,6 +155,28 @@ Resources:
       FunctionName: UploadImageBucket
       MemorySize: 512 
       Handler: handlers.app.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
+  LoginAuthLambda: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Authenticate user based on credentials
+      FunctionName: UserLogin
+      MemorySize: 512 
+      Handler: handlers.login.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+    
+  RegisterAuthLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Create user credentials
+      FunctionName: UserRegister
+      MemorySize: 512 
+      Handler: handlers.register.lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
