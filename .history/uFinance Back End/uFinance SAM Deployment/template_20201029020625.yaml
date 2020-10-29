@@ -180,17 +180,7 @@ Resources:
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
-  
-  RetrieveFinanceData:
-    Type: AWS::Lambda::Function
-    Properties:
-      Description: Retrieve Financial Data
-      FunctionName: RetrieveFinanceData
-      MemorySize: 512 
-      Handler: handlers.app.retrieve_finance_data
-      Runtime: python3.7
-      Role: !GetAtt RootRole.Arn
-      Timeout: 900
+
   #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
 
 Outputs:

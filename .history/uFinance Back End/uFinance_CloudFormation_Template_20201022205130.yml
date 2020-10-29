@@ -20,7 +20,7 @@ Resources:
       Name: "uFinanceAPIG"
 
   uFinanceAPIGDeployment:
-    DependsOn: [uFinanceAPIGRegister, uFinanceAPIGLogin]
+    DependsOn: [uFinanceAPIGRegister]
     Type: 'AWS::ApiGateway::Deployment'
     Properties:
       RestApiId: !Ref uFinanceAPIG
@@ -46,10 +46,7 @@ Resources:
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
-          Type: AWS_PROXY
-          IntegrationHttpMethod: POST
-          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterAuthLambda.Arn}/invocations"
-          Credentials: !GetAtt RootRole.Arn
+          Type: MOCK
 
   uFinanceAPIGLoginResource:
     Type: AWS::ApiGateway::Resource
@@ -68,10 +65,7 @@ Resources:
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
-          Type: AWS_PROXY
-          IntegrationHttpMethod: POST
-          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
-          Credentials: !GetAtt RootRole.Arn
+          Type: MOCK
 
   #WILL NEED TO ADD MORE API PATHS 
   #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
@@ -128,7 +122,6 @@ Resources:
             Principal: 
               Service: 
                 - "lambda.amazonaws.com"
-                - "apigateway.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
       Path: "/"
@@ -148,49 +141,36 @@ Resources:
         - 
           Ref: "RootRole"
 
-  UploadS3Lambda: 
+  TestLambda: 
     Type: AWS::Lambda::Function
     Properties:
-      Description: Upload File to S3 
-      FunctionName: UploadImageBucket
-      MemorySize: 512 
-      Handler: handlers.app.lambda_handler
+      Description: Testing Lambda functionality 
+      FunctionName: TestLambda
+      MemorySize: 1 
+      Handler: lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
+      Code: 
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Hello from Cloudformation!')
+              }
 
-  LoginAuthLambda: 
+  UploadS3Image: 
     Type: AWS::Lambda::Function
     Properties:
-      Description: Authenticate user based on credentials
-      FunctionName: UserLogin
-      MemorySize: 512 
-      Handler: handlers.login.lambda_handler
-      Runtime: python3.7
-      Role: !GetAtt RootRole.Arn
-      Timeout: 900 
-    
-  RegisterAuthLambda:
-    Type: AWS::Lambda::Function
-    Properties:
-      Description: Create user credentials
-      FunctionName: UserRegister
-      MemorySize: 512 
-      Handler: handlers.register.lambda_handler
-      Runtime: python3.7
-      Role: !GetAtt RootRole.Arn
-      Timeout: 900 
-  
-  RetrieveFinanceData:
-    Type: AWS::Lambda::Function
-    Properties:
-      Description: Retrieve Financial Data
-      FunctionName: RetrieveFinanceData
-      MemorySize: 512 
-      Handler: handlers.app.retrieve_finance_data
+      Description: Uploading images from S3. 
+      FunctionName: UploadImage
+      MemorySize: 100
+      Handler: handlers.upload_image
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900
+
   #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
 
 Outputs:
