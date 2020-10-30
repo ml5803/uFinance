@@ -4,4 +4,4 @@
 [build_definitions.ae4d1967-1071-4ee4-9c93-7d1aa3688024]
 codeuri = "."
 runtime = "python3.7"
-functions = ["UploadImageBucket"]
+functions = ["UploadImageBucket", "UserLogin", "UserRegister"]
