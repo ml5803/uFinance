@@ -5,15 +5,17 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './components/Home.js'
 import Profile from './components/Profile.js'
 import Group from './components/Groups.js'
@@ -26,37 +28,69 @@ import Register from './components/Register.js'
 import { connect } from 'react-redux';
 import { changeLogged } from './store/actions/logged.js';
 import { bindActionCreators } from 'redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
+
+const HomeStack = createStackNavigator();
+
+function HomeStackScreen(){
+  return (
+    <HomeStack.Navigator headerMode='none'>
+      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="CreateGroup" component={CreateGroup} />
+      <HomeStack.Screen name="GroupPayment" component={GroupPayment} />
+    </HomeStack.Navigator>
+  );
+}
+
+const GroupStack = createStackNavigator();
+
+function GroupStackScreen(){
+  return (
+    <GroupStack.Navigator headerMode='none'>
+      <Tab.Screen name="Groups" component={Group} />
+      <HomeStack.Screen name="IndividualGroup" component={IndividualGroup} />
+      <HomeStack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
+    </GroupStack.Navigator>
+  );
+}
 
 class App extends Component {
-  // constructor(){
-  //   super()
-  //   this.state={
-  //     loggedin: false,
-  //   }
-  // }
-
   render(){
-    // let { loginState, actions } = this.props;
-    // console.log('loggedin:',this.props.loginState.loggedin)
-    // console.log(this.props.loggedin)
-
     return (
         <NavigationContainer>
           {this.props.loginState.loggedin ? (
-            <Stack.Navigator>
-              <Stack.Screen name="Home" component={HomeScreen} 
-              options={{title:'Dashboard'}}/>
-              <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="Groups" component={Group} />
-              <Stack.Screen name="CreateGroup" component={CreateGroup} />
-              <Stack.Screen name="IndividualGroup" component={IndividualGroup} />
-              <Stack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
-              <Stack.Screen name="GroupPayment" component={GroupPayment} />
 
+            <Tab.Navigator initialRouteName={HomeScreen}
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
+    
+                if (route.name === 'Home') {
+                  iconName = focused ? 'home' : 'home-outline';
+                } else if (route.name === 'Profile') {
+                  iconName = focused ? 'person' : 'person-outline';
+                }
+                else if (route.name === 'Groups') {
+                  iconName = focused ? 'people' : 'people-outline';
+                }
+    
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+            })}
+            tabBarOptions={{
+              activeTintColor: 'tomato',
+              inactiveTintColor: 'gray',
+            }}>
+              <Tab.Screen name="Home" component={HomeStackScreen} />
+              <Tab.Screen name="Profile" component={Profile} />
+              <Tab.Screen name="Groups" component={GroupStackScreen} />
+            </Tab.Navigator>
 
-            </Stack.Navigator>
           ) :
           (
             <Stack.Navigator headerMode='none'>
@@ -64,6 +98,7 @@ class App extends Component {
               <Stack.Screen name='register' component={Register}/>
             </Stack.Navigator>
           )}
+
         </NavigationContainer>
       );
   }

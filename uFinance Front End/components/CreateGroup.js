@@ -9,6 +9,7 @@ import {
 import { TextInput } from 'react-native-gesture-handler';
 import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
+import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
 
 class CreateGroup extends Component {
   constructor(){
@@ -37,66 +38,52 @@ class CreateGroup extends Component {
     console.log(this.state.Members)
     return (
       <ScrollView>
-        <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}>
-          <View style={styles.nameContainer}>
-            <Text style={styles.boxText}>Group Name</Text>
-            <TextInput
-              style={styles.inputBox}
-              // placeholder='Amoung Us'
-              underlineColorAndroid='transparent'
-            />
-          </View>
-          {/* <View style={styles.boxContainer}>
-            <Text style={styles.boxText}>Member's Email</Text>
-            {
-              this.state.Members.map((name, index) => (
-                <View style={styles.InputBoxWithDelete}>
-                  <TextInput
-                    key={'new'+index}
-                    style={styles.input}
-                    underlineColorAndroid='transparent'
-                    onChangeText={(email) => this.updateNames(email, index)}
-                  > <Text>{name}</Text>
-                  </TextInput>
-                  <TouchableOpacity style={styles.deleteBox}
-                  onPress={() => this.deleteBox(index)}/>
-                </View>
-              ))
-            }
-            <TouchableOpacity style={styles.addButton}
-              onPress={() => this.addBox()}>
-              <Text style={styles.boxText}>Add Another Member</Text>
-            </TouchableOpacity>
-          </View> */}
+        {/* <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}> */}
+          <Header
+            leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
+            centerComponent={{ text: 'Create Group', style: { color: '#fff', fontSize: 20,} }}
+          />
+          <Card>
+            <Card.Title>Group Name</Card.Title>
+            <Card.Divider/>
+              <TextInput
+                style={styles.inputBox}
+                // placeholder='Amoung Us'
+                underlineColorAndroid='transparent'
+              />
+          </Card>
           {/* Add Members Section --- */}
-          <View style={styles.boxContainer}>
-            <Text style={styles.boxText}>Add Members</Text>
-            {
-              this.state.Members.map((name, index) => (
-                <View style={styles.InputBoxWithDelete} key={'new'+index}>
-                  <TextInput
-                    style={styles.input}
-                    underlineColorAndroid='transparent'
-                    onChangeText={(email) => this.updateNames(email, index)}
-                  > <Text>{name}</Text>
-                  </TextInput>
-                  <TouchableOpacity style={styles.deleteBox}
-                  onPress={() => this.deleteBox(index)}/>
-                </View>
-              ))
-            }
-            <TouchableOpacity style={styles.addButton}
-            onPress={() => this.addBox()}>
-              <Text style={styles.boxText}>Add Another Member</Text>
-            </TouchableOpacity>
-          </View>
+          <Card>
+            <Card.Title>Members</Card.Title>
+            <Card.Divider/>
+            <View style={styles.boxContainer}>
+              {
+                this.state.Members.map((name, index) => (
+                  <View style={styles.InputBoxWithDelete} key={'new'+index}>
+                    <TextInput
+                      style={styles.input}
+                      underlineColorAndroid='transparent'
+                      onChangeText={(email) => this.updateNames(email, index)}
+                    > <Text>{name}</Text>
+                    </TextInput>
+                    <TouchableOpacity style={styles.deleteBox}
+                    onPress={() => this.deleteBox(index)}/>
+                  </View>
+                ))
+              }
+              <TouchableOpacity style={styles.addButton}
+              onPress={() => this.addBox()}>
+                <Text style={styles.boxText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
           
           <View style={styles.boxContainer}>
             <TouchableOpacity style={styles.submitbtn}>
               <Text style={styles.boxText}>Submit</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        {/* </LinearGradient> */}
         
       </ScrollView>
     );
@@ -116,12 +103,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxText: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
   },
   inputBox: {
     backgroundColor: 'white',
     justifyContent: 'center',
+    borderWidth: 1,
     // alignItems: 'center',
     width: '50%',
     height: 50,
@@ -138,6 +126,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: '25%',
     borderRadius: 10,
+    borderWidth: 1,
     color: 'black',
     marginBottom: "2%",
   },
@@ -154,14 +143,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: 1,
-    borderColor: 'white',
+    // borderColor: 'white',
     // backgroundColor: 'black',
   },
   addButton: {
     // marginTop: '5%',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'white',
+    // borderColor: 'white',
     // marginBottom: "5%",
     // backgroundColor: '#193361',
     width: "50%",
