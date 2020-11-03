@@ -1,5 +1,9 @@
 import 'react-native-gesture-handler';
 import React, {Component} from 'react';
+import { Navigator, NativeModules } from 'react-native';
+
+import { COLOR, ThemeContext, getTheme } from 'react-native-material-ui';
+
 import {
   StyleSheet,
   View,
@@ -29,6 +33,18 @@ import { bindActionCreators } from 'redux';
 
 const Stack = createStackNavigator();
 
+// you can set your style right here, it'll be propagated to application
+const uiTheme = {
+  palette: {
+    primaryColor: COLOR.green500,
+  },
+  toolbar: {
+    container: {
+      height: 50,
+    },
+  },
+};
+
 class App extends Component {
   // constructor(){
   //   super()
@@ -43,28 +59,30 @@ class App extends Component {
     // console.log(this.props.loggedin)
 
     return (
-        <NavigationContainer>
-          {this.props.loginState.loggedin ? (
-            <Stack.Navigator>
-              <Stack.Screen name="Home" component={HomeScreen} 
-              options={{title:'Dashboard'}}/>
-              <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="Groups" component={Group} />
-              <Stack.Screen name="CreateGroup" component={CreateGroup} />
-              <Stack.Screen name="IndividualGroup" component={IndividualGroup} />
-              <Stack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
-              <Stack.Screen name="GroupPayment" component={GroupPayment} />
+        <ThemeContext.Provider value={getTheme(uiTheme)}>
+            <NavigationContainer>
+              {this.props.loginState.loggedin ? (
+                <Stack.Navigator>
+                  <Stack.Screen name="Home" component={HomeScreen}
+                  options={{title:'Dashboard'}}/>
+                  <Stack.Screen name="Profile" component={Profile} />
+                  <Stack.Screen name="Groups" component={Group} />
+                  <Stack.Screen name="CreateGroup" component={CreateGroup} />
+                  <Stack.Screen name="IndividualGroup" component={IndividualGroup} />
+                  <Stack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
+                  <Stack.Screen name="GroupPayment" component={GroupPayment} />
 
 
-            </Stack.Navigator>
-          ) :
-          (
-            <Stack.Navigator headerMode='none'>
-              <Stack.Screen name='login' component={Login}/>
-              <Stack.Screen name='register' component={Register}/>
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
+                </Stack.Navigator>
+              ) :
+              (
+                <Stack.Navigator headerMode='none'>
+                  <Stack.Screen name='login' component={Login}/>
+                  <Stack.Screen name='register' component={Register}/>
+                </Stack.Navigator>
+              )}
+            </NavigationContainer>
+        </ThemeContext.Provider>
       );
   }
   

@@ -15,18 +15,21 @@ function Group({navigation}) {
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
           <View style={styles.btnContainer}>
             <TouchableOpacity
-            style={styles.btn}
+              onPress={() => navigation.navigate('IndividualGroup')}
+              style={styles.btn}
             >
               <Text style={template1.btnText}>GroupA</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => navigation.navigate('IndividualGroup')}
               style={styles.btn}
             >
               <Text style={template1.btnText}>GroupB</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => navigation.navigate('IndividualGroup')}
               style={styles.btn}
             >
               <Text style={template1.btnText}>GroupC</Text>
