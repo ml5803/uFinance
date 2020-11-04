@@ -11,22 +11,50 @@ import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
 import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class HomeScreen extends Component{
   render(){
     return (
-      <LinearGradient style={styles.container} colors={['#264d73', '#00cca3']}>
+      // <LinearGradient style={styles.container} colors={['#264d73', '#00cca3']}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-          <View style={styles.topContainer}></View>
+          {/* <View style={styles.topContainer}></View> */}
           <View style={styles.btnContainer}>
-            <TouchableOpacity
+            <Button
+              title="Profile"
+              type="outline"
+              // raised={true}
+              titleStyle={styles. btnTitle}
               onPress={() => this.props.navigation.navigate('Profile')}
-              style={styles.btn}
-            >
-              <Text style={styles.btnText}>Profile</Text>
-            </TouchableOpacity>
+              buttonStyle={styles.btn}
+            />
 
-            <TouchableOpacity
+            <Button
+              title="View Groups"
+              type="outline"
+              titleStyle={styles. btnTitle}
+              onPress={() => this.props.navigation.navigate('Groups')}
+              buttonStyle={styles.btn}
+            />
+
+            <Button
+              title="Create Croups"
+              type="outline"
+              titleStyle={styles. btnTitle}
+              onPress={() => this.props.navigation.navigate('CreateGroup')}
+              buttonStyle={styles.btn}
+            />
+            
+            <Button
+              title="Logout"
+              type="outline"
+              onPress={() => this.props.changeLogged(false)}
+              titleStyle={styles. btnTitle}
+              buttonStyle={styles.btn}
+            />
+
+            {/* <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Groups')}
               style={styles.btn}
             >
@@ -45,14 +73,14 @@ class HomeScreen extends Component{
               style={styles.btn}
             >
               <Text style={styles.btnText}>Logout</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
-          <View style={styles.groupContainer}>
+          {/* <View style={styles.groupContainer}></View> */}
 
-          </View>
+          
         </ScrollView>
-      </LinearGradient>
+      // </LinearGradient>
       
     )
   }
@@ -65,7 +93,7 @@ const styles = StyleSheet.create({
       // backgroundColor: '#364661',
     },
     topContainer: {
-      flex: 1,
+      // flex: 1,
       // backgroundColor: '#f57280',
     },
     btnContainer:{
@@ -79,13 +107,19 @@ const styles = StyleSheet.create({
     btn:{
       justifyContent: 'center',
       alignItems: 'center',
-      width: '50%',
-      height: 50,
-      marginHorizontal: '25%',
-      borderRadius: 25,
-      borderColor: 'white',
+      width: 200,
+      height: 80,
+      margin: 10,
+      // width: '50%',
+      // height: 50,
+      // marginHorizontal: '25%',
+      // borderRadius: 25,
+      // borderColor: 'black',
       borderWidth: 1,
-      marginTop: 10,
+      // margin: 10,
+    },
+    btnTitle: {
+      fontSize: 25,
     },
     groupContainer: {
       flex: 2,

@@ -16,12 +16,34 @@ import { connect } from 'react-redux';
 import { changeLogged } from '../store/actions/logged.js';
 import { bindActionCreators } from 'redux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Api from '../API.js'
 
 const { width: WIDTH } = Dimensions.get('window')
 
 class Login extends Component {
+  constructor(){
+    super()
+    this.state ={
+      text: 'nothing',
+      dataSource: false,
+      isLoading: false,
+    }
+  }
+  
   updateLogged(){
     this.props.changeLogged(true)
+    // Api.post().then(resp => {
+    //   // tempText = ""
+    //   // // we will get an array back, so loop through it
+    //   // resp.forEach(function(pet) {
+    //   //   tempText += JSON.stringify(pet) + "\n"
+    //   // })
+  
+    //   // update our state to include the new text  
+    //   console.log('resp:', resp)
+    //   this.setState({dataSource: resp})
+    // })
+
   }
 
   render(){
@@ -66,6 +88,9 @@ class Login extends Component {
                         <Text style={styles.btntext}>Forgot password</Text>
                     </TouchableOpacity>
                 </View>
+
+                {/* <Text>{this.state.text}</Text>
+                <Text>{this.state.dataSource ? 'true' : 'false'}</Text> */}
           </View>
       </ScrollView>
     );

@@ -6,10 +6,19 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   ScrollView,
+  Image,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
+import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
+
+const users = [
+  {
+     name: 'brynn',
+     avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+  },
+ ]
 
 class IndividualGroupSettings extends Component {
   constructor(){
@@ -52,60 +61,73 @@ class IndividualGroupSettings extends Component {
     console.log(this.state.GroupName)
     return (
       <ScrollView>
-        <LinearGradient style={template1.container}  colors={['#264d73', '#00cca3']}>
+        {/* <LinearGradient style={template1.container}  colors={['#264d73', '#00cca3']}> */}
+          <Header
+            centerComponent={{ text: 'Group Settings', style: { color: '#fff', fontSize: 20,} }}
+          />
           {/* Edit Group Section ---- */}
-          <View style={styles.nameContainer}>
-            <Text style={styles.boxText}>Edit Group Name</Text>
-            <TextInput
-              style={styles.inputBox}
-              // placeholder='Imposter'
-              underlineColorAndroid='transparent'
-              onChangeText={(newName) => this.updateGroupName(newName)}
-            />
-          </View>
+          <Card>
+            <Card.Title>Edit Group Name</Card.Title>
+            <Card.Divider/>
+              <TextInput
+                style={styles.inputBox}
+                // placeholder='Imposter'
+                underlineColorAndroid='transparent'
+                onChangeText={(newName) => this.updateGroupName(newName)}
+              />
+            
+          </Card>
 
           {/* Delete Members Section --- */}
-          <View style={styles.boxContainer}>
-            <Text style={styles.boxText}>Delete Members</Text>
-            {
+          <Card>
+            <Card.Title>Delete Members</Card.Title>
+            <Card.Divider/>
+            <View>
+              {
               this.state.oldMembers.map((name, index) => (
-                <TouchableHighlight
-                  key={'old'+index}
-                  style={[styles.memberBox, {backgroundColor: this.state.toDelete[index] ? '#00e6ac' : 'transparent'}]}
-                  underlayColor={'white'}
-                  onPress={() => this.updateToDelete(index)}
-                ><Text 
-                  style={[template1.btnText, {color: this.state.toDelete[index] ? 'black' : 'white'}]}
-                  underlayColor={'white'}>
-                    {name}
-                  </Text>
-                </TouchableHighlight>
-              ))
-            }
-          </View>
+                  <TouchableHighlight
+                    key={'old'+index}
+                    style={[styles.memberBox, {backgroundColor: this.state.toDelete[index] ? '#dddddd' : 'transparent'}]}
+                    underlayColor={'white'}
+                    onPress={() => this.updateToDelete(index)}
+                  ><Text 
+                    style={[template1.btnText, {color: 'black'}]}
+                    underlayColor={'white'}>
+                      {name}
+                    </Text>
+                  </TouchableHighlight>
+                ))
+              }
+            </View>
+          </Card>
 
           {/* Add Members Section --- */}
-          <View style={styles.boxContainer}>
-            <Text style={styles.boxText}>Add Members</Text>
-            {
-              this.state.newMembers.map((name, index) => (
-                <View style={styles.InputBoxWithDelete} key={'new'+index}>
-                  <TextInput
-                    style={styles.input}
-                    underlineColorAndroid='transparent'
-                    onChangeText={(email) => this.updateNewNames(email, index)}
-                  > <Text>{name}</Text>
-                  </TextInput>
-                  <TouchableOpacity style={styles.deleteBox}
-                  onPress={() => this.deleteBox(index)}/>
-                </View>
-              ))
-            }
-            <TouchableOpacity style={styles.addButton}
-            onPress={() => this.addBox()}>
-              <Text style={styles.boxText}>Add Another Member</Text>
-            </TouchableOpacity>
-          </View>
+          <Card>
+            <Card.Title>Add members</Card.Title>
+            <Card.Divider/>
+            <View style={styles.boxContainer}>
+              {
+                this.state.newMembers.map((name, index) => (
+                  <View style={styles.InputBoxWithDelete} key={'new'+index}>
+                    <TextInput
+                      style={styles.input}
+                      underlineColorAndroid='transparent'
+                      onChangeText={(email) => this.updateNewNames(email, index)}
+                    > <Text>{name}</Text>
+                    </TextInput>
+                    <TouchableOpacity style={styles.deleteBox}
+                    onPress={() => this.deleteBox(index)}>
+                      <Text style={styles.boxText}>-</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))
+              }
+              <TouchableOpacity style={styles.addButton}
+              onPress={() => this.addBox()}>
+                <Text style={styles.boxText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
 
           {/* Submit Button --- */}
           <View style={styles.boxContainer}>
@@ -113,7 +135,7 @@ class IndividualGroupSettings extends Component {
               <Text style={styles.boxText}>Submit</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        {/* </LinearGradient> */}
         
       </ScrollView>
     );
@@ -133,20 +155,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxText: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
     marginBottom: 10,
   },
   inputBox: {
-    backgroundColor: 'white',
+    // backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
     width: '50%',
     height: 50,
     marginHorizontal: '25%',
+    borderWidth: 1,
     borderRadius: 10,
     color: 'black',
-    marginBottom: "2%",
+    // marginBottom: "2%",
   },
   InputBoxWithDelete: {
     // backgroundColor: 'white',
@@ -156,6 +179,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: '25%',
     borderRadius: 10,
+    borderWidth: 1,
     color: 'black',
     marginBottom: "2%",
   },
@@ -171,7 +195,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: "2%",
     borderRadius: 10,
-    borderColor: 'white',
+    // borderColor: 'white',
     borderWidth: 1,
   },
   input: {
@@ -187,13 +211,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: 1,
-    borderColor: 'white',
+    // borderColor: 'white',
     // backgroundColor: '#990000',
   },
   addButton: {
     // marginTop: '5%',
     borderRadius: 10,
-    borderColor: 'white',
+    // borderColor: 'white',
     borderWidth: 1,
     // marginBottom: "5%",
     // backgroundColor: '#193361',

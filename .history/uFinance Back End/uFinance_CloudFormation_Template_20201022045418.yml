@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  DBUsername: 
+    Type: String
+    Default: ""
+  DBPassword:
+    Type: String
+    Default: ""
+
+Resources:
+  uFinanceImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+
+  uFinanceAPIG:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: "uFinanceAPIG"
+
+  uFinanceAPIGDeployment:
+    DependsOn: [uFinanceAPIGRegister]
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref uFinanceAPIG
+      Description: Deploy APIG for uFinance
+      StageName: test
+
+  #WILL CHANGE INTEGRATION TYPES TO LAMBDAS ONCE WE MAKE THEM
+    
+  uFinanceAPIGRegisterResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: register
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGRegister:
+      DependsOn: uFinanceAPIGRegisterResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: register
+        ResourceId: !Ref uFinanceAPIGRegisterResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+
+  uFinanceAPIGLoginResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: login
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGLogin:
+      DependsOn: uFinanceAPIGLoginResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: register
+        ResourceId: !Ref uFinanceAPIGLoginResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+
+  #WILL NEED TO ADD MORE API PATHS 
+  #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
+
+  #mySQL Database
+  uFinanceDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: "uFinance"
+      Engine: MySQL
+      EngineVersion: 8.0.20
+      Port: 3306
+      PubliclyAccessible: True
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: 20
+      MasterUsername:
+        Ref: DBUsername
+      MasterUserPassword:
+        Ref: DBPassword
+      
+  DBSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      DBSecurityGroupIngress:
+        EC2SecurityGroupName:
+          Ref: WebServerSecurityGroup
+      GroupDescription: Frontend Access
+
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access via port 80 and SSH access
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '3306'
+        ToPort: '3306'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+
+  #WILL NEED TO ADD LAMBDA RESOURCES AND ASSIGN HANDLERS
+
+  #Lambda Permissions
+  RootRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+
+  RolePolicies: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyName: "uFinanceFullAccess"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Action: "*"
+            Resource: "*"
+      Roles: 
+        - 
+          Ref: "RootRole"
+
+  TestLambda: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Testing Lambda functionality 
+      FunctionName: TestLambda
+      MemorySize: 1 
+      Handler: lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+      Code: 
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Hello from Cloudformation!')
+              }
+
+  UploadS3Image: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Uploading images from S3. 
+      FunctionName: UploadImage
+      MemorySize: 1 
+      Handler: handlers.
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
+  #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
+
+Outputs:
+  BucketName:
+    Value: !Ref uFinanceImageBucket
+    Description: Image bucket for uFinance
+  RootAPIGId:
+    Value: !GetAtt uFinanceAPIG.RootResourceId
+  DBEndpoint:
+    Value: !GetAtt uFinanceDB.Endpoint.Address
+  DBPort:
+    Value: !GetAtt uFinanceDB.Endpoint.Port
