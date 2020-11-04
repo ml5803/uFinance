@@ -71,71 +71,41 @@ class Group extends Component{
     const { search } = this.state;
     // If search === 0 then return whole list
     // else map list and pick the ones with the same words in name
+    let new_lst
+    if (search === 0){ new_lst = list }
+    else{
+      new_lst = list.filter(obj => {
+        return obj.name.toLowerCase().includes(search.toLowerCase())
+      })
+    }
+    
     return (
-      // <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
-          <Header
-            leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
-            centerComponent={{ text: 'MY GROUPS', style: { color: '#fff', fontSize: 20,} }}
-            rightComponent={{ icon: 'settings', color: '#fff', onPress:() => this.props.navigation.navigate('IndividualGroupSettings') }}
-          />
-          <SearchBar
-            placeholder="Type Here..."
-            onChangeText={this.updateSearch}
-            value={search}
-          />
-          <View>
-            {
-              list.map((l, i) => (
-                <ListItem key={i} bottomDivider>
-                  <Avatar source={{uri: l.avatar_url}} />
-                  <ListItem.Content>
-                    <ListItem.Title>{l.name}</ListItem.Title>
-                    <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-                  </ListItem.Content>
-                </ListItem>
-              ))
-            }
-          </View>
-          {/* <View style={styles.btnContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('IndividualGroup')}
-              style={styles.btn}
-            >
-              <Text style={template1.btnText}>GroupA</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate('IndividualGroup')}
-              style={styles.btn}
-            >
-              <Text style={template1.btnText}>GroupB</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate('IndividualGroup')}
-              style={styles.btn}
-            >
-              <Text style={template1.btnText}>GroupC</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate('IndividualGroupSettings')}
-              style={styles.btn}
-            >
-              <Text style={template1.btnText}>Settings</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.btn}
-            >
-              <Text style={template1.btnText}>Back</Text>
-            </TouchableOpacity>
-          </View> */}
-
-        </ScrollView>        
-      // </LinearGradient>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
+        <Header
+          leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
+          centerComponent={{ text: 'MY GROUPS', style: { color: '#fff', fontSize: 20,} }}
+          // rightComponent={{ icon: 'settings', color: '#fff', onPress:() => this.props.navigation.navigate('IndividualGroupSettings') }}
+        />
+        <SearchBar
+          placeholder="Type Here..."
+          onChangeText={this.updateSearch}
+          value={search}
+        />
+        <View>
+          {
+            new_lst.map((l, i) => (
+              <ListItem key={i} bottomDivider 
+              onPress={() => this.props.navigation.navigate('IndividualGroup')}>
+                <Avatar source={{uri: l.avatar_url}} />
+                <ListItem.Content>
+                  <ListItem.Title>{l.name}</ListItem.Title>
+                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            ))
+          }
+        </View>
+      </ScrollView>        
     );
   }
 }

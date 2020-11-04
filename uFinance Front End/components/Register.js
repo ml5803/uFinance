@@ -4,20 +4,57 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Dimensions,
     ScrollView,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const { width: WIDTH } = Dimensions.get('window')
-
 class Register extends Component{
+    constructor(){
+        super()
+        this.state={
+            errorMsg: '',
+            pass1: '',
+            pass2: '',
+        }
+    }
+
+    updatePass = (pass1) => { this.setState({ pass1 }) }
+    updatePass2 = (pass2) => { this.setState({ pass2 }) }
+    validate = () => {
+        const pass1 = this.state.pass1
+        const pass2 = this.state.pass2
+        console.log('here')
+        if (pass1.length > 3){
+            if (pass1 === pass2){
+                this.setState({errorMsg: ''})
+                console.log('good')
+            }
+            else{
+                console.log('incorrect')
+                this.setState({errorMsg: "passwords don't match"})
+            }
+        }
+        else{
+            console.log('short')
+            this.setState({errorMsg: 'Password too short'})
+        }
+        
+    }
+
     render(){
+        const pass1 = this.state.pass1
+        const pass2 = this.state.pass2
+        console.log('pass1:', this.state.pass1)
+        console.log('pass2:', this.state.pass2)
+
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.title}> 
                     <Text style={styles.titletxt}>Register</Text>
+                </View>
+                <View style={{alignItems:'center'}}> 
+                    <Text style={styles.errorMsg}>{this.state.errorMsg}</Text>
                 </View>
                 <View style={styles.form}>
                     <Text style={styles.formtxt}>Email:</Text>
@@ -37,7 +74,8 @@ class Register extends Component{
                         <TextInput
                         style={styles.input}
                         placeholder='password'
-                        // remove underline when typing
+                        onChangeText={this.updatePass}
+                        value={pass1}
                         underlineColorAndroid='transparent'
                         secureTextEntry={true}
                         />
@@ -49,7 +87,8 @@ class Register extends Component{
                         <TextInput
                         style={styles.input}
                         placeholder='retype password'
-                        // remove underline when typing
+                        onChangeText={this.updatePass2}
+                        value={pass2}
                         underlineColorAndroid='transparent'
                         secureTextEntry={true}
                         />
@@ -57,7 +96,8 @@ class Register extends Component{
                     </View>
 
                     <View style={styles.buttonArea}>
-                        <TouchableOpacity style={styles.btn}>
+                        <TouchableOpacity style={styles.btn}
+                        onPress={this.validate}>
                             <Text style={styles.btntext}>Sign Up</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.Loginbtn}
@@ -84,6 +124,12 @@ const styles = StyleSheet.create({
     titletxt:{
         color: 'white',
         fontSize: 50,
+    },
+    errorMsg:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'white',
+        fontSize: 20,
     },
     form: {
         alignItems: 'center',

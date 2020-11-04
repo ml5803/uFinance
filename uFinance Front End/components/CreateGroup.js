@@ -10,6 +10,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
 import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class CreateGroup extends Component {
   constructor(){
@@ -37,7 +38,7 @@ class CreateGroup extends Component {
   render(){
     console.log(this.state.Members)
     return (
-      <ScrollView>
+      <ScrollView >
         {/* <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}> */}
           <Header
             leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
@@ -67,7 +68,13 @@ class CreateGroup extends Component {
                     > <Text>{name}</Text>
                     </TextInput>
                     <TouchableOpacity style={styles.deleteBox}
-                    onPress={() => this.deleteBox(index)}/>
+                    onPress={() => this.deleteBox(index)}>
+                      <Ionicons 
+                      name="close-circle-outline" 
+                      size={32}
+                      color={'red'}
+                      />
+                    </TouchableOpacity>
                   </View>
                 ))
               }
@@ -79,9 +86,10 @@ class CreateGroup extends Component {
           </Card>
           
           <View style={styles.boxContainer}>
-            <TouchableOpacity style={styles.submitbtn}>
-              <Text style={styles.boxText}>Submit</Text>
-            </TouchableOpacity>
+            <Button 
+            title="Submit"
+            titleStyle={styles.submitbtn}
+            />
           </View>
         {/* </LinearGradient> */}
         
@@ -137,14 +145,9 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     backgroundColor: 'white',
   },
-  deleteBox: {
-    width: '20%',
-    height: '100%',
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    borderWidth: 1,
-    // borderColor: 'white',
-    // backgroundColor: 'black',
+  deleteBox:{
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addButton: {
     // marginTop: '5%',
@@ -159,13 +162,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   submitbtn: {
-    marginBottom: "40%",
-    backgroundColor: '#2D5CAD',
-    height: 100,
-    width: 100,
-    borderRadius: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontSize: 25,
+    width: 200,
   }
 });
 export default CreateGroup;

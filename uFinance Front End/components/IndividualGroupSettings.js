@@ -12,6 +12,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
 import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const users = [
   {
@@ -63,6 +64,7 @@ class IndividualGroupSettings extends Component {
       <ScrollView>
         {/* <LinearGradient style={template1.container}  colors={['#264d73', '#00cca3']}> */}
           <Header
+            leftComponent={{ icon: 'chevron-left', type:'FontAwesome', color: '#fff', onPress:() => this.props.navigation.navigate('IndividualGroup') }}
             centerComponent={{ text: 'Group Settings', style: { color: '#fff', fontSize: 20,} }}
           />
           {/* Edit Group Section ---- */}
@@ -117,7 +119,11 @@ class IndividualGroupSettings extends Component {
                     </TextInput>
                     <TouchableOpacity style={styles.deleteBox}
                     onPress={() => this.deleteBox(index)}>
-                      <Text style={styles.boxText}>-</Text>
+                      <Ionicons 
+                      name="close-circle-outline" 
+                      size={32}
+                      color={'red'}
+                      />
                     </TouchableOpacity>
                   </View>
                 ))
@@ -131,9 +137,10 @@ class IndividualGroupSettings extends Component {
 
           {/* Submit Button --- */}
           <View style={styles.boxContainer}>
-            <TouchableOpacity style={styles.submitbtn}>
-              <Text style={styles.boxText}>Submit</Text>
-            </TouchableOpacity>
+            <Button 
+            title="Submit"
+            titleStyle={styles.submitbtn}
+            />
           </View>
         {/* </LinearGradient> */}
         
@@ -206,13 +213,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   deleteBox: {
-    width: '20%',
-    height: '100%',
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    borderWidth: 1,
-    // borderColor: 'white',
-    // backgroundColor: '#990000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addButton: {
     // marginTop: '5%',
@@ -227,13 +229,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   submitbtn: {
-    marginBottom: "5%",
-    backgroundColor: '#2D5CAD',
-    height: 100,
-    width: 100,
-    borderRadius: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontSize: 25,
+    width: 200,
   }
 });
 

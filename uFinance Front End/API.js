@@ -1,10 +1,5 @@
 import AWSSignature from 'react-native-aws-signature'
-
-const HOST = 'xu8zrqo6a7.execute-api.us-east-1.amazonaws.com'
-const AWS_KEY = ''
-const AWS_SECRET_KEY = ''
-const API_STAGE = 'test'
-const AWS_REGION = 'us-east-1'
+import {HOST, AWS_KEY, AWS_SECRET_KEY, API_STAGE, AWS_REGION } from '@env'
 
 // used this guide for reference : https://www.jsparling.com/use-react-native-to-post-to-secure-aws-api-gateway-endpoint/
 class Api {
