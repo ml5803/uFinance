@@ -1,8 +1,8 @@
 import AWSSignature from 'react-native-aws-signature'
 
 const HOST = 'xu8zrqo6a7.execute-api.us-east-1.amazonaws.com'
-const AWS_KEY = 'AKIAJA4YULVF55SO53HA'
-const AWS_SECRET_KEY = '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'
+const AWS_KEY = ''
+const AWS_SECRET_KEY = ''
 const API_STAGE = 'test'
 const AWS_REGION = 'us-east-1'
 

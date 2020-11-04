@@ -68,7 +68,7 @@ class App extends Component {
             screenOptions={({ route }) => ({
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
-    
+
                 if (route.name === 'Home') {
                   iconName = focused ? 'home' : 'home-outline';
                 } else if (route.name === 'Profile') {
@@ -77,7 +77,7 @@ class App extends Component {
                 else if (route.name === 'Groups') {
                   iconName = focused ? 'people' : 'people-outline';
                 }
-    
+
                 // You can return any component that you like here!
                 return <Ionicons name={iconName} size={size} color={color} />;
               },
@@ -102,7 +102,7 @@ class App extends Component {
         </NavigationContainer>
       );
   }
-  
+
 };
 
 const styles = StyleSheet.create({
