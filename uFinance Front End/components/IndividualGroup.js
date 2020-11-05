@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import { Image, ScrollView } from 'react-native'
-import { Card, ListItem, Button, Icon, ButtonGroup } from 'react-native-elements'
+import { Card, ListItem, Button, Icon, ButtonGroup, Header } from 'react-native-elements'
 //import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -59,6 +59,10 @@ class IndividualGroup extends Component {
 
       return (
         <ScrollView>
+            <Header
+              leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
+              centerComponent={{ text: 'Profile', style: { color: '#fff', fontSize: 20,} }}
+            />
             <View
               style={{
                 flexDirection: "row-reverse",
@@ -83,54 +87,58 @@ class IndividualGroup extends Component {
 
             </View>
 
-            <Card>
-              <Text>
-                  Money Owed
-              </Text>
-                <BarChart
-                    // style={graphStyle}
-                    data={barData}
-                    width={300}
-                    height={220}
-                    yAxisLabel={'$'}
-                    chartConfig={{
-                          backgroundColor: "#e26a00",
-                                backgroundGradientFrom: "#fb8c00",
-                                backgroundGradientTo: "#ffa726",
-                                decimalPlaces: 2, // optional, defaults to 2dp
-                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                fillShadowGradientOpacity: 1,
-                                style: {
-                                  borderRadius: 16
-                                },
-                                propsForDots: {
-                                  r: "6",
-                                  strokeWidth: "2",
-                                  stroke: "#ffa726"
-                                }
-                        }}
-                />
-            </Card>
+
             {
-                this.state.selectedIndex==0 ? <Card>
+                this.state.selectedIndex==0 ? <View>
+
+                <Card>
                   <Card.Title>Table of Payments</Card.Title>
                   <Card.Divider/>
                   {
-                    users.map((u, i) => {
+                    owedMoney.map((u, i) => {
                       return (
                         <View key={i} style={styles.user}>
-                          <Image
-                            style={styles.image}
-                            resizeMode="cover"
-                            source={{ uri: u.avatar }}
-                          />
-                          <Text style={styles.name}>{u.name}</Text>
+                          <View style={styles.inLineContainer}>
+                              <Text style={styles.inLineText}>{u.name}</Text>
+                              <Icon
+                                name='arrow-right-alt' />
+                                <View style={styles.inLineContainer}>
+                                    <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                                    <Icon
+                                      name='arrow-right-alt' />
+                                      <Text style={styles.inLineTextSelf}>{username}</Text>
+                                </View>
+                          </View>
                         </View>
                       );
                     })
                   }
-                </Card> : null
+                </Card>
+
+                <Card>
+                  <Card.Title>Table of Payments</Card.Title>
+                  <Card.Divider/>
+                  {
+                    oweMoney.map((u, i) => {
+                      return (
+                        <View key={i} style={styles.user}>
+                          <View style={styles.inLineContainer}>
+                              <Text style={styles.inLineTextSelf}>{username}</Text>
+                              <Icon
+                                name='arrow-right-alt' />
+                                <View style={styles.inLineContainer}>
+                                    <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                                    <Icon
+                                      name='arrow-right-alt' />
+                                      <Text style={styles.inLineText}>{u.name}</Text>
+                                </View>
+                          </View>
+                        </View>
+                      );
+                    })
+                  }
+                </Card>
+                </View>: null
             }
             {
                 this.state.selectedIndex==1 ? <Card>
@@ -166,22 +174,29 @@ class IndividualGroup extends Component {
 //const component1 = () => <Text>Hello</Text>
 //const component2 = () => <Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
 //const component3 = () => <Text>ButtonGroup</Text>
+const username = "Tyler"
 
-const users = [
+const owedMoney = [
  {
-    name: 'Alex: $25',
+    name: 'Alex',
+    amount: 25,
     avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
  },
 
  {
-     name: 'Ben: $-45',
-     avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
-  },
+   name: 'Ben',
+   amount: 17,
+   avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+ }
+ // more users here
+]
 
-  {
-       name: 'Celia: $28',
-       avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
-  }
+const oweMoney = [
+ {
+    name: 'Celia',
+    amount: 35,
+    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+ }
  // more users here
 ]
 
@@ -210,7 +225,29 @@ const barData = {
     },
 });*/
 
+
+
 const styles = StyleSheet.create({
+  inLineTextSelf: {
+    fontSize: 16,
+    color: "blue"
+  },
+  inLineTextCost: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#4bee00"
+  },
+  inLineText: {
+    fontSize: 16,
+    color: "#ff1f03"
+  },
+  inLineContainer: {
+    paddingVertical: 1.5,
+    paddingHorizontal: 1,
+    flexDirection: "row",
+    /*justifyContent: "space-between",*/
+    alignItems: "center"
+  },
   nameContainer: {
     marginTop: '10%',
     justifyContent:'center',

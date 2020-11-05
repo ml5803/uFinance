@@ -1,5 +1,7 @@
 import 'react-native-gesture-handler';
 import React, {Component} from 'react';
+/*import { StyleSheet, View, Alert } from 'react-native'
+import { RNCamera } from 'react-native-camera'*/
 import {
   StyleSheet,
   View,
