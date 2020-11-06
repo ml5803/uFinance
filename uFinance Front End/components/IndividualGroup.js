@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import { Image, ScrollView } from 'react-native'
 import { Card, ListItem, Button, Icon, ButtonGroup, Header } from 'react-native-elements'
+import { RNCamera } from 'react-native-camera';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -149,6 +150,7 @@ class IndividualGroup extends Component {
                     color: "white"
                   }}
                   title="Camera"
+                  onPress={() => this.props.navigation.navigate('GroupPayment')}
                 />
                 <Text>Item</Text>
                 <Input
