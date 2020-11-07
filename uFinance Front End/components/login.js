@@ -32,7 +32,7 @@ class Login extends Component {
   
   updateLogged(){
     this.props.changeLogged(true)
-    // Api.post().then(resp => {
+    // Api.post('register').then(resp => {
     //   // tempText = ""
     //   // // we will get an array back, so loop through it
     //   // resp.forEach(function(pet) {

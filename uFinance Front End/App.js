@@ -43,7 +43,6 @@ function HomeStackScreen(){
     <HomeStack.Navigator headerMode='none'>
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="CreateGroup" component={CreateGroup} />
-      <HomeStack.Screen name="GroupPayment" component={GroupPayment} />
     </HomeStack.Navigator>
   );
 }
@@ -53,9 +52,10 @@ const GroupStack = createStackNavigator();
 function GroupStackScreen(){
   return (
     <GroupStack.Navigator headerMode='none'>
-      <Tab.Screen name="Groups" component={Group} />
-      <HomeStack.Screen name="IndividualGroup" component={IndividualGroup} />
-      <HomeStack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
+      <GroupStack.Screen name="Groups" component={Group} />
+      <GroupStack.Screen name="IndividualGroup" component={IndividualGroup} />
+      <GroupStack.Screen name="IndividualGroupSettings" component={IndividualGroupSettings} />
+      <GroupStack.Screen name="GroupPayment" component={GroupPayment} />
     </GroupStack.Navigator>
   );
 }
