@@ -93,7 +93,7 @@ class IndividualGroup extends Component {
                 this.state.selectedIndex==0 ? <View>
 
                 <Card>
-                  <Card.Title>Table of Payments</Card.Title>
+                  <Card.Title>Payment Expected</Card.Title>
                   <Card.Divider/>
                   {
                     owedMoney.map((u, i) => {
@@ -117,7 +117,7 @@ class IndividualGroup extends Component {
                 </Card>
 
                 <Card>
-                  <Card.Title>Table of Payments</Card.Title>
+                  <Card.Title>Payment Owed</Card.Title>
                   <Card.Divider/>
                   {
                     oweMoney.map((u, i) => {

@@ -41,23 +41,52 @@ function Profile({navigation}) {
                 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
             }}
           />
-          <Card.Title>Welcome Tyler!</Card.Title>
+          <Card.Title>Welcome {username}!</Card.Title>
           <Card.Divider/>
-          {
-            users.map((u, i) => {
-              return (
-                <View key={i} style={styles.user}>
-                  <Image
-                    style={styles.image}
-                    resizeMode="cover"
-                    source={{ uri: u.avatar }}
-                  />
-                  <Text style={styles.name}>{u.name}</Text>
-                </View>
-              );
-            })
-          }
-        </Card>
+            {
+              owedMoney.map((u, i) => {
+                return (
+                  <View key={i} style={styles.user}>
+                    <View style={styles.inLineContainer}>
+                        <Text style={styles.inLineText}>{u.name}</Text>
+                        <Icon
+                          name='arrow-right-alt' />
+                          <View style={styles.inLineContainer}>
+                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                              <Icon
+                                name='arrow-right-alt' />
+                                <Text style={styles.inLineTextSelf}>{username}</Text>
+                          </View>
+                    </View>
+                  </View>
+                );
+              })
+            }
+          </Card>
+
+          <Card>
+            <Card.Title>Payment Owed</Card.Title>
+            <Card.Divider/>
+            {
+              oweMoney.map((u, i) => {
+                return (
+                  <View key={i} style={styles.user}>
+                    <View style={styles.inLineContainer}>
+                        <Text style={styles.inLineTextSelf}>{username}</Text>
+                        <Icon
+                          name='arrow-right-alt' />
+                          <View style={styles.inLineContainer}>
+                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                              <Icon
+                                name='arrow-right-alt' />
+                                <Text style={styles.inLineText}>{u.name}</Text>
+                          </View>
+                    </View>
+                  </View>
+                );
+              })
+            }
+          </Card>
 
         <Card>
           <Text>
@@ -92,6 +121,32 @@ function Profile({navigation}) {
     );
 }
 
+const username = "Tyler"
+
+const owedMoney = [
+ {
+    name: 'Alex',
+    amount: 25,
+    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+ },
+
+ {
+   name: 'Ben',
+   amount: 17,
+   avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+ }
+ // more users here
+]
+
+const oweMoney = [
+ {
+    name: 'Celia',
+    amount: 35,
+    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+ }
+ // more users here
+]
+
 const users = [
  {
     name: 'Alex: $25',
@@ -121,18 +176,38 @@ const barData = {
     };
 
 const styles = StyleSheet.create({
-    btnContainer:{
-      flex: 1,
-      justifyContent:"center",
-      alignItems: "center",
-      paddingHorizontal: 10,
-    },
-    btn:{
-      backgroundColor: '#DDDDDD',
-      alignItems: 'center',
-      padding: 10,
-      margin: 5,
-    },
+  inLineTextSelf: {
+    fontSize: 16,
+    color: "blue"
+  },
+  inLineTextCost: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#4bee00"
+  },
+  inLineText: {
+    fontSize: 16,
+    color: "#ff1f03"
+  },
+  inLineContainer: {
+    paddingVertical: 1.5,
+    paddingHorizontal: 1,
+    flexDirection: "row",
+    /*justifyContent: "space-between",*/
+    alignItems: "center"
+  },
+  btnContainer:{
+    flex: 1,
+    justifyContent:"center",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  btn:{
+    backgroundColor: '#DDDDDD',
+    alignItems: 'center',
+    padding: 10,
+    margin: 5,
+  },
 });
   
 export default Profile;
