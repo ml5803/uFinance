@@ -62,14 +62,14 @@ Resources:
       DependsOn: uFinanceAPIGLoginResource
       Type: AWS::ApiGateway::Method
       Properties:
-        HttpMethod: POST
-        OperationName: register
+        HttpMethod: GET
+        OperationName: login
         ResourceId: !Ref uFinanceAPIGLoginResource
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
           Type: AWS_PROXY
-          IntegrationHttpMethod: POST
+          IntegrationHttpMethod: GET
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
@@ -180,18 +180,6 @@ Resources:
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
-  
-  RetrieveFinanceData:
-    Type: AWS::Lambda::Function
-    Properties:
-      Description: Retrieve Financial Data
-      FunctionName: RetrieveFinanceData
-      MemorySize: 512 
-      Handler: handlers.app.retrieve_finance_data
-      Runtime: python3.7
-      Role: !GetAtt RootRole.Arn
-      Timeout: 900
-  #WILL ALSO NEED TO ADD ROLES/PERMISSIONS
 
 Outputs:
   BucketName:

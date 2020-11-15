@@ -4,10 +4,10 @@ import {HOST, AWS_KEY, AWS_SECRET_KEY, API_STAGE, AWS_REGION } from '@env'
 // used this guide for reference : https://www.jsparling.com/use-react-native-to-post-to-secure-aws-api-gateway-endpoint/
 class Api {
 
-  static get() {
+  static get(stage_path) {
     const verb = 'GET'
     // construct the url and path for our sample API
-    const path = '/' + API_STAGE + '/login'
+    const path = '/' + API_STAGE + '/' + stage_path
     const url = 'https://' + HOST + path
     console.log(url)
     let credentials = {
@@ -58,10 +58,10 @@ class Api {
     })
   }
 
-  static post() {
+  static post(stage_path) {
     const verb = 'POST'
     // construct the url and path for our sample API
-    const path = '/' + API_STAGE + '/register'
+    const path = '/' + API_STAGE + '/' + stage_path
     const url = 'https://' + HOST + path
     console.log(url)
     let credentials = {
@@ -89,7 +89,6 @@ class Api {
       credentials
     };
 
-    console.log('credentials', credentials)
     let awsSignature = new AWSSignature();
     awsSignature.setParams(auth_options);
 
@@ -98,7 +97,6 @@ class Api {
     // Add the authorization to the header
     auth_header['Authorization'] = authorization['Authorization']
 
-    console.log('auth_headers: ', auth_header)
     let options = Object.assign({
       method: verb,
       headers: auth_header,

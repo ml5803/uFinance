@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import { Image, ScrollView } from 'react-native'
-import { Card, ListItem, Button, Icon, ButtonGroup, Header } from 'react-native-elements'
+import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -32,7 +32,31 @@ class IndividualGroup extends Component {
     constructor () {
       super()
       this.state = {
-        selectedIndex: 0
+        selectedIndex: 0,
+        checked: false,
+        data: [ 
+          {
+          name: 'Alex',
+          amount: 25,
+          avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+          checked: false,
+          },
+          
+          {
+            name: 'Ben',
+            amount: 17,
+            avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+            checked: false,
+          }
+        ],
+        data2: [
+          {
+            name: 'Celia',
+            amount: 35,
+            avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+            checked: false,
+         },
+        ],
       }
       this.updateIndex = this.updateIndex.bind(this)
     }
@@ -51,6 +75,17 @@ class IndividualGroup extends Component {
       }
     }*/
 
+    updateStatus(index){
+      let newData = this.state.data
+      newData[index].checked = !newData[index].checked
+      this.setState({data: newData})
+    }
+    updateStatus2(index){
+      let newData = this.state.data2
+      newData[index].checked = !newData[index].checked
+      this.setState({data2: newData})
+    }
+
     render () {
       const component1 = () => <Text>Cost Owed</Text>
       const component2 = () => <Text>Add Cost</Text>//<Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
@@ -61,8 +96,8 @@ class IndividualGroup extends Component {
       return (
         <ScrollView>
             <Header
-              leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
-              centerComponent={{ text: 'Profile', style: { color: '#fff', fontSize: 20,} }}
+              leftComponent={{ icon: 'chevron-left', type:'FontAwesome', color: '#fff', onPress:() => this.props.navigation.navigate('Groups') }}
+              centerComponent={{ text: 'Group A', style: { color: '#fff', fontSize: 20,} }}
             />
             <View
               style={{
@@ -96,19 +131,24 @@ class IndividualGroup extends Component {
                   <Card.Title>Payment Expected</Card.Title>
                   <Card.Divider/>
                   {
-                    owedMoney.map((u, i) => {
+                    this.state.data.map((u, i) => {
                       return (
                         <View key={i} style={styles.user}>
                           <View style={styles.inLineContainer}>
+                              <Text style={styles.inLineTextSelf}>{username}</Text>
+                              <Icon name='arrow-right-alt' />
+                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                              <Icon name='arrow-right-alt' />
                               <Text style={styles.inLineText}>{u.name}</Text>
-                              <Icon
-                                name='arrow-right-alt' />
-                                <View style={styles.inLineContainer}>
-                                    <Text style={styles.inLineTextCost}>{u.amount}</Text>
-                                    <Icon
-                                      name='arrow-right-alt' />
-                                      <Text style={styles.inLineTextSelf}>{username}</Text>
-                                </View>
+                              <CheckBox
+                                title={u.checked ? 'Paid' : 'Pay'}
+                                iconType='material'
+                                checkedIcon='clear'
+                                uncheckedIcon='add'
+                                checked={u.checked}
+                                onPress={() => this.updateStatus(i)}
+                                containerStyle={{backgroundColor: u.checked ? '#00FA9A' : '#DC143C'}}
+                              />
                           </View>
                         </View>
                       );
@@ -120,19 +160,24 @@ class IndividualGroup extends Component {
                   <Card.Title>Payment Owed</Card.Title>
                   <Card.Divider/>
                   {
-                    oweMoney.map((u, i) => {
+                    this.state.data2.map((u, i) => {
                       return (
                         <View key={i} style={styles.user}>
                           <View style={styles.inLineContainer}>
                               <Text style={styles.inLineTextSelf}>{username}</Text>
-                              <Icon
-                                name='arrow-right-alt' />
-                                <View style={styles.inLineContainer}>
-                                    <Text style={styles.inLineTextCost}>{u.amount}</Text>
-                                    <Icon
-                                      name='arrow-right-alt' />
-                                      <Text style={styles.inLineText}>{u.name}</Text>
-                                </View>
+                              <Icon name='arrow-right-alt' />
+                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                              <Icon name='arrow-right-alt' />
+                              <Text style={styles.inLineText}>{u.name}</Text>
+                              <CheckBox
+                                title={u.checked ? 'Paid' : 'Pay'}
+                                iconType='material'
+                                checkedIcon='clear'
+                                uncheckedIcon='add'
+                                checked={u.checked}
+                                onPress={() => this.updateStatus2(i)}
+                                containerStyle={{backgroundColor: u.checked ? '#00FA9A' : '#DC143C'}}
+                              />
                           </View>
                         </View>
                       );
@@ -178,17 +223,19 @@ class IndividualGroup extends Component {
 //const component3 = () => <Text>ButtonGroup</Text>
 const username = "Tyler"
 
-const owedMoney = [
+let owedMoney = [
  {
     name: 'Alex',
     amount: 25,
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+    checked: false,
  },
 
  {
    name: 'Ben',
    amount: 17,
-   avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+   avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+   checked: false,
  }
  // more users here
 ]
@@ -197,7 +244,8 @@ const oweMoney = [
  {
     name: 'Celia',
     amount: 35,
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+    checked: false,
  }
  // more users here
 ]

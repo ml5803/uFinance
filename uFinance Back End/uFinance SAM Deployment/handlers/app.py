@@ -40,12 +40,3 @@ def lambda_handler(event, context):
             # "location": ip.text.replace("\n", "")
         }),
     }
-
-def retrieve_finance_data:
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "Inside finance data",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
