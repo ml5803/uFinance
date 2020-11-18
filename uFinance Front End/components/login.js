@@ -27,29 +27,28 @@ class Login extends Component {
       text: 'nothing',
       dataSource: false,
       isLoading: false,
+      email: '',
+      password: '',
     }
   }
   
   updateLogged(){
-    this.props.changeLogged(true)
-    // Api.post('register').then(resp => {
-    //   // tempText = ""
-    //   // // we will get an array back, so loop through it
-    //   // resp.forEach(function(pet) {
-    //   //   tempText += JSON.stringify(pet) + "\n"
-    //   // })
-  
-    //   // update our state to include the new text  
-    //   console.log('resp:', resp)
-    //   this.setState({dataSource: resp})
-    // })
+    let obj = {
+      email: this.state.email,
+      password: this.state.password,
+    }
+    Api.post('login', obj).then(resp => {
+      console.log('resp:', resp)
+      if (resp['login_status']){
+        this.props.changeLogged(true)
+      }
+    })
 
   }
 
   render(){
     // let { loginState, actions } = this.props;
     console.log('loggedin in login.js:', this.props.loginState.loggedin)
-
     return (
       <ScrollView style={styles.container}>
           <View style={styles.logo}>
@@ -62,6 +61,7 @@ class Login extends Component {
                     placeholder='Email'
                     // remove underline when typing
                     underlineColorAndroid='transparent'
+                    onChangeText={text => this.setState({email: text})}
                 />
                 <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
               </View>
@@ -71,6 +71,7 @@ class Login extends Component {
                     placeholder='Password'
                     underlineColorAndroid='transparent'
                     secureTextEntry={true}
+                    onChangeText={text => this.setState({password: text})}
                 />
                 <Icon name="ios-lock-closed-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
               </View>
