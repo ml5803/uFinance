@@ -3,9 +3,9 @@ CREATE DATABASE IF NOT EXISTS uFinance_Prod;
 USE uFinance_Prod;
 
 CREATE TABLE Users (
-	email varchar(30) NOT NULL PRIMARY KEY,
+	user_id varchar(30) NOT NULL PRIMARY KEY,
     password varchar(30) NOT NULL,
-    user_id varchar(30) NOT NULL,
+    email varchar(30) NOT NULL UNIQUE,
     first_name varchar(30),
     last_name varchar(30),
     date_joined datetime
@@ -24,7 +24,7 @@ CREATE TABLE Expense_Group_Members (
 );
 
 CREATE TABLE Group_Expenses (
-	group_expense_id INT AUTO_INCREMENT,
+	group_expense_id INT AUTO_INCREMENT PRIMARY KEY,
 	group_id varchar(30) NOT NULL,
     member_id varchar(30) NOT NULL,
     date_entered DATETIME,
