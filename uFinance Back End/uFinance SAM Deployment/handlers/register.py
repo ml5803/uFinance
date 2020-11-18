@@ -150,12 +150,3 @@ def lambda_handler(event, context):
                 "message": error_message
             }),
         }
-
-# print(lambda_handler({
-#   "email": "daniel@yahoo.com",
-#   "password": "password!",
-#   "username": "dtsu",
-#   "first_name": "Daniel",
-#   "last_name": "Tsu"
-# }, None)
-# )
