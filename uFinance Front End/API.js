@@ -101,8 +101,11 @@ class Api {
       method: verb,
       headers: auth_header,
       body: JSON.stringify({
-        email: 'dsadsa',
-        password: 'dsadsa'
+        email: "daniel2@nyu.com",
+        password: "password!",
+        username: "dtsu2",
+        first_name: "Daniel",
+        last_name: "Tse"
       })
     });
 
