@@ -8,12 +8,17 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Api from '../API.js'
 
 class Register extends Component{
     constructor(){
         super()
         this.state={
             errorMsg: '',
+            username: '',
+            firstName: '',
+            lastName: '',
+            email: '',
             pass1: '',
             pass2: '',
         }
@@ -24,11 +29,21 @@ class Register extends Component{
     validate = () => {
         const pass1 = this.state.pass1
         const pass2 = this.state.pass2
-        console.log('here')
+        let obj = {
+            email: this.state.email,
+            password: this.state.pass1,
+            username: this.state.username,
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
+        }
         if (pass1.length > 3){
             if (pass1 === pass2){
                 this.setState({errorMsg: ''})
                 console.log('good')
+                Api.post('register', obj).then(resp => {
+                    console.log('resp:', resp)
+                    this.setState({dataSource: resp})
+                })
             }
             else{
                 console.log('incorrect')
@@ -45,9 +60,6 @@ class Register extends Component{
     render(){
         const pass1 = this.state.pass1
         const pass2 = this.state.pass2
-        console.log('pass1:', this.state.pass1)
-        console.log('pass2:', this.state.pass2)
-
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.title}> 
@@ -57,6 +69,42 @@ class Register extends Component{
                     <Text style={styles.errorMsg}>{this.state.errorMsg}</Text>
                 </View>
                 <View style={styles.form}>
+                    <Text style={styles.formtxt}>Username:</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                        style={styles.input}
+                        placeholder='john1232'
+                        // remove underline when typing
+                        underlineColorAndroid='transparent'
+                        onChangeText={text => this.setState({username: text})}
+                        />
+                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
+                    </View>
+
+                    <Text style={styles.formtxt}>First Name:</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                        style={styles.input}
+                        placeholder='John'
+                        // remove underline when typing
+                        underlineColorAndroid='transparent'
+                        onChangeText={text => this.setState({firstName: text})}
+                        />
+                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
+                    </View>
+
+                    <Text style={styles.formtxt}>Last Name:</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                        style={styles.input}
+                        placeholder='Smith'
+                        // remove underline when typing
+                        underlineColorAndroid='transparent'
+                        onChangeText={text => this.setState({lastName: text})}
+                        />
+                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
+                    </View>
+
                     <Text style={styles.formtxt}>Email:</Text>
                     <View style={styles.inputContainer}>
                         <TextInput
@@ -64,12 +112,12 @@ class Register extends Component{
                         placeholder='you@gmail.com'
                         // remove underline when typing
                         underlineColorAndroid='transparent'
+                        onChangeText={text => this.setState({email: text})}
                         />
                         <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
                     </View>
 
                     <Text style={styles.formtxt}>Password:</Text>
-                    
                     <View style={styles.inputContainer}>
                         <TextInput
                         style={styles.input}

@@ -58,7 +58,7 @@ class Api {
     })
   }
 
-  static post(stage_path) {
+  static post(stage_path, obj) {
     const verb = 'POST'
     // construct the url and path for our sample API
     const path = '/' + API_STAGE + '/' + stage_path
@@ -97,16 +97,11 @@ class Api {
     // Add the authorization to the header
     auth_header['Authorization'] = authorization['Authorization']
 
+    console.log('obj:', obj)
     let options = Object.assign({
       method: verb,
       headers: auth_header,
-      body: JSON.stringify({
-        email: "daniel2@nyu.com",
-        password: "password!",
-        username: "dtsu2",
-        first_name: "Daniel",
-        last_name: "Tse"
-      })
+      body: JSON.stringify(obj)
     });
 
     return fetch(url, options)

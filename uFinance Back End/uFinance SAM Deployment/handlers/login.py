@@ -8,8 +8,9 @@ import os
 
 def lambda_handler(event, context):
     # Parameter variables
-    EMAIL = event.get("email")
-    PASSWORD = event.get("password")
+    EVENT_BODY = json.loads(event.get("body"))
+    EMAIL = EVENT_BODY.get("email")
+    PASSWORD = EVENT_BODY.get("password")
     login_status = False
     ENDPOINT = os.environ.get('db_endpoint')
     USR = os.environ.get('usr')
@@ -17,7 +18,7 @@ def lambda_handler(event, context):
     REGION = os.environ.get('region')
     DB_PASS = os.environ.get('db_pass')
     DBNAME = os.environ.get('db_name')
-
+    
     # Useful variables
     error_message = ""
     email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
@@ -91,9 +92,10 @@ def lambda_handler(event, context):
         }
     
 
-
 # print(lambda_handler({
-#   "email": "david@yahoo.com",
-#   "password": "abcdefg"
+#   "body": {
+#     "email": "david@yahoo.com",
+#     "password": "abcdefg"
+#   }
 # }, None)
 # )

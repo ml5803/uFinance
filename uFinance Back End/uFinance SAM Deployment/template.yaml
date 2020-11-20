@@ -62,14 +62,14 @@ Resources:
       DependsOn: uFinanceAPIGLoginResource
       Type: AWS::ApiGateway::Method
       Properties:
-        HttpMethod: GET
+        HttpMethod: POST
         OperationName: login
         ResourceId: !Ref uFinanceAPIGLoginResource
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
           Type: AWS_PROXY
-          IntegrationHttpMethod: GET
+          IntegrationHttpMethod: POST
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 

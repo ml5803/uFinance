@@ -13,11 +13,12 @@ import os
 
 def lambda_handler(event, context):
     # Parameter variables
-    EMAIL = event.get("email")
-    PASSWORD = event.get("password")
-    USERNAME = event.get('username')
-    FIRST_NAME = event.get('first_name')
-    LAST_NAME = event.get('last_name')
+    EVENT_BODY = json.loads(event.get("body"))
+    EMAIL = EVENT_BODY.get("email")
+    PASSWORD = EVENT_BODY.get("password")
+    USERNAME = EVENT_BODY.get('username')
+    FIRST_NAME = EVENT_BODY.get('first_name')
+    LAST_NAME = EVENT_BODY.get('last_name')
     register_status = False
 
     # ENV Variables
