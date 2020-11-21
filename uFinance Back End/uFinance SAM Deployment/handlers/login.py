@@ -11,13 +11,15 @@ def lambda_handler(event, context):
     EVENT_BODY = json.loads(event.get("body"))
     EMAIL = EVENT_BODY.get("email")
     PASSWORD = EVENT_BODY.get("password")
-    login_status = False
+    
     ENDPOINT = os.environ.get('db_endpoint')
     USR = os.environ.get('usr')
     PORT = int(os.environ.get('port'))
     REGION = os.environ.get('region')
     DB_PASS = os.environ.get('db_pass')
     DBNAME = os.environ.get('db_name')
+
+    login_status = False
     
     # Useful variables
     error_message = ""
@@ -41,7 +43,7 @@ def lambda_handler(event, context):
         }
 
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper Password: Invalid character input"
+        error_message = "Improper Password: Invalid character input"
         login_status = False
     else:
         login_status = True
