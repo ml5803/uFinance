@@ -37,6 +37,7 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password,
     }
+    // this.props.changeLogged(true)
     Api.post('login', obj).then(resp => {
       console.log('resp:', resp)
       if (resp['login_status']){
@@ -48,7 +49,6 @@ class Login extends Component {
 
   render(){
     // let { loginState, actions } = this.props;
-    console.log('loggedin in login.js:', this.props.loginState.loggedin)
     return (
       <ScrollView style={styles.container}>
           <View style={styles.logo}>

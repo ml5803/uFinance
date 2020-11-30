@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@react-navigation/native';
 import React, {Component} from 'react'
 import {
     StyleSheet,
@@ -9,6 +10,8 @@ import {
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Api from '../API.js'
+import RegisterPage1 from './RegisterPage1.js'
+import RegisterPage2 from './RegisterPage2.js'
 
 class Register extends Component{
     constructor(){
@@ -21,22 +24,36 @@ class Register extends Component{
             email: '',
             pass1: '',
             pass2: '',
+            nextPage: false,
         }
+        this.updatePage = this.updatePage.bind(this)
+        this.validate = this.validate.bind(this)
     }
 
     updatePass = (pass1) => { this.setState({ pass1 }) }
     updatePass2 = (pass2) => { this.setState({ pass2 }) }
-    validate = () => {
+    updateUsername = (username) => { this.setState({ username }) }
+    updateFirstName = (fname) => { this.setState({ firstName: fname}) }
+    updateLastName = (lname) => { this.setState({ lastName: lname}) }
+    updateemail = (email) => { this.setState({ email: email}) }
+    updatePage() { 
+        if (this.state.nextPage){ this.setState({ nextPage: false}) }
+        else{ this.setState({ nextPage: true}) }
+    }
+
+    validate(){
         const pass1 = this.state.pass1
         const pass2 = this.state.pass2
+        const username = this.state.username
+        const email = this.state.email
         let obj = {
-            email: this.state.email,
-            password: this.state.pass1,
-            username: this.state.username,
+            email: email,
+            password: pass1,
+            username: username,
             first_name: this.state.firstName,
             last_name: this.state.lastName,
         }
-        if (pass1.length > 3){
+        if (pass1.length > 3 && username !== '' && email !== '') {
             if (pass1 === pass2){
                 this.setState({errorMsg: ''})
                 console.log('good')
@@ -60,6 +77,14 @@ class Register extends Component{
     render(){
         const pass1 = this.state.pass1
         const pass2 = this.state.pass2
+        const firstName = this.state.firstName
+        const lastName = this.state.lastName
+        const email = this.state.email
+        const username =this.state.username
+
+        console.log(email, username, pass1)
+        let valid = false
+        if (pass1 === pass2 && pass1.length > 3){ valid = true }
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.title}> 
@@ -69,90 +94,27 @@ class Register extends Component{
                     <Text style={styles.errorMsg}>{this.state.errorMsg}</Text>
                 </View>
                 <View style={styles.form}>
-                    <Text style={styles.formtxt}>Username:</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        style={styles.input}
-                        placeholder='john1232'
-                        // remove underline when typing
-                        underlineColorAndroid='transparent'
-                        onChangeText={text => this.setState({username: text})}
+                    {this.state.nextPage ? 
+                        <RegisterPage2 
+                            usernamehandler={this.updateUsername}
+                            pass1handler={this.updatePass}
+                            pass2handler={this.updatePass2}
+                            nextPagehandler={this.updatePage}
+                            validatehandler={this.validate}
+                            navigation={this.props.navigation}
+                            valid={valid}
+                            pass1={pass1} pass2={pass2} username={username}
                         />
-                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-
-                    <Text style={styles.formtxt}>First Name:</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        style={styles.input}
-                        placeholder='John'
-                        // remove underline when typing
-                        underlineColorAndroid='transparent'
-                        onChangeText={text => this.setState({firstName: text})}
+                            :
+                        <RegisterPage1 
+                            fnamehandler={this.updateFirstName} 
+                            lnamehandler={this.updateLastName} 
+                            emailhandler={this.updateemail}
+                            nextPagehandler={this.updatePage}
+                            navigation={this.props.navigation}
+                            firstName={firstName} lastName={lastName} email={email}
                         />
-                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-
-                    <Text style={styles.formtxt}>Last Name:</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        style={styles.input}
-                        placeholder='Smith'
-                        // remove underline when typing
-                        underlineColorAndroid='transparent'
-                        onChangeText={text => this.setState({lastName: text})}
-                        />
-                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-
-                    <Text style={styles.formtxt}>Email:</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        style={styles.input}
-                        placeholder='you@gmail.com'
-                        // remove underline when typing
-                        underlineColorAndroid='transparent'
-                        onChangeText={text => this.setState({email: text})}
-                        />
-                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-
-                    <Text style={styles.formtxt}>Password:</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        style={styles.input}
-                        placeholder='password'
-                        onChangeText={this.updatePass}
-                        value={pass1}
-                        underlineColorAndroid='transparent'
-                        secureTextEntry={true}
-                        />
-                        <Icon name="ios-lock-closed-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-                    <Text style={styles.formtxt}>Confirm Password:</Text>
-                    <View style={styles.inputContainer}>
-                        {/* <Text style={styles.formtxt}>Confirm Password:</Text> */}
-                        <TextInput
-                        style={styles.input}
-                        placeholder='retype password'
-                        onChangeText={this.updatePass2}
-                        value={pass2}
-                        underlineColorAndroid='transparent'
-                        secureTextEntry={true}
-                        />
-                        <Icon name="ios-lock-closed-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-                    </View>
-
-                    <View style={styles.buttonArea}>
-                        <TouchableOpacity style={styles.btn}
-                        onPress={this.validate}>
-                            <Text style={styles.btntext}>Sign Up</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.Loginbtn}
-                        onPress={() => this.props.navigation.navigate('login')}>
-                            <Text style={styles.btntext}>Already have an account? Login</Text>
-                        </TouchableOpacity>
-                  </View>
+                    }
                 </View>
             </ScrollView>
         )
