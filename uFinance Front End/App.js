@@ -1,7 +1,9 @@
 import 'react-native-gesture-handler';
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
+import {TEST_KEY, TEST_SECRET_KEY,TEST_REGION } from '@env'
 /*import { StyleSheet, View, Alert } from 'react-native'
 import { RNCamera } from 'react-native-camera'*/
+
 import {
   StyleSheet,
   View,
@@ -61,6 +63,7 @@ function GroupStackScreen(){
 }
 
 class App extends Component {
+
   render(){
     return (
         <NavigationContainer>

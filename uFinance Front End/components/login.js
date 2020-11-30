@@ -33,6 +33,7 @@ class Login extends Component {
   }
   
   updateLogged(){
+    //this.props.changeLogged(true)
     let obj = {
       email: this.state.email,
       password: this.state.password,

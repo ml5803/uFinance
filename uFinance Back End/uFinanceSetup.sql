@@ -17,17 +17,18 @@ CREATE TABLE Expense_Groups (
     group_name varchar(30)
 );
 
-CREATE TABLE Expense_Group_Members (
+CREATE TABLE Group_Members (
 	group_id varchar(30) NOT NULL,
     member_id varchar(30) NOT NULL,
     PRIMARY KEY (group_id, member_id)
 );
 
-CREATE TABLE Group_Expenses (
-	group_expense_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Expenses (
+	expense_id INT AUTO_INCREMENT PRIMARY KEY,
 	group_id varchar(30) NOT NULL,
     member_id varchar(30) NOT NULL,
     date_entered DATETIME,
     expense_name VARCHAR(30),
-    expense_amount DECIMAL(8,2)
+    expense_amount DECIMAL(8,2),
+    proof VARCHAR(300)
 )
