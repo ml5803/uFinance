@@ -27,15 +27,14 @@ class Login extends Component {
       text: 'nothing',
       dataSource: false,
       isLoading: false,
-      email: '',
+      username: '',
       password: '',
     }
   }
   
   updateLogged(){
-    //this.props.changeLogged(true)
     let obj = {
-      email: this.state.email,
+      username: this.state.username,
       password: this.state.password,
     }
     // this.props.changeLogged(true)
@@ -59,10 +58,9 @@ class Login extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
-                    placeholder='Email'
-                    // remove underline when typing
+                    placeholder='username'
                     underlineColorAndroid='transparent'
-                    onChangeText={text => this.setState({email: text})}
+                    onChangeText={text => this.setState({username: text})}
                 />
                 <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
               </View>
