@@ -211,6 +211,17 @@ Resources:
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
 
+  AnalyzeTextract: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Analyze the file in textract
+      FunctionName: AnalyzeReciept
+      MemorySize: 512 
+      Handler: handlers.textract.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
 Outputs:
   BucketName:
     Value: !Ref uFinanceImageBucket

@@ -123,9 +123,9 @@ def lambda_handler(event, context):
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
         query = """
-                INSERT INTO Users (user_id, password, email, first_name, last_name, date_joined)
+                INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
-                """.format(USERNAME, PASSWORD, EMAIL, FIRST_NAME, LAST_NAME, dt)
+                """.format(EMAIL, PASSWORD, USERNAME, FIRST_NAME, LAST_NAME, dt)
         cur.execute(query)
         conn.commit()
     except Exception as e:
@@ -150,3 +150,10 @@ def lambda_handler(event, context):
                 "message": error_message
             }),
         }
+
+# print(lambda_handler(
+        # {
+        #     "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\"}"
+        # },None
+#     )
+# )  
