@@ -1,10 +1,25 @@
-'use strict';
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AppRegistry, CameraRoll, Dimensions, Image, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import { Button } from 'react-native-vector-icons/Ionicons';
+import { RNS3 } from 'react-native-aws3';
+import { TEST_KEY, TEST_SECRET_KEY, TEST_BUCKET, TEST_REGION } from '@env'
+
+//import S3 from "react-aws-s3";
+//import {TEST_KEY, TEST_SECRET_KEY, TEST_REGION, TEST_BUCKET } from '@env'
 
 class GroupPayment extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      path: null,
+    };
+  }
+
+
+
+  renderCamera() {
     return (
       <View style={styles.container}>
         <RNCamera
@@ -21,16 +36,12 @@ class GroupPayment extends Component {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          onGoogleVisionBarcodesDetected={({ barcodes }) => {
+          /*onGoogleVisionBarcodesDetected={({ barcodes }) => {
             console.log(barcodes);
-          }}
+          }}*/
         />
+
+
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
@@ -40,11 +51,60 @@ class GroupPayment extends Component {
     );
   }
 
+  renderImage() {
+    return (
+      <View>
+        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+          <TouchableOpacity onPress={() => this.setState({ path: null })} style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> { this.state.path } </Text>
+          </TouchableOpacity>
+        </View>
+        <Image
+          source={{ uri: this.state.path }}
+          style={styles.preview}
+        />
+
+
+      </View>
+    );
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.state.path ? this.renderImage() : this.renderCamera()}
+      </View>
+    );
+  }
+
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
+      //const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
       console.log(data.uri);
+      this.setState({path: data.uri});
+      const path = data.uri.split("/") //splits path into list separated by "/"
+      const file = {
+        uri: data.uri,
+        name: path[path.length - 1] , //returns jpg name
+        type: 'image/jpeg'
+      };
+
+      const options = {
+        keyPrefix: 'photos/',
+        bucket: TEST_BUCKET,
+        region: TEST_REGION,
+        accessKey: TEST_KEY,
+        secretKey: TEST_SECRET_KEY,
+        successActionStatus: 201
+      };
+
+      RNS3.put(file, options).then(response => {
+        if (response.status !== 201) {
+          console.log("error");
+          throw new Error('Failed to upload image to S3', response);
+        }
+        console.log('*** BODY ***', response.body);
+      });
     }
   };
 }

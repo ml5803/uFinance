@@ -87,8 +87,8 @@ class IndividualGroup extends Component {
     }
 
     render () {
-      const component1 = () => <Text>Cost Owed</Text>
-      const component2 = () => <Text>Add Cost</Text>//<Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
+      const component1 = () => <Text>Amount Owed</Text>
+      const component2 = () => <Text>Add Expense</Text>//<Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
       //const buttons = ['Hello', 'World', 'Buttons']
       const buttons = [{ element: component1 }, { element: component2 }]
       const { selectedIndex } = this.state
@@ -128,7 +128,7 @@ class IndividualGroup extends Component {
                 this.state.selectedIndex==0 ? <View>
 
                 <Card>
-                  <Card.Title>Table of Payments</Card.Title>
+                  <Card.Title>Payment Expected</Card.Title>
                   <Card.Divider/>
                   {
                     this.state.data.map((u, i) => {
@@ -157,7 +157,7 @@ class IndividualGroup extends Component {
                 </Card>
 
                 <Card>
-                  <Card.Title>Table of Payments</Card.Title>
+                  <Card.Title>Payment Owed</Card.Title>
                   <Card.Divider/>
                   {
                     this.state.data2.map((u, i) => {
@@ -205,7 +205,7 @@ class IndividualGroup extends Component {
                 <Input
                   placeholder='BASIC INPUT'
                 />
-                <Text>Cost</Text>
+                <Text>Amount</Text>
                 <Input
                   placeholder='BASIC INPUT'
                 />

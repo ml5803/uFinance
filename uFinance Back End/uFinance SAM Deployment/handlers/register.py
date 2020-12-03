@@ -13,11 +13,12 @@ import os
 
 def lambda_handler(event, context):
     # Parameter variables
-    EMAIL = event.get("email")
-    PASSWORD = event.get("password")
-    USERNAME = event.get('username')
-    FIRST_NAME = event.get('first_name')
-    LAST_NAME = event.get('last_name')
+    EVENT_BODY = json.loads(event.get("body"))
+    EMAIL = EVENT_BODY.get("email")
+    PASSWORD = EVENT_BODY.get("password")
+    USERNAME = EVENT_BODY.get('username')
+    FIRST_NAME = EVENT_BODY.get('first_name')
+    LAST_NAME = EVENT_BODY.get('last_name')
     register_status = False
 
     # ENV Variables
@@ -84,7 +85,7 @@ def lambda_handler(event, context):
 
     # First Name
     if re.search(pass_regex, FIRST_NAME):
-        error_message = "Imporper FName:Invalid character input"
+        error_message = "Improper FName:Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -100,7 +101,7 @@ def lambda_handler(event, context):
 
     # Last Name
     if re.search(pass_regex, FIRST_NAME):
-        error_message = "Imporper LName:Invalid character input"
+        error_message = "Improper LName:Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -118,14 +119,13 @@ def lambda_handler(event, context):
     dt = datetime.datetime.now()
 
     # Add account to the database.
-    query_results = None
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
         query = """
-                INSERT INTO Users
+                INSERT INTO Users (user_id, password, email, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
-                """.format(EMAIL, PASSWORD, USERNAME, FIRST_NAME, LAST_NAME, dt)
+                """.format(USERNAME, PASSWORD, EMAIL, FIRST_NAME, LAST_NAME, dt)
         cur.execute(query)
         conn.commit()
     except Exception as e:
