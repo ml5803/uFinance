@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 
-import { Image, ScrollView } from 'react-native'
+import { Image, ScrollView, Linking } from 'react-native'
 import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
 //import Icon from 'react-native-vector-icons/FontAwesome';
+import Api from '../API.js'
 
 
 import { Input } from 'react-native-elements';
@@ -34,8 +35,48 @@ class IndividualGroup extends Component {
       this.state = {
         selectedIndex: 0,
         checked: false,
+        groupid: null, 
+        total_cost: 1070,
+        current_member_id: 0,
+        members: {
+          0:{
+            name: 'ben',
+            paid: 110,
+            to_pay: 0,
+          },
+          1:{
+            name: 'ben2',
+            paid: 100,
+            to_pay: 0,
+          },
+          2:{
+            name: 'a1',
+            paid: 60,
+            to_pay: 0,
+          },
+          3:{
+            name: 'a2',
+            paid: 800,
+            to_pay: 0,
+          }
+        },
+        summary: [
+          {
+            name: 'ben',
+            item: 'soda',
+            cost: 100.00,
+            proof: 'http://google.com'
+          },
+          {
+            name: 'ben2',
+            item: 'soda',
+            cost: 100.00,
+            proof: 'http://google.com'
+          },
+        ],
         data: [ 
           {
+          member_id: 0,
           name: 'Alex',
           amount: 25,
           avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
@@ -43,6 +84,7 @@ class IndividualGroup extends Component {
           },
           
           {
+            member_id: 1,
             name: 'Ben',
             amount: 17,
             avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
@@ -51,6 +93,7 @@ class IndividualGroup extends Component {
         ],
         data2: [
           {
+            member_id: 3,
             name: 'Celia',
             amount: 35,
             avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
@@ -59,6 +102,42 @@ class IndividualGroup extends Component {
         ],
       }
       this.updateIndex = this.updateIndex.bind(this)
+      this.deleteItem = this.deleteItem.bind(this)
+    }
+
+    // get group expense info 
+    componentDidMount(){
+      let obj = {
+        operation: 'get',
+        group_id: 'mikegroup',
+      }
+      Api.post('expense', obj).then(resp => {
+        console.log('resp:', resp)
+        // let json = JSON.parse(resp["execution_result"])
+        if (resp["execution_status"]){
+          let summary_list = resp['execution_result'] 
+          let obj_lst = []
+          let total_cost = 0
+          // for (let i=0; i < summary_list.length; i++){
+        //     let new_obj = {
+        //       name: summary_list[i][2],
+        //       item: summary_list[i][4],
+        //       cost: summary_list[i][5],
+        //       proof: summary_list[i][6],
+        //     }
+        //     total_cost += summary_list[i][5]
+        //     obj_lst.push(new_obj)
+          // }
+        //   this.setState({summary: obj_lst, total_cost: total_cost})
+        //   console.log(this.state.summary, this.state.total_cost)
+        }
+      })
+    }
+    deleteItem(e){
+      console.log('handle delete')
+      // post to delete
+      // update total cost
+      // update average cost
     }
 
     updateIndex (selectedIndex) {
@@ -87,12 +166,65 @@ class IndividualGroup extends Component {
     }
 
     render () {
-      const component1 = () => <Text>Amount Owed</Text>
-      const component2 = () => <Text>Add Expense</Text>//<Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
+      const component1 = () => <Text>Summary</Text>
+      const component2 = () => <Text>Amount Owed</Text>
+      const component3 = () => <Text>Add Expense</Text>
+      
+      //<Text onPress={() => this.props.navigation.navigate('IndividualGroupSettings')}>Settings</Text>
       //const buttons = ['Hello', 'World', 'Buttons']
-      const buttons = [{ element: component1 }, { element: component2 }]
+      const buttons = [{ element: component1 }, { element: component2 }, { element: component3 }]
       const { selectedIndex } = this.state
 
+      // seperate members to pay and receive groups
+      let members = this.state.members
+      let avg_cost = this.state.total_cost/Object.keys(members).length
+      let members_to_pay = []
+      let members_to_receive = []
+      for (let key in members){
+        let amt = members[key].paid - avg_cost
+        if (amt > 0){
+          members_to_receive.push([members[key].name, amt])
+        }
+        else if(amt < 0){
+          amt *= -1
+          members_to_pay.push([members[key].name, amt])
+        }
+      }
+      console.log('avg:', avg_cost)
+      console.log('m:', members)
+      console.log('1:', members_to_pay)
+      console.log('2',members_to_receive)
+      let payment_list = []
+      let index= 0
+      let index2 = 0
+      // distribute cost 
+      while(index < members_to_pay.length || index2 < members_to_receive.length){
+        let name1, amt1;
+        let name2, amt2;
+        [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
+        [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
+        console.log('name1:', name1, amt1)
+        console.log('name2:', name2, amt2)
+        let new_obj = {}
+        if (amt1 < amt2){
+          members_to_receive[index2][1] -= amt1
+          new_obj = {name1: name1, name2: name2, amt: amt1}
+          payment_list.push(new_obj)
+          index++
+        }
+        else if (amt1 > amt2){
+          members_to_pay[index][1] -= amt2
+          new_obj = {name1: name1, name2: name2, amt: amt2}
+          payment_list.push(new_obj)
+          index2++
+        }
+        else{
+          new_obj = {name1: name1, name2: name2, amt: amt2}
+          payment_list.push(new_obj)
+          index++
+          index2++
+        }
+      }
       return (
         <ScrollView>
             <Header
@@ -125,30 +257,62 @@ class IndividualGroup extends Component {
 
 
             {
-                this.state.selectedIndex==0 ? <View>
+              this.state.selectedIndex===0 
+              ? 
+              <View>
+                  <Card>
+                    <Card.Title>Total Spendings</Card.Title>
+                    <Card.Divider/>
+                    <View style={styles.user}>
+                        <View style={styles.textBox}>
+                            <Text style={{fontSize: 30}}>
+                              ${this.state.total_cost}
+                            </Text>
+                        </View>
+                    </View>
+                  </Card>
+                  {this.state.summary.map((obj, index) => {
+                    return(
+                      <Card key={'s'+index}>
+                        <Card.Title>
+                          {obj.item} ({obj.name})
+                        </Card.Title>
+                        <Card.Divider/>
+                        <View style={styles.textBox}>
+                          <Text style={{fontSize: 30}}>${obj.cost}</Text>
+                          <TouchableOpacity
+                          onPress={() => Linking.openURL(obj.proof)}>
+                            <Text>{obj.proof}</Text>
+                          </TouchableOpacity>
+                        </View>     
+                        <View style={styles.boxContainer}>
+                          <Button 
+                            title="Delete"
+                            titleStyle={styles.submitbtn}
+                            buttonStyle={{backgroundColor: 'red'}}
+                            onPress={(e) => this.deleteItem(e)}
+                          />
+                        </View>              
+                      </Card>
+                    )
+                  })}
+              </View> 
+              :
+              this.state.selectedIndex===1 ? <View>
 
                 <Card>
                   <Card.Title>Payment Expected</Card.Title>
                   <Card.Divider/>
                   {
-                    this.state.data.map((u, i) => {
+                    payment_list.map((obj, i) => {
                       return (
                         <View key={i} style={styles.user}>
                           <View style={styles.inLineContainer}>
-                              <Text style={styles.inLineTextSelf}>{username}</Text>
+                              <Text style={styles.inLineTextSelf}>{obj.name1}</Text>
                               <Icon name='arrow-right-alt' />
-                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                              <Text style={styles.inLineTextCost}>${obj.amt}</Text>
                               <Icon name='arrow-right-alt' />
-                              <Text style={styles.inLineText}>{u.name}</Text>
-                              <CheckBox
-                                title={u.checked ? 'Paid' : 'Pay'}
-                                iconType='material'
-                                checkedIcon='clear'
-                                uncheckedIcon='add'
-                                checked={u.checked}
-                                onPress={() => this.updateStatus(i)}
-                                containerStyle={{backgroundColor: u.checked ? '#00FA9A' : '#DC143C'}}
-                              />
+                              <Text style={styles.inLineText}>{obj.name2}</Text>
                           </View>
                         </View>
                       );
@@ -156,38 +320,11 @@ class IndividualGroup extends Component {
                   }
                 </Card>
 
-                <Card>
-                  <Card.Title>Payment Owed</Card.Title>
-                  <Card.Divider/>
-                  {
-                    this.state.data2.map((u, i) => {
-                      return (
-                        <View key={i} style={styles.user}>
-                          <View style={styles.inLineContainer}>
-                              <Text style={styles.inLineTextSelf}>{username}</Text>
-                              <Icon name='arrow-right-alt' />
-                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
-                              <Icon name='arrow-right-alt' />
-                              <Text style={styles.inLineText}>{u.name}</Text>
-                              <CheckBox
-                                title={u.checked ? 'Paid' : 'Pay'}
-                                iconType='material'
-                                checkedIcon='clear'
-                                uncheckedIcon='add'
-                                checked={u.checked}
-                                onPress={() => this.updateStatus2(i)}
-                                containerStyle={{backgroundColor: u.checked ? '#00FA9A' : '#DC143C'}}
-                              />
-                          </View>
-                        </View>
-                      );
-                    })
-                  }
-                </Card>
+    
                 </View>: null
             }
             {
-                this.state.selectedIndex==1 ? <Card>
+                this.state.selectedIndex===2 ? <Card>
                 <Button
                   icon={{
                     name: "camera-alt",
@@ -304,7 +441,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxContainer: {
-    marginTop: '10%',
+    margin: 10,
     justifyContent:'center',
     alignItems: 'center',
   },
@@ -379,14 +516,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   submitbtn: {
-    marginBottom: "5%",
-    backgroundColor: '#2D5CAD',
-    height: 100,
-    width: 100,
-    borderRadius: 200,
-    alignItems: 'center',
+    fontSize: 20,
+    width: 200,
+  },
+  textBox: {
     justifyContent: 'center',
+    alignItems: 'center'
   }
+
 });
 
 export default IndividualGroup;

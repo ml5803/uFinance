@@ -60,6 +60,9 @@ class Register extends Component{
                 Api.post('register', obj).then(resp => {
                     console.log('resp:', resp)
                     this.setState({dataSource: resp})
+                    if (resp['register_status']){
+                        this.props.navigation.navigate('login')
+                    }
                 })
             }
             else{
@@ -71,7 +74,6 @@ class Register extends Component{
             console.log('short')
             this.setState({errorMsg: 'Password too short'})
         }
-        
     }
 
     render(){
@@ -81,6 +83,7 @@ class Register extends Component{
         const lastName = this.state.lastName
         const email = this.state.email
         const username =this.state.username
+        let registered = this.state.registered
 
         console.log(email, username, pass1)
         let valid = false

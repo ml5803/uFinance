@@ -37,13 +37,13 @@ class Login extends Component {
       username: this.state.username,
       password: this.state.password,
     }
-    // this.props.changeLogged(true)
-    Api.post('login', obj).then(resp => {
-      console.log('resp:', resp)
-      if (resp['login_status']){
-        this.props.changeLogged(true)
-      }
-    })
+    this.props.changeLogged(true)
+    // Api.post('login', obj).then(resp => {
+    //   console.log('resp:', resp)
+    //   if (resp['login_status']){
+    //     this.props.changeLogged(true)
+    //   }
+    // })
 
   }
 
