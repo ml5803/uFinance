@@ -12,13 +12,13 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Expense_Groups (
-	group_id varchar(30) NOT NULL PRIMARY KEY,
+	group_id INT AUTO_INCREMENT PRIMARY KEY,
     owner_id varchar(30),
     group_name varchar(30)
 );
 
 CREATE TABLE Group_Members (
-	group_id varchar(30) NOT NULL,
+	group_id INT NOT NULL,
     member_id varchar(30) NOT NULL,
     PRIMARY KEY (group_id, member_id)
 );
