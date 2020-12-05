@@ -68,7 +68,6 @@ class Api {
       AccessKeyId: AWS_KEY,
       SecretKey: AWS_SECRET_KEY
     }
-
     let auth_date = new Date();
 
     let auth_header = {
@@ -88,6 +87,7 @@ class Api {
       body: '',
       credentials
     };
+
 
     let awsSignature = new AWSSignature();
     awsSignature.setParams(auth_options);

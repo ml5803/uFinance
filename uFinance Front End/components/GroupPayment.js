@@ -3,10 +3,11 @@ import { AppRegistry, CameraRoll, Dimensions, Image, TouchableOpacity, View, Sty
 import { RNCamera } from 'react-native-camera';
 import { Button } from 'react-native-vector-icons/Ionicons';
 import { RNS3 } from 'react-native-aws3';
-import { TEST_KEY, TEST_SECRET_KEY, TEST_BUCKET, TEST_REGION } from '@env'
+import Api from '../API.js';
 
 //import S3 from "react-aws-s3";
-//import {TEST_KEY, TEST_SECRET_KEY, TEST_REGION, TEST_BUCKET } from '@env'
+import {TEST_KEY, TEST_SECRET_KEY, TEST_REGION, TEST_BUCKET, AWS_KEY, AWS_SECRET_KEY, API_STAGE, AWS_REGION } from '@env'
+
 
 class GroupPayment extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class GroupPayment extends Component {
 
     this.state = {
       path: null,
+      url: null,
     };
   }
 
@@ -77,12 +79,14 @@ class GroupPayment extends Component {
   }
 
   takePicture = async () => {
+    console.log('***********************************************************************');
+    console.log('***********************************************************************');
     if (this.camera) {
       //const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
+      //console.log(data.uri);
       this.setState({path: data.uri});
-      const path = data.uri.split("/") //splits path into list separated by "/"
+      const path = data.uri.split("/"); //splits path into list separated by "/"
       const file = {
         uri: data.uri,
         name: path[path.length - 1] , //returns jpg name
@@ -104,8 +108,25 @@ class GroupPayment extends Component {
           throw new Error('Failed to upload image to S3', response);
         }
         console.log('*** BODY ***', response.body);
+        this.setState({url: response.body.postResponse.location});
+        console.log('*** URL ***', this.state.url);
+
+        let obj = {
+          operation: 'insert',
+          member_id: 'mike',
+          group_id: 'mikegroup',
+          expense_name: 'food',
+          expense_amt: '5',
+          proof: this.state.url,
+        }
+        console.log('*** obj ***', obj);
+        Api.post('expense', obj).then(resp => {
+          console.log('resp:', resp);
+        })
       });
+
     }
+
   };
 }
 

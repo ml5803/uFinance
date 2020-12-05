@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image } from 'react-native'
+import { Image, ScrollView } from 'react-native'
 import { Card, ListItem, Button, Icon, Avatar, Header } from 'react-native-elements'
 
 
@@ -27,7 +27,7 @@ import {
 
 function Profile({navigation}) {
     return (
-      <View>
+      <ScrollView>
         <Header
           leftComponent={{ icon: 'home', color: '#fff', onPress:() => navigation.navigate('Home') }}
           centerComponent={{ text: 'Profile', style: { color: '#fff', fontSize: 20,} }}
@@ -117,7 +117,7 @@ function Profile({navigation}) {
                     }}
             />
         </Card>
-      </View>
+      </ScrollView>
     );
 }
 

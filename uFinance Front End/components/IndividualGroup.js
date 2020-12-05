@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 
-import { Image, ScrollView } from 'react-native'
+import { Image, ScrollView, Dimensions } from 'react-native'
 import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
+import Api from '../API.js';
+
 //import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -32,6 +34,11 @@ class IndividualGroup extends Component {
     constructor () {
       super()
       this.state = {
+        item: null,
+        person: null,
+        amount: null,
+        receipt: null,
+
         selectedIndex: 0,
         checked: false,
         data: [ 
@@ -84,6 +91,21 @@ class IndividualGroup extends Component {
       let newData = this.state.data2
       newData[index].checked = !newData[index].checked
       this.setState({data2: newData})
+    }
+
+    uploadPayment(item, person, amount, receipt){
+      let obj = {
+        operation: 'insert',
+        member_id: person,
+        group_id: 'mikegroup',
+        expense_name: item,
+        expense_amt: amount,
+        proof: receipt,
+      }
+      console.log('*** obj ***', obj);
+      Api.post('expense', obj).then(resp => {
+        console.log('resp:', resp);
+      })
     }
 
     render () {
@@ -188,27 +210,43 @@ class IndividualGroup extends Component {
             }
             {
                 this.state.selectedIndex==1 ? <Card>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    icon={{
+                      name: "camera-alt",
+                      size: 15,
+                      color: "white"
+                    }}
+                    title="Camera"
+                    onPress={() => this.props.navigation.navigate('GroupPayment')}
+                  />
+                </View>
+                <Card.Title>Item</Card.Title>
+                <Input
+                  placeholder='Required'
+                  onChangeText={value => this.setState({ item: value })}
+                />
+                <Card.Title>Who Paid?</Card.Title>
+                <Input
+                  placeholder='Required'
+                  onChangeText={value => this.setState({ person: value })}
+                />
+                <Card.Title>Amount</Card.Title>
+                <Input
+                  placeholder='Required'
+                  onChangeText={value => this.setState({ amount: value })}
+                />
+                <Card.Title>Receipt</Card.Title>
+                <Input
+                  placeholder='Optional'
+                  onChangeText={value => this.setState({ receipt: value })}
+                />
+
                 <Button
-                  icon={{
-                    name: "camera-alt",
-                    size: 15,
-                    color: "white"
-                  }}
-                  title="Camera"
-                  onPress={() => this.props.navigation.navigate('GroupPayment')}
+                  title="Submit"
+                  onPress={() => this.uploadPayment(this.state.item, this.state.person, this.state.amount, this.state.receipt)}
                 />
-                <Text>Item</Text>
-                <Input
-                  placeholder='BASIC INPUT'
-                />
-                <Text>Who Paid?</Text>
-                <Input
-                  placeholder='BASIC INPUT'
-                />
-                <Text>Amount</Text>
-                <Input
-                  placeholder='BASIC INPUT'
-                />
+
 
                 </Card> : null
             }
@@ -278,6 +316,10 @@ const barData = {
 
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    marginBottom: 10
+  },
+
   inLineTextSelf: {
     fontSize: 16,
     color: "blue"
