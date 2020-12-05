@@ -7,7 +7,6 @@ import os
 
 def lambda_handler(event, context):
   # Document
-  print(event)
   S3_BUCKET_NAME = event.get("Records")[0].get("s3").get("bucket").get("name")
   DOCUMENT_NAME = event.get("Records")[0].get("s3").get("object").get("key")
 
