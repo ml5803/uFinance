@@ -95,7 +95,7 @@ def lambda_handler(event, context):
         })
 
 
-print(lambda_handler({
-    "body": "{\"username\": \"test123\", \"password\": \"12345\"}"
-    }, None)
-)
+# print(lambda_handler({
+#     "body": "{\"username\": \"test123\", \"password\": \"12345\"}"
+#     }, None)
+# )
