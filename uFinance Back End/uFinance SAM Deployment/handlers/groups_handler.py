@@ -161,12 +161,12 @@ def delete_queries(cursor, connection, group_id):
 #     }
 #   """
 # }
-obj = {
-  "body": """
-    {
-      \"operation\":\"delete\",
-      \"group_id\": \"2\"
-    }
-  """
-}
-print(lambda_handler(obj, None))
+# obj = {
+#   "body": """
+#     {
+#       \"operation\":\"delete\",
+#       \"group_id\": \"2\"
+#     }
+#   """
+# }
+# print(lambda_handler(obj, None))
