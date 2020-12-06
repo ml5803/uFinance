@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         execution_status = False
 
     elif OP_TYPE == "get":
-      execution_result = retrieve_queries(cur, GROUP_NAME, GROUP_OWNER)
+      execution_result = retrieve_queries(cur, GROUP_OWNER)
 
     elif OP_TYPE == "delete":
       execution_result = delete_queries(cur, conn, GROUP_ID)
@@ -70,17 +70,6 @@ def lambda_handler(event, context):
 
 
 def insert_queries(cursor, connection, group_name, owner_id, members):
-  # Checks for duplicates.
-  query = """
-            SELECT group_id FROM Expense_Groups
-            WHERE group_name=\"{}\" AND owner_id=\"{}\";
-          """.format(owner_id, group_name)
-  cursor.execute(query)
-  
-  execution_result = cursor.fetchall()
-  if len(execution_result) > 0:
-    return "Error: Group Already Exists"
-
   # Adds a new group to the database.
   query = """
             INSERT INTO Expense_Groups (owner_id, group_name)
@@ -113,9 +102,9 @@ def insert_queries(cursor, connection, group_name, owner_id, members):
   return "Success"
 
 
-def retrieve_queries(cursor, group_name, user_id):
+def retrieve_queries(cursor, user_id):
   query = """
-            SELECT group_id, name FROM Expense_Groups
+            SELECT group_id, group_name FROM Expense_Groups
             WHERE group_id IN (
               SELECT group_id FROM Group_Members
               WHERE member_id=\"{}\"
@@ -143,11 +132,12 @@ def delete_queries(cursor, connection, group_id):
   return "Success"
 
 
+############## Test Cases ##############
 # obj = {
 #   "body": """
 #     {
 #       \"operation\": \"get\",
-#       \"owner_id\": \"rohan\"
+#       \"owner_id\": \"jia101\"
 #     }
 #   """
 # }
@@ -155,9 +145,9 @@ def delete_queries(cursor, connection, group_id):
 #   "body": """
 #     {
 #       \"operation\": \"insert\",
-#       \"group_name\": \"Chipotle\",
-#       \"owner_id\": \"rohan\",
-#       \"members\": [\"mike\", \"dan999\", \"jia101\"]
+#       \"group_name\": \"Sushi Bar\",
+#       \"owner_id\": \"jia101\",
+#       \"members\": [\"mike\", \"dan999\", \"rohan\"]
 #     }
 #   """
 # }
@@ -165,7 +155,7 @@ def delete_queries(cursor, connection, group_id):
 #   "body": """
 #     {
 #       \"operation\":\"delete\",
-#       \"group_id\": \"2\"
+#       \"group_id\": \"3\"
 #     }
 #   """
 # }

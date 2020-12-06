@@ -95,6 +95,28 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExpenseHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  uFinanceAPIGroupsResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: groups
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGroups:
+      DependsOn: uFinanceAPIGroupsResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: groups
+        ResourceId: !Ref uFinanceAPIGroupsResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupsHandlerLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
+
   uFinanceAPIGroupResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -255,7 +277,7 @@ Resources:
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
 
-  GroupHandlerLambda:
+  GroupsHandlerLambda:
     Type: AWS::Lambda::Function
     Properties:
       Description: Handle operations regarding user groups
@@ -266,11 +288,22 @@ Resources:
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
 
+  GroupHandlerLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Handle operations for a selected group
+      FunctionName: HandleGroup
+      MemorySize: 512 
+      Handler: handlers.group_handler.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
   AnalyzeTextract: 
     Type: AWS::Lambda::Function
     Properties:
       Description: Analyze the file in textract
-      FunctionName: AnalyzeReciept
+      FunctionName: AnalyzeReceipt
       MemorySize: 512 
       Handler: handlers.textract.lambda_handler
       Runtime: python3.7

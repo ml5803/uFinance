@@ -42,6 +42,10 @@ class CreateGroup extends Component {
       "owner_id": this.props.loginState['userid'],
       "members": members
     }
+
+    console.log('g:',this.state.groupName)
+    console.log('o:',this.state.username)
+    console.log('m:',this.state.members)
      Api.post('groups', obj).then(resp=>{
        console.log(resp)
        if (resp['execution_status']){
