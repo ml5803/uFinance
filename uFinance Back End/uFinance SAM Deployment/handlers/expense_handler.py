@@ -39,7 +39,7 @@ def lambda_handler(event, context):
     # Add expense to the database.
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
-        cur = conn.cursor()
+        cur = conn.cursor(pymysql.cursors.DictCursor)
         query = query_maker(OPERATION_TYPE, EXPENSE_ID, GROUP_ID, MEMBER_ID, dt, EXPENSE_NAME, EXPENSE_AMT, PROOF)
         cur.execute(query)
         execution_result = cur.fetchall()
@@ -78,7 +78,9 @@ def query_maker(op_type, expense_id, group_id, member_id, dt, expense_name, expe
             """.format(group_id, member_id, dt, expense_name, expense_amt, proof)
     elif op_type == "get":
         qry = """
-                SELECT * FROM Expenses 
+                SELECT expense_id, group_id, member_id, DATE_FORMAT(date_entered, '%m:%d:%Y %T') as date_entered, 
+                expense_name, CONVERT(expense_amount, CHAR) as expense_amt, proof
+                FROM Expenses 
                 WHERE group_id = \"{}\";
             """.format(group_id)
     elif op_type == "delete":
@@ -89,4 +91,4 @@ def query_maker(op_type, expense_id, group_id, member_id, dt, expense_name, expe
 
     return qry
 
-# print(query_maker("insert","ello","ello",1,"12","my_expense",10,"asasfsdfasffasdf"))
+print(lambda_handler({'body':'{"operation":"get", "group_id": "mikegroup" }'},None))

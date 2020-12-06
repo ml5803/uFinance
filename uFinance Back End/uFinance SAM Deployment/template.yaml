@@ -95,6 +95,50 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExpenseHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  uFinanceAPIGroupResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: group
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGroup:
+      DependsOn: uFinanceAPIGroupResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: group
+        ResourceId: !Ref uFinanceAPIGroupResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupHandlerLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
+
+  uFinanceReceiptExtractResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: extract
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIReceipt:
+      DependsOn: uFinanceReceiptExtractResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: extract
+        ResourceId: !Ref uFinanceReceiptExtractResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AnalyzeTextract.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
+
   #mySQL Database
   uFinanceDB:
     Type: AWS::RDS::DBInstance
@@ -207,6 +251,17 @@ Resources:
       FunctionName: HandleExpense
       MemorySize: 512 
       Handler: handlers.expense_handler.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
+  GroupHandlerLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Handle operations regarding user groups
+      FunctionName: HandleGroups
+      MemorySize: 512 
+      Handler: handlers.groups_handler.lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 

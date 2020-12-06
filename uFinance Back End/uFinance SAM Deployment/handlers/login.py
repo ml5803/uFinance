@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
+##### Needed #####
+# Encrypt the password with SHA256.
+
 def lambda_handler(event, context):
     # Parameter variables
     EVENT_BODY = json.loads(event.get("body"))
