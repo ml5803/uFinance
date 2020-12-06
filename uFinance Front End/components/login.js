@@ -27,28 +27,27 @@ class Login extends Component {
       text: 'nothing',
       dataSource: false,
       isLoading: false,
-      email: '',
+      username: '',
       password: '',
     }
   }
 
   updateLogged(){
     let obj = {
-      email: this.state.email,
+      username: this.state.username,
       password: this.state.password,
     }
-    Api.post('login', obj).then(resp => {
-      console.log('resp:', resp)
-      if (resp['login_status']){
-        this.props.changeLogged(true)
-      }
-    })
+     Api.post('login', obj).then(resp => {
+       console.log('resp:', resp)
+       if (resp['login_status']){
+         this.props.changeLogged(true, resp['user_id'])
+       }
+     })
 
   }
 
   render(){
     // let { loginState, actions } = this.props;
-    console.log('loggedin in login.js:', this.props.loginState.loggedin)
     return (
       <ScrollView style={styles.container}>
           <View style={styles.logo}>
@@ -58,10 +57,9 @@ class Login extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
-                    placeholder='Email'
-                    // remove underline when typing
+                    placeholder='username'
                     underlineColorAndroid='transparent'
-                    onChangeText={text => this.setState({email: text})}
+                    onChangeText={text => this.setState({username: text})}
                 />
                 <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
               </View>

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import { Image, ScrollView } from 'react-native'
 import { Card, ListItem, Button, Icon, Avatar, Header } from 'react-native-elements'
-
+import { connect } from 'react-redux';
 
 
 import {
@@ -25,103 +25,113 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-function Profile({navigation}) {
-    return (
-      <ScrollView>
-        <Header
-          leftComponent={{ icon: 'home', color: '#fff', onPress:() => navigation.navigate('Home') }}
-          centerComponent={{ text: 'Profile', style: { color: '#fff', fontSize: 20,} }}
-        />
-        <Card>
-          <Avatar
-          size = "medium"
-            rounded
-            source={{
-              uri:
-                'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            }}
+class Profile extends Component {
+    constructor(){
+        super()
+        this.state ={
+          username: '',
+        }
+      }
+
+    render(){
+      return (
+
+        <ScrollView>
+          <Header
+            leftComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('Home') }}
+            centerComponent={{ text: 'Profile', style: { color: '#fff', fontSize: 20,} }}
           />
-          <Card.Title>Welcome {username}!</Card.Title>
-          <Card.Divider/>
-            {
-              owedMoney.map((u, i) => {
-                return (
-                  <View key={i} style={styles.user}>
-                    <View style={styles.inLineContainer}>
-                        <Text style={styles.inLineText}>{u.name}</Text>
-                        <Icon
-                          name='arrow-right-alt' />
-                          <View style={styles.inLineContainer}>
-                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
-                              <Icon
-                                name='arrow-right-alt' />
-                                <Text style={styles.inLineTextSelf}>{username}</Text>
-                          </View>
+          <Card>
+            <Avatar
+            size = "medium"
+              rounded
+              source={{
+                uri:
+                  'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+              }}
+            />
+            <Card.Title>Welcome {this.state.username}!</Card.Title>
+            <Card.Divider/>
+              {
+                owedMoney.map((u, i) => {
+                  return (
+                    <View key={i} style={styles.user}>
+                      <View style={styles.inLineContainer}>
+                          <Text style={styles.inLineText}>{u.name}</Text>
+                          <Icon
+                            name='arrow-right-alt' />
+                            <View style={styles.inLineContainer}>
+                                <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                                <Icon
+                                  name='arrow-right-alt' />
+                                  <Text style={styles.inLineTextSelf}>{this.state.username}</Text>
+                            </View>
+                      </View>
                     </View>
-                  </View>
-                );
-              })
-            }
-          </Card>
+                  );
+                })
+              }
+            </Card>
+
+            <Card>
+              <Card.Title>Payment Owed</Card.Title>
+              <Card.Divider/>
+              {
+                oweMoney.map((u, i) => {
+                  return (
+                    <View key={i} style={styles.user}>
+                      <View style={styles.inLineContainer}>
+                          <Text style={styles.inLineTextSelf}>{this.state.username}</Text>
+                          <Icon
+                            name='arrow-right-alt' />
+                            <View style={styles.inLineContainer}>
+                                <Text style={styles.inLineTextCost}>{u.amount}</Text>
+                                <Icon
+                                  name='arrow-right-alt' />
+                                  <Text style={styles.inLineText}>{u.name}</Text>
+                            </View>
+                      </View>
+                    </View>
+                  );
+                })
+              }
+            </Card>
 
           <Card>
-            <Card.Title>Payment Owed</Card.Title>
-            <Card.Divider/>
-            {
-              oweMoney.map((u, i) => {
-                return (
-                  <View key={i} style={styles.user}>
-                    <View style={styles.inLineContainer}>
-                        <Text style={styles.inLineTextSelf}>{username}</Text>
-                        <Icon
-                          name='arrow-right-alt' />
-                          <View style={styles.inLineContainer}>
-                              <Text style={styles.inLineTextCost}>{u.amount}</Text>
-                              <Icon
-                                name='arrow-right-alt' />
-                                <Text style={styles.inLineText}>{u.name}</Text>
-                          </View>
-                    </View>
-                  </View>
-                );
-              })
-            }
+            <Text>
+                Money Owed
+            </Text>
+              <BarChart
+                  // style={graphStyle}
+                  data={barData}
+                  width={300}
+                  height={220}
+                  yAxisLabel={'$'}
+                  chartConfig={{
+                        backgroundColor: "#e26a00",
+                              backgroundGradientFrom: "#fb8c00",
+                              backgroundGradientTo: "#ffa726",
+                              decimalPlaces: 2, // optional, defaults to 2dp
+                              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                              fillShadowGradientOpacity: 1,
+                              style: {
+                                borderRadius: 16
+                              },
+                              propsForDots: {
+                                r: "6",
+                                strokeWidth: "2",
+                                stroke: "#ffa726"
+                              }
+                      }}
+              />
           </Card>
-
-        <Card>
-          <Text>
-              Money Owed
-          </Text>
-            <BarChart
-                // style={graphStyle}
-                data={barData}
-                width={300}
-                height={220}
-                yAxisLabel={'$'}
-                chartConfig={{
-                      backgroundColor: "#e26a00",
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            fillShadowGradientOpacity: 1,
-                            style: {
-                              borderRadius: 16
-                            },
-                            propsForDots: {
-                              r: "6",
-                              strokeWidth: "2",
-                              stroke: "#ffa726"
-                            }
-                    }}
-            />
-        </Card>
-      </ScrollView>
-    );
+        </ScrollView>
+      );
+    }
 }
 
-const username = "Tyler"
+//const username = this.props.loginState['userid']
 
 const owedMoney = [
  {
@@ -209,5 +219,10 @@ const styles = StyleSheet.create({
     margin: 5,
   },
 });
-  
-export default Profile;
+
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+});
+
+// export default Profile;
+export default connect(mapStateToProps)(Profile);

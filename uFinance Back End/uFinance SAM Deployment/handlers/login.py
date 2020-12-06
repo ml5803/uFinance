@@ -9,7 +9,7 @@ import os
 def lambda_handler(event, context):
     # Parameter variables
     EVENT_BODY = json.loads(event.get("body"))
-    EMAIL = EVENT_BODY.get("email")
+    USERNAME = EVENT_BODY.get("username")
     PASSWORD = EVENT_BODY.get("password")
     login_status = False
     ENDPOINT = os.environ.get('db_endpoint')
@@ -18,18 +18,21 @@ def lambda_handler(event, context):
     REGION = os.environ.get('region')
     DB_PASS = os.environ.get('db_pass')
     DBNAME = os.environ.get('db_name')
+
+    login_status = False
     
     # Useful variables
     error_message = ""
-    email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    # email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    username_regex = '[\^\'\"?\.\ \@]'
     pass_regex = '[\^\'\"?\.\ ]'
 
     # Basic input sanitization
-    if re.search(email_regex, EMAIL):
-        login_status = True
-    else:
-        error_message = "Improper email input"
+    if re.search(username_regex, USERNAME):
+        error_message = "Improper username input"
         login_status = False
+    else:
+        login_status = True
 
     if not login_status:
         return {
@@ -41,7 +44,7 @@ def lambda_handler(event, context):
         }
 
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper Password: Invalid character input"
+        error_message = "Improper Password: Invalid character input"
         login_status = False
     else:
         login_status = True
@@ -62,8 +65,8 @@ def lambda_handler(event, context):
         cur = conn.cursor()
         query = """
                 SELECT * FROM Users
-                WHERE email=\"{}\" AND password=\"{}\";
-                """.format(EMAIL, PASSWORD)
+                WHERE user_id=\"{}\" AND password=\"{}\";
+                """.format(USERNAME, PASSWORD)
         cur.execute(query)
         query_results = cur.fetchall()
         if len(query_results) == 0:
@@ -80,22 +83,19 @@ def lambda_handler(event, context):
             "statusCode": 200,
             "body": json.dumps({
                 "login_status": login_status,
-                "user_id": query_results[0][2]
+                "user_id": query_results[0][0]
             })
         }
-    return {
+    return json.dumps({
             "statusCode": 400,
-            "body": json.dumps({
+            "body": {
                 "login_status": login_status,
                 "message": error_message
-            })
-        }
-    
+            }
+        })
+
 
 # print(lambda_handler({
-#   "body": {
-#     "email": "david@yahoo.com",
-#     "password": "abcdefg"
-#   }
-# }, None)
+#     "body": "{\"username\": \"test123\", \"password\": \"12345\"}"
+#     }, None)
 # )

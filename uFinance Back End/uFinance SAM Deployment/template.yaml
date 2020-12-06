@@ -73,8 +73,27 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
-  #WILL NEED TO ADD MORE API PATHS 
-  #Since we are using lambdas, not sure if want to do Lambda proxy for APIG too
+  uFinanceAPIGExpenseResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: expense
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIGExpense:
+      DependsOn: uFinanceAPIGExpenseResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: expense
+        ResourceId: !Ref uFinanceAPIGExpenseResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExpenseHandlerLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
 
   #mySQL Database
   uFinanceDB:
@@ -154,7 +173,7 @@ Resources:
       Description: Upload File to S3 
       FunctionName: UploadImageBucket
       MemorySize: 512 
-      Handler: handlers.app.lambda_handler
+      Handler: handlers.finance.lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
@@ -177,6 +196,28 @@ Resources:
       FunctionName: UserRegister
       MemorySize: 512 
       Handler: handlers.register.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+    
+  ExpenseHandlerLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Handle operations regarding user expenses
+      FunctionName: HandleExpense
+      MemorySize: 512 
+      Handler: handlers.expense_handler.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
+  AnalyzeTextract: 
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Analyze the file in textract
+      FunctionName: AnalyzeReciept
+      MemorySize: 512 
+      Handler: handlers.textract.lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 

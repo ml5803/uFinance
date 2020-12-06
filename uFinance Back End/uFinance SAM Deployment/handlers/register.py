@@ -85,7 +85,7 @@ def lambda_handler(event, context):
 
     # First Name
     if re.search(pass_regex, FIRST_NAME):
-        error_message = "Imporper FName:Invalid character input"
+        error_message = "Improper FName:Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -101,7 +101,7 @@ def lambda_handler(event, context):
 
     # Last Name
     if re.search(pass_regex, FIRST_NAME):
-        error_message = "Imporper LName:Invalid character input"
+        error_message = "Improper LName:Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -119,12 +119,11 @@ def lambda_handler(event, context):
     dt = datetime.datetime.now()
 
     # Add account to the database.
-    query_results = None
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
         query = """
-                INSERT INTO Users
+                INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
                 """.format(EMAIL, PASSWORD, USERNAME, FIRST_NAME, LAST_NAME, dt)
         cur.execute(query)
@@ -152,11 +151,9 @@ def lambda_handler(event, context):
             }),
         }
 
-# print(lambda_handler({
-#   "email": "daniel@yahoo.com",
-#   "password": "password!",
-#   "username": "dtsu",
-#   "first_name": "Daniel",
-#   "last_name": "Tsu"
-# }, None)
-# )
+# print(lambda_handler(
+        # {
+        #     "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\"}"
+        # },None
+#     )
+# )  

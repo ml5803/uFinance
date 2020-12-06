@@ -65,6 +65,7 @@ function GroupStackScreen(){
 class App extends Component {
 
   render(){
+    console.log('redux:',this.props.loginState)
     return (
         <NavigationContainer>
           {this.props.loginState.loggedin ? (

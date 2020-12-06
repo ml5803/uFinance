@@ -11,32 +11,62 @@ import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
 import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Api from '../API.js'
+import { connect } from 'react-redux';
 
 class CreateGroup extends Component {
   constructor(){
     super()
     this.state={
-      Members: [''],
+      groupName: '',
+      members: [],
+      username: '',
     }
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleSubmit(){
+    let newMembers = this.state.members
+    let owner_id = this.props.loginState['userid']
+    newMembers.push(owner_id)
+
+    let obj ={
+      "operation": "insert",
+      "group_name": this.state.groupName,
+      "owner_id": this.props.loginState['userid'],
+      "members": this.state.members
+    }
+
+    console.log('g:',this.state.groupName)
+    console.log('o:',this.state.username)
+    console.log('m:',this.state.members)
+     Api.post('group', obj).then(resp=>{
+       console.log(resp)
+     }).catch((error)=>{
+       console.log("Api call error");
+    });
   }
 
   updateNames(email, index){
-    let newlst = this.state.Members
-    newlst[index] = email
-    this.setState({Members: newlst})
+    let newlst = this.state.members
+    console.log('email:', email)
+    newlst[index] = email.replace(/\s+/g, '')
+    this.setState({members: newlst})
   }
 
   addBox(){
-    this.setState({Members: this.state.Members.concat('')})
+    this.setState({members: this.state.members.concat('')})
   }
   deleteBox(index){
-    let newlst = this.state.Members
+    let newlst = this.state.members
     newlst.splice(index, 1)
-    this.setState({Members: newlst})
+    this.setState({members: newlst})
   }
 
   render(){
-    console.log(this.state.Members)
+    console.log('name', this.state.groupName)
+    console.log(this.state.members)
+    console.log('loggedin..:',this.props.loginState)
     return (
       <ScrollView >
         {/* <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}> */}
@@ -51,15 +81,16 @@ class CreateGroup extends Component {
                 style={styles.inputBox}
                 // placeholder='Amoung Us'
                 underlineColorAndroid='transparent'
+                onChangeText={(text) => this.setState({groupName: text})}
               />
           </Card>
-          {/* Add Members Section --- */}
+          {/* Add members Section --- */}
           <Card>
-            <Card.Title>Members</Card.Title>
+            <Card.Title>members</Card.Title>
             <Card.Divider/>
             <View style={styles.boxContainer}>
               {
-                this.state.Members.map((name, index) => (
+                this.state.members.map((name, index) => (
                   <View style={styles.InputBoxWithDelete} key={'new'+index}>
                     <TextInput
                       style={styles.input}
@@ -69,8 +100,8 @@ class CreateGroup extends Component {
                     </TextInput>
                     <TouchableOpacity style={styles.deleteBox}
                     onPress={() => this.deleteBox(index)}>
-                      <Ionicons 
-                      name="close-circle-outline" 
+                      <Ionicons
+                      name="close-circle-outline"
                       size={32}
                       color={'red'}
                       />
@@ -84,28 +115,29 @@ class CreateGroup extends Component {
               </TouchableOpacity>
             </View>
           </Card>
-          
+
           <View style={styles.boxContainer}>
-            <Button 
+            <Button
             title="Submit"
             titleStyle={styles.submitbtn}
+            onPress={() => this.handleSubmit()}
             />
           </View>
         {/* </LinearGradient> */}
-        
+
       </ScrollView>
     );
   }
-    
+
 }
 
 const styles = StyleSheet.create({
-  nameContainer: {  
+  nameContainer: {
     marginTop: '10%',
     justifyContent:'center',
     alignItems: 'center',
   },
-  boxContainer: {  
+  boxContainer: {
     marginTop: '10%',
     justifyContent:'center',
     alignItems: 'center',
@@ -166,4 +198,10 @@ const styles = StyleSheet.create({
     width: 200,
   }
 });
-export default CreateGroup;
+
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+});
+
+// export default CreateGroup;
+export default connect(mapStateToProps)(CreateGroup);

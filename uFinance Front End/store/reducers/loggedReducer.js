@@ -1,6 +1,7 @@
 import { LOGGED_CHANGE } from '../constants';
 const initialState = {
     loggedin: false,
+    userid: null
 };
 
 const loggedReducer = (state = initialState, action) => {
@@ -8,7 +9,8 @@ const loggedReducer = (state = initialState, action) => {
         case LOGGED_CHANGE:
             return {
                 ...state,
-                loggedin: action.payload
+                loggedin: action.payload[0],
+                userid: action.payload[1]
             };
         default:
             return state;
