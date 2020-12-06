@@ -44,20 +44,20 @@ def lambda_handler(event, context):
   if execution_status:
     return {
       "status": 200,
-      "body": {
+      "body": json.dumps({
         "execution_status": execution_status,
         "execution_result": execution_result,
         "error_message": ""
-      }
+      })
     }
   
   return {
     "status": 400,
-      "body": {
+      "body": json.dumps({
         "execution_status": execution_status,
         "execution_result": "",
         "error_message": error_message
-      }
+      })
   }
 
 
