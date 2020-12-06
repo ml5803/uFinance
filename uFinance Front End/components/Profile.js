@@ -27,11 +27,18 @@ import {
 
 class Profile extends Component {
     constructor(){
-        super()
-        this.state ={
-          username: '',
-        }
+      super()
+      this.state ={
+        username: '',
       }
+      this.setUser = this.setUser.bind(this)
+
+    }
+
+    setUser(){
+      this.setState({username: this.props.loginState['userid']})
+      console.log('user: ', this.state.username)
+    }
 
     render(){
       return (
@@ -43,14 +50,13 @@ class Profile extends Component {
           />
           <Card>
             <Avatar
-            size = "medium"
               rounded
               source={{
                 uri:
                   'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
               }}
             />
-            <Card.Title>Welcome {this.state.username}!</Card.Title>
+            <Card.Title>Welcome {this.props.loginState['userid']}!</Card.Title>
             <Card.Divider/>
               {
                 owedMoney.map((u, i) => {
@@ -64,7 +70,7 @@ class Profile extends Component {
                                 <Text style={styles.inLineTextCost}>{u.amount}</Text>
                                 <Icon
                                   name='arrow-right-alt' />
-                                  <Text style={styles.inLineTextSelf}>{this.state.username}</Text>
+                                  <Text style={styles.inLineTextSelf}>{this.props.loginState['userid']}</Text>
                             </View>
                       </View>
                     </View>
@@ -81,7 +87,7 @@ class Profile extends Component {
                   return (
                     <View key={i} style={styles.user}>
                       <View style={styles.inLineContainer}>
-                          <Text style={styles.inLineTextSelf}>{this.state.username}</Text>
+                          <Text style={styles.inLineTextSelf}>{this.props.loginState['userid']}</Text>
                           <Icon
                             name='arrow-right-alt' />
                             <View style={styles.inLineContainer}>

@@ -138,11 +138,12 @@ class IndividualGroup extends Component {
     }
     get_separate_member_groups(){
       let members = this.state.members
-      let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
+      let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(5)
       let members_to_pay = []
       let members_to_receive = []
       for (let key in members){
-        let amt = parseFloat((members[key] - avg_cost).toFixed(2))
+        let amt = parseFloat((members[key] - avg_cost).toFixed(5))
+        // let amt = (members[key] - avg_cost)
         console.log('=======amt:', amt)
         if (amt > 0){
           members_to_receive.push([key, amt])
@@ -165,23 +166,25 @@ class IndividualGroup extends Component {
         let name2, amt2;
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
-        console.log('name1:', name1, amt1)
-        console.log('name2:', name2, amt2)
+        console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
+        console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
+        let rounded_amt1 = parseFloat(amt1).toFixed(2)
+        let rounded_amt2 = parseFloat(amt2).toFixed(2)
         let new_obj = {}
-        if (amt1 < amt2){
-          members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(2)
-          new_obj = {name1: name1, name2: name2, amt: amt1}
+        if (rounded_amt1 < rounded_amt2){
+          members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(5)
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt1}
           payment_list.push(new_obj)
           index++
         }
-        else if (amt1 > amt2){
-          members_to_pay[index][1] = parseFloat(amt1-amt2).toFixed(2)
-          new_obj = {name1: name1, name2: name2, amt: amt2}
+        else if (rounded_amt1 > rounded_amt2){
+          members_to_pay[index][1] = parseFloat(amt1-amt2).toFixed(5)
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index2++
         }
-        else{
-          new_obj = {name1: name1, name2: name2, amt: amt2}
+        else if(rounded_amt1 === rounded_amt2){
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index++
           index2++

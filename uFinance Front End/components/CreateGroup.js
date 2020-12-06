@@ -26,9 +26,7 @@ class CreateGroup extends Component {
   }
 
   handleSubmit(){
-    let newMembers = this.state.members
-    let owner_id = this.props.loginState['userid']
-    newMembers.push(owner_id)
+
 
     let obj ={
       "operation": "insert",
@@ -40,7 +38,7 @@ class CreateGroup extends Component {
     console.log('g:',this.state.groupName)
     console.log('o:',this.state.username)
     console.log('m:',this.state.members)
-     Api.post('group', obj).then(resp=>{
+     Api.post('groups', obj).then(resp=>{
        console.log(resp)
      }).catch((error)=>{
        console.log("Api call error");
