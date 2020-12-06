@@ -45,6 +45,10 @@ class GroupPayment extends Component {
 
 
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('IndividualGroup')} style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> Back </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
@@ -55,17 +59,17 @@ class GroupPayment extends Component {
 
   renderImage() {
     return (
-      <View>
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={() => this.setState({ path: null })} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> { this.state.path } </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.container}>
+
         <Image
-          source={{ uri: this.state.path }}
+          source={{ uri: this.state.url }}
           style={styles.preview}
         />
-
+        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+          <TouchableOpacity onPress={() => this.setState({ path: null })} style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> Back to Camera </Text>
+          </TouchableOpacity>
+        </View>
 
       </View>
     );
