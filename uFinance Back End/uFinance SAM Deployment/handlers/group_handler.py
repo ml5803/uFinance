@@ -43,7 +43,7 @@ def lambda_handler(event, context):
 
   if execution_status:
     return {
-      "status": 200,
+      "statusCode": 200,
       "body": json.dumps({
         "execution_status": execution_status,
         "execution_result": execution_result,
@@ -52,7 +52,7 @@ def lambda_handler(event, context):
     }
   
   return {
-    "status": 400,
+    "statusCode": 400,
       "body": json.dumps({
         "execution_status": execution_status,
         "execution_result": "",
