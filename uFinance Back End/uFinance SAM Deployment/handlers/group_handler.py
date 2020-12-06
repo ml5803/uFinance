@@ -9,7 +9,7 @@ def lambda_handler(event, context):
   EVENT_BODY = json.loads(event.get("body"))
   OP_TYPE = EVENT_BODY.get("operation")
   GROUP_ID = EVENT_BODY.get("group_id")
-  CHANGEED_NAME = EVENT_BODY.get("group_name")
+  CHANGED_NAME = EVENT_BODY.get("group_name")
   ADD_MEMBERS = EVENT_BODY.get("add_members")
   REMOVE_MEMBERS = EVENT_BODY.get("remove_members")
 
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     if OP_TYPE == "get":
       execution_result = retrieve_queries(cur, GROUP_ID)
     elif OP_TYPE == "modify":
-      execution_result = modify_queries(cur, conn, GROUP_ID, CHANGEED_NAME, ADD_MEMBERS, REMOVE_MEMBERS)
+      execution_result = modify_queries(cur, conn, GROUP_ID, CHANGED_NAME, ADD_MEMBERS, REMOVE_MEMBERS)
 
     execution_status = True
   except Exception as e:
@@ -75,8 +75,8 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
   if changed_name is not None:
     query = """
       UPDATE Expense_Groups
-      SET group_name={}
-      WHERE group_id={};
+      SET group_name=\"{}\"
+      WHERE group_id=\"{}\";
     """.format(changed_name, group_id)
     cur.execute(query)
 
@@ -92,11 +92,14 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
   if len(remove_members) > 0:
     query = """
               DELETE FROM Group_Members
-              WHERE group_id=\"{}\" AND member_id IN \"{}\"
-            """.format(group_id, remove_members)
+              WHERE group_id=\"{}\" AND member_id=\"{}\"
+            """
+    for member in remove_members:
+      tmp = query.format(group_id, member)
+      cur.execute(tmp)
     cur.execute(query)
   
-  curr.commit()
+  conn.commit()
 
   return True
 
@@ -106,6 +109,17 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
 #     {
 #       \"operation\": \"get\",
 #       \"group_id\": \"7\"
+#     }
+#   """
+# }
+
+# obj = {
+#   "body": """
+#     {
+#       \"operation\": \"modify\",
+#       \"group_id\": \"7\",
+#       \"add_members\": [],
+#       \"remove_members\": [\"rock\", \"shiva\", \"jesus\"]
 #     }
 #   """
 # }

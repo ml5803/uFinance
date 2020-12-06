@@ -114,29 +114,29 @@ Resources:
         Integration:
           Type: AWS_PROXY
           IntegrationHttpMethod: POST
-          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupHandlerLambda.Arn}/invocations"
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupsHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
-  uFinanceAPIIndiGroupResource:
+  uFinanceAPIGroupResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !GetAtt uFinanceAPIG.RootResourceId
       PathPart: group
       RestApiId: !Ref uFinanceAPIG
 
-  uFinanceAPIIndiGroup:
-      DependsOn: uFinanceAPIIndiGroupResource
+  uFinanceAPIGroup:
+      DependsOn: uFinanceAPIGroupResource
       Type: AWS::ApiGateway::Method
       Properties:
         HttpMethod: POST
         OperationName: group
-        ResourceId: !Ref uFinanceAPIIndiGroupResource
+        ResourceId: !Ref uFinanceAPIGroupResource
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
         Integration:
           Type: AWS_PROXY
           IntegrationHttpMethod: POST
-          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndiGroupHandlerLambda.Arn}/invocations"
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
   uFinanceReceiptExtractResource:
@@ -277,7 +277,7 @@ Resources:
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
 
-  GroupHandlerLambda:
+  GroupsHandlerLambda:
     Type: AWS::Lambda::Function
     Properties:
       Description: Handle operations regarding user groups
@@ -288,7 +288,7 @@ Resources:
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
 
-  IndiGroupHandlerLambda:
+  GroupHandlerLambda:
     Type: AWS::Lambda::Function
     Properties:
       Description: Handle operations for a selected group
