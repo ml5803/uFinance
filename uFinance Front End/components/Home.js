@@ -14,6 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
 class HomeScreen extends Component{
   render(){
     return (
@@ -39,7 +40,7 @@ class HomeScreen extends Component{
             />
 
             <Button
-              title="Create Croups"
+              title="Create Groups"
               type="outline"
               titleStyle={styles. btnTitle}
               onPress={() => this.props.navigation.navigate('CreateGroup')}

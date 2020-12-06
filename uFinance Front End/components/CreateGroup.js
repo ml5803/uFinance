@@ -13,6 +13,8 @@ import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Api from '../API.js'
 import { connect } from 'react-redux';
+import { changeUpdateStatus } from '../store/actions/updateGroup.js';
+import { bindActionCreators } from 'redux';
 
 class CreateGroup extends Component {
   constructor(){
@@ -21,27 +23,34 @@ class CreateGroup extends Component {
       groupName: '',
       members: [],
       username: '',
+      error_msg: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit(){
-    let newMembers = this.state.members
     let owner_id = this.props.loginState['userid']
-    newMembers.push(owner_id)
+    // newMembers.push(owner_id)
+    let members = this.state.members.filter(obj => {
+      return obj !== ''
+    })
+    console.log('filted:', members)
 
     let obj ={
       "operation": "insert",
       "group_name": this.state.groupName,
       "owner_id": this.props.loginState['userid'],
-      "members": this.state.members
+      "members": members
     }
-
-    console.log('g:',this.state.groupName)
-    console.log('o:',this.state.username)
-    console.log('m:',this.state.members)
-     Api.post('group', obj).then(resp=>{
+     Api.post('groups', obj).then(resp=>{
        console.log(resp)
+       if (resp['execution_status']){
+        this.setState({groupName: '', members: [], error_msg: ''})
+        this.props.changeUpdateStatus(true)
+       }
+       else{
+        this.setState({error_msg: 'Duplicate members'})
+       }
      }).catch((error)=>{
        console.log("Api call error");
     });
@@ -67,6 +76,7 @@ class CreateGroup extends Component {
     console.log('name', this.state.groupName)
     console.log(this.state.members)
     console.log('loggedin..:',this.props.loginState)
+    console.log('updated:', this.props.updateState)
     return (
       <ScrollView >
         {/* <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}> */}
@@ -82,6 +92,7 @@ class CreateGroup extends Component {
                 // placeholder='Amoung Us'
                 underlineColorAndroid='transparent'
                 onChangeText={(text) => this.setState({groupName: text})}
+                value={this.state.groupName}
               />
           </Card>
           {/* Add members Section --- */}
@@ -115,7 +126,11 @@ class CreateGroup extends Component {
               </TouchableOpacity>
             </View>
           </Card>
-
+          {this.state.error_msg!==''
+            ? <Card><Card.Title>{this.state.error_msg}</Card.Title></Card>
+            : null
+          }
+          
           <View style={styles.boxContainer}>
             <Button
             title="Submit"
@@ -201,7 +216,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   loginState: state.loggedin,
+  updateState: state.updated,
 });
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    changeUpdateStatus,
+  }, dispatch)
+);
 
 // export default CreateGroup;
-export default connect(mapStateToProps)(CreateGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);

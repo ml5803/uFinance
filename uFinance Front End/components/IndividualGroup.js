@@ -29,6 +29,7 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
+import { connect } from 'react-redux';
 
 class IndividualGroup extends Component {
     constructor () {
@@ -41,10 +42,11 @@ class IndividualGroup extends Component {
 
         selectedIndex: 0,
         checked: false,
-        groupid: 'mikegroup',
+        owner_id: null,
+        groupid: null,
         total_cost: 0,
         current_member_id: 0,
-        members: {'mike': 0, 'mike2': 0, 'mike3': 0},
+        members: {},
         summary: [],
         item_to_add: '',
         member_to_add: '',
@@ -55,21 +57,36 @@ class IndividualGroup extends Component {
       this.get_separate_member_groups = this.get_separate_member_groups.bind(this)
       this.handleTextChange = this.handleTextChange.bind(this)
       this.addItem = this.addItem.bind(this)
+      // this.getInfo = this.getInfo.bind(this)
     }
 
+    // componentDidMount() {
+    //   this._unsubscribe = this.props.navigation.addListener('focus', () => {
+    //       this.getInfo()
+    //   });
+    // }
+  
+    // componentWillUnmount() {
+    //   this._unsubscribe();
+    // }
+  
     // get group expense info
     componentDidMount(){
+      console.log('---------herererer')
+      let members = this.props.memberState.members
+      let groupid = this.props.memberState.group_id
+      this.setState({members: members, groupid: groupid})
       let obj = {
         operation: 'get',
-        group_id: 'mikegroup',
+        group_id: this.props.memberState.group_id,
       }
       Api.post('expense', obj).then(resp => {
         console.log('resp_exe_res:', resp['execution_result'])
         let execution_data = eval(resp['execution_result'])
+        console.log(execution_data)
         if (resp["execution_status"]){
           let expense_objects = {}
           let total_cost = this.state.total_cost
-          let members = this.state.members
           for (let i=0; i < execution_data.length; i++){
             let member_id = execution_data[i].member_id
             let cost = parseFloat(execution_data[i].expense_amt)
@@ -85,9 +102,12 @@ class IndividualGroup extends Component {
             if (member_id in members){ members[member_id] += cost }
             else{ members[member_id] = cost}
           }
-          this.setState({summary: expense_objects, total_cost: total_cost, members: members})
+          this.setState({summary: expense_objects, total_cost: total_cost})
           console.log(this.state.summary, this.state.total_cost)
+          console.log('expense:', members)
         }
+      }).catch(function(e){
+        console.log(e)
       })
     }
     deleteItem(id, member_id){
@@ -106,6 +126,8 @@ class IndividualGroup extends Component {
 
       Api.post('expense', obj).then(resp => {
         console.log('delete_resp:', resp)
+      }).catch(function(e){
+        console.log(e)
       })
 
       delete item_lst[id]
@@ -115,16 +137,6 @@ class IndividualGroup extends Component {
     updateIndex (selectedIndex) {
       this.setState({selectedIndex})
     }
-
-    /*function Costs() {
-      return ()
-    }
-
-    function selectDisplay (selectedIndex) {
-      if(selectedIndex == 0){
-
-      }
-    }*/
 
     updateStatus(index){
       let newData = this.state.data
@@ -138,11 +150,13 @@ class IndividualGroup extends Component {
     }
     get_separate_member_groups(){
       let members = this.state.members
-      let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
+      let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(5)
       let members_to_pay = []
       let members_to_receive = []
+      console.log('avg', avg_cost)
       for (let key in members){
-        let amt = parseFloat((members[key] - avg_cost).toFixed(2))
+        let amt = parseFloat((members[key] - avg_cost).toFixed(5))
+        // let amt = (members[key] - avg_cost)
         console.log('=======amt:', amt)
         if (amt > 0){
           members_to_receive.push([key, amt])
@@ -163,25 +177,29 @@ class IndividualGroup extends Component {
       while(index < members_to_pay.length || index2 < members_to_receive.length){
         let name1, amt1;
         let name2, amt2;
+        console.log('index1:', index, ' index2:', index2);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
-        console.log('name1:', name1, amt1)
-        console.log('name2:', name2, amt2)
+        console.log('index1:', index, ' index2:', index2)
+        console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
+        console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
+        let rounded_amt1 = parseFloat(amt1).toFixed(2)
+        let rounded_amt2 = parseFloat(amt2).toFixed(2)
         let new_obj = {}
-        if (amt1 < amt2){
-          members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(2)
-          new_obj = {name1: name1, name2: name2, amt: amt1}
+        if (rounded_amt1 < rounded_amt2){
+          members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(5)
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt1}
           payment_list.push(new_obj)
           index++
         }
-        else if (amt1 > amt2){
-          members_to_pay[index][1] = parseFloat(amt1-amt2).toFixed(2)
-          new_obj = {name1: name1, name2: name2, amt: amt2}
+        else if (rounded_amt1 > rounded_amt2){
+          members_to_pay[index][1] = parseFloat(amt1-amt2).toFixed(5)
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index2++
         }
-        else{
-          new_obj = {name1: name1, name2: name2, amt: amt2}
+        else if(rounded_amt1 === rounded_amt2){
+          new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index++
           index2++
@@ -219,9 +237,11 @@ class IndividualGroup extends Component {
           "expense_amt": amount,
           "proof":"somewhereontheweb.com"
         }
-        // Api.post('expense', obj).then(resp =>{
-        //   console.log('insert resp:', resp)
-        // })
+        Api.post('expense', obj).then(resp =>{
+          console.log('insert resp:', resp)
+        }).catch(function(e){
+          console.log(e)
+        })
       }
 
     }
@@ -230,7 +250,7 @@ class IndividualGroup extends Component {
       let obj = {
         operation: 'insert',
         member_id: person,
-        group_id: 'mikegroup',
+        group_id: this.state.groupid,
         expense_name: item,
         expense_amt: amount,
         proof: receipt,
@@ -238,6 +258,8 @@ class IndividualGroup extends Component {
       console.log('*** obj ***', obj);
       Api.post('expense', obj).then(resp => {
         console.log('resp:', resp);
+      }).catch(function(e){
+        console.log(e)
       })
       this.setState({item: '', person: '' , amount: '' , receipt: ''});
 
@@ -262,17 +284,13 @@ class IndividualGroup extends Component {
       let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
       let members_to_pay, members_to_receive
       [members_to_pay, members_to_receive] = this.get_separate_member_groups()
-      console.log('avg:', avg_cost)
-      console.log('m:', members)
-      console.log('1:', members_to_pay)
-      console.log('2',members_to_receive)
       let payment_list = []
       if (Object.keys(members).length > 1){
         payment_list = this.distribute_cost(members_to_pay, members_to_receive)
       }
       let item_lst = this.state.summary
       console.log('item:', this.state.item_to_add)
-
+      console.log('redux:--', this.state.members, this.state.groupid)
       return (
         <ScrollView>
             <Header
@@ -302,7 +320,6 @@ class IndividualGroup extends Component {
               />
 
             </View>
-
 
             {
               this.state.selectedIndex===0 
@@ -594,4 +611,9 @@ const styles = StyleSheet.create({
 
 });
 
-export default IndividualGroup;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+  memberState: state.members, 
+});
+
+export default connect(mapStateToProps)(IndividualGroup);

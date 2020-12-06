@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import * as ReactLibraries from 'react'
 import {
   StyleSheet,
   View,
@@ -11,70 +12,86 @@ import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
 import { ListItem, Avatar, Header, SearchBar } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-const list = [
-  {
-    name: 'Amy Farha',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-    subtitle: 'Vice President'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Jack Johns',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Apple',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Peaches',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Blueberry',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Watermellon',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Mellon',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-]
+import Api from '../API.js'
+import { connect } from 'react-redux';
+import { updateMembers } from '../store/actions/updateMembers.js';
+import { bindActionCreators } from 'redux';
 
 class Group extends Component{
   constructor(){
     super()
     this.state = {
       search:'',
+      group_lst: [],
+      member_lst: [],
     }
+    this.getGroups = this.getGroups.bind(this)
+    this.clickGroup = this.clickGroup.bind(this)
+  }
+
+  // refresh page every time we are on this component 
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.getGroups()
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  getGroups(){
+    let obj ={
+      "operation": "get",
+      "owner_id": this.props.loginState['userid'],
+    }
+    Api.post('groups', obj).then(resp =>{
+      let group_lst = []
+      resp['execution_result'].map((obj, index)=>{
+        let new_obj ={
+          name: obj['group_name'],
+          id: obj['group_id'],
+        }
+        group_lst.push(new_obj)
+      })
+      this.setState({group_lst})
+    }).catch(function(e){
+      console.log('get groups error')
+    })
   }
 
   updateSearch = (search) => {
     this.setState({ search });
   }
 
+  clickGroup(groupID){
+    let obj ={
+      "operation": "get",
+      "group_id": groupID,
+    }
+    console.log(groupID)
+    Api.post('group', obj).then(resp =>{
+      console.log('group:', resp)
+      let member_lst = {}
+      resp['execution_result'].map((obj, index)=>{
+        member_lst[obj.member_id] = 0
+      })
+      console.log(member_lst)
+      this.props.updateMembers(member_lst, groupID)
+      console.log(this.props.memberState)
+      this.props.navigation.navigate('IndividualGroup')
+      
+    })
+  }
+
   render(){
-    const { search } = this.state;
+    const { search, group_lst } = this.state;
     // If search === 0 then return whole list
     // else map list and pick the ones with the same words in name
     let new_lst
-    if (search === 0){ new_lst = list }
+    if (search === 0){ new_lst = group_lst }
     else{
-      new_lst = list.filter(obj => {
+      new_lst = group_lst.filter(obj => {
         return obj.name.toLowerCase().includes(search.toLowerCase())
       })
     }
@@ -95,11 +112,11 @@ class Group extends Component{
           {
             new_lst.map((l, i) => (
               <ListItem key={i} bottomDivider 
-              onPress={() => this.props.navigation.navigate('IndividualGroup')}>
-                <Avatar source={{uri: l.avatar_url}} />
+              // onPress={() => this.props.navigation.navigate('IndividualGroup')}
+              onPress={() => this.clickGroup(l.id)}
+              >
                 <ListItem.Content>
                   <ListItem.Title>{l.name}</ListItem.Title>
-                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             ))
@@ -134,4 +151,16 @@ const styles = StyleSheet.create({
 
 });
   
-export default Group;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+  updateState: state.updated,
+  memberState: state.members, 
+});
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateMembers,
+  }, dispatch)
+);
+
+// export default Group;
+export default connect(mapStateToProps, mapDispatchToProps)(Group);

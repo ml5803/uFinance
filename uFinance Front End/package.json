@@ -18,7 +18,6 @@
     "@react-navigation/native": "^5.8.6",
     "@react-navigation/stack": "^5.9.3",
     "@unimodules/core": "^5.5.1",
-    "@unimodules/react-native-adapter": "^5.6.0",
     "aws-sdk": "^2.796.0",
     "base64-arraybuffer": "^0.2.0",
     "expo-asset": "^8.2.0",
@@ -56,7 +55,7 @@
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
-    "react-native-dotenv": "^2.4.2",
+    "react-native-dotenv": "^2.4.3",
     "react-test-renderer": "16.13.1"
   },
   "jest": {

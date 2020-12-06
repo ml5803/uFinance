@@ -1,4 +1,4 @@
-import { LOGGED_CHANGE } from '../constants';
+import { LOGGED_CHANGE } from '../constants/index.js';
 const initialState = {
     loggedin: false,
     userid: null
