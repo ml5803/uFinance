@@ -99,7 +99,7 @@ Resources:
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !GetAtt uFinanceAPIG.RootResourceId
-      PathPart: group
+      PathPart: groups
       RestApiId: !Ref uFinanceAPIG
 
   uFinanceAPIGroup:
@@ -107,7 +107,7 @@ Resources:
       Type: AWS::ApiGateway::Method
       Properties:
         HttpMethod: POST
-        OperationName: group
+        OperationName: groups
         ResourceId: !Ref uFinanceAPIGroupResource
         RestApiId: !Ref uFinanceAPIG
         AuthorizationType: NONE
@@ -115,6 +115,28 @@ Resources:
           Type: AWS_PROXY
           IntegrationHttpMethod: POST
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupHandlerLambda.Arn}/invocations"
+          Credentials: !GetAtt RootRole.Arn
+
+  uFinanceAPIIndiGroupResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt uFinanceAPIG.RootResourceId
+      PathPart: groups
+      RestApiId: !Ref uFinanceAPIG
+
+  uFinanceAPIIndiGroup:
+      DependsOn: uFinanceAPIIndiGroupResource
+      Type: AWS::ApiGateway::Method
+      Properties:
+        HttpMethod: POST
+        OperationName: groups
+        ResourceId: !Ref uFinanceAPIIndiGroupResource
+        RestApiId: !Ref uFinanceAPIG
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS_PROXY
+          IntegrationHttpMethod: POST
+          Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndiGroupHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
   uFinanceReceiptExtractResource:
@@ -262,6 +284,17 @@ Resources:
       FunctionName: HandleGroups
       MemorySize: 512 
       Handler: handlers.groups_handler.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt RootRole.Arn
+      Timeout: 900 
+
+  IndiGroupHandlerLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Handle operations for a selected group
+      FunctionName: HandleGroup
+      MemorySize: 512 
+      Handler: handlers.group_handler.lambda_handler
       Runtime: python3.7
       Role: !GetAtt RootRole.Arn
       Timeout: 900 
