@@ -132,7 +132,7 @@ class GroupPayment extends Component {
         Api.post('expense', obj).then(resp => {
           console.log('resp:', resp);
         })
-        this.props.updateReceipt(this.state.cost, this.state.item)
+        this.props.updateReceipt(this.state.cost, this.state.item, this.state.url)
       });
 
     }

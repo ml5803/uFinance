@@ -2,6 +2,7 @@ import { UPDATE_RECEIPT } from '../constants/updateReceipt.js';
 const initialState = {
     cost: '',
     item: '',
+    url: '',
 };
 
 const receiptReducer = (state = initialState, action) => {
@@ -11,6 +12,7 @@ const receiptReducer = (state = initialState, action) => {
                 ...state,
                 cost: action.payload[0],
                 item: action.payload[1],
+                url: action.payload[2]
 
             };
         default:

@@ -31,9 +31,11 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 class IndividualGroup extends Component {
-    constructor () {
-      super()
+    constructor (props) {
+      super(props)
       this.state = {
+        groupName: props.route.params.name,
+
         item: null,
         person: null,
         amount: null,
@@ -267,6 +269,7 @@ class IndividualGroup extends Component {
     }
 
     render () {
+      console.log('name: ', this.state.groupName);
       const component1 = () => <Text>Summary</Text>
       const component2 = () => <Text>Items</Text>
       const component3 = () => <Text>Add Expense</Text>
@@ -296,7 +299,7 @@ class IndividualGroup extends Component {
         <ScrollView>
             <Header
               leftComponent={{ icon: 'chevron-left', type:'FontAwesome', color: '#fff', onPress:() => this.props.navigation.navigate('Groups') }}
-              centerComponent={{ text: 'Group A', style: { color: '#fff', fontSize: 20,} }}
+              centerComponent={{ text: this.state.groupName, style: { color: '#fff', fontSize: 20,} }}
             />
             <View
               style={{

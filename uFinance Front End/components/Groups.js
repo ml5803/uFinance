@@ -64,7 +64,8 @@ class Group extends Component{
     this.setState({ search });
   }
 
-  clickGroup(groupID, groupName){
+  clickGroup(groupID, name){
+    console.log('click group name: ', name)
     let obj ={
       "operation": "get",
       "group_id": groupID,
@@ -79,7 +80,7 @@ class Group extends Component{
       console.log(member_lst)
       this.props.updateMembers(member_lst, groupID)
       console.log(this.props.memberState)
-      this.props.navigation.navigate('IndividualGroup', { groupName })
+      this.props.navigation.navigate('IndividualGroup', {name} )
       
     })
   }
