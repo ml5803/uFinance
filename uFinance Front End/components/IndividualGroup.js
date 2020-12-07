@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 
-import { Image, ScrollView, Dimensions, Linking } from 'react-native'
-import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox } from 'react-native-elements'
+import { Image, ScrollView, Dimensions, Linking, TeextInput } from 'react-native'
+import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox, Input } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
+import { connect } from 'react-redux';
+import { updateReceipt } from '../store/actions/updateReceipt.js';
+import { bindActionCreators } from 'redux';
 import Api from '../API.js';
 
 //import Icon from 'react-native-vector-icons/FontAwesome';
-
-
-import { Input } from 'react-native-elements';
 
 import {
   LineChart,
@@ -29,7 +29,6 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import { connect } from 'react-redux';
 
 class IndividualGroup extends Component {
     constructor () {
@@ -185,6 +184,8 @@ class IndividualGroup extends Component {
         console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
         let rounded_amt1 = parseFloat(amt1).toFixed(2)
         let rounded_amt2 = parseFloat(amt2).toFixed(2)
+        /*let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
+        let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100*/
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
           members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(5)
@@ -409,7 +410,8 @@ class IndividualGroup extends Component {
                 <Card.Title>Who Paid?</Card.Title>
                 <Input
                   ref={personInput}
-                  placeholder='Required'
+                  placeholder= {this.props.loginState['userid']}
+
                   onChangeText={value => this.setState({ person: value })}
                 />
                 <Card.Title>Amount</Card.Title>
@@ -613,7 +615,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   loginState: state.loggedin,
-  memberState: state.members, 
+  memberState: state.members,
+  receiptState: state.receipt,
 });
 
-export default connect(mapStateToProps)(IndividualGroup);
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateReceipt,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(IndividualGroup);
