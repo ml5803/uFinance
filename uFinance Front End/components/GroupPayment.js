@@ -3,6 +3,9 @@ import { AppRegistry, CameraRoll, Dimensions, Image, TouchableOpacity, View, Sty
 import { RNCamera } from 'react-native-camera';
 import { Button } from 'react-native-vector-icons/Ionicons';
 import { RNS3 } from 'react-native-aws3';
+import { connect } from 'react-redux';
+import { updateReceipt } from '../store/actions/updateReceipt.js';
+import { bindActionCreators } from 'redux';
 import Api from '../API.js';
 
 //import S3 from "react-aws-s3";
@@ -16,6 +19,8 @@ class GroupPayment extends Component {
     this.state = {
       path: null,
       url: null,
+      cost: null,
+      item: null,
     };
   }
 
@@ -127,6 +132,7 @@ class GroupPayment extends Component {
         Api.post('expense', obj).then(resp => {
           console.log('resp:', resp);
         })
+        this.props.updateReceipt(this.state.cost, this.state.item)
       });
 
     }
@@ -156,4 +162,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GroupPayment;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+  memberState: state.members,
+  receiptState: state.receipt,
+});
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateReceipt,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(GroupPayment);

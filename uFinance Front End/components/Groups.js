@@ -64,7 +64,7 @@ class Group extends Component{
     this.setState({ search });
   }
 
-  clickGroup(groupID){
+  clickGroup(groupID, groupName){
     let obj ={
       "operation": "get",
       "group_id": groupID,
@@ -79,7 +79,7 @@ class Group extends Component{
       console.log(member_lst)
       this.props.updateMembers(member_lst, groupID)
       console.log(this.props.memberState)
-      this.props.navigation.navigate('IndividualGroup')
+      this.props.navigation.navigate('IndividualGroup', { groupName })
       
     })
   }
@@ -113,7 +113,7 @@ class Group extends Component{
             new_lst.map((l, i) => (
               <ListItem key={i} bottomDivider 
               // onPress={() => this.props.navigation.navigate('IndividualGroup')}
-              onPress={() => this.clickGroup(l.id)}
+              onPress={() => this.clickGroup(l.id, l.name)}
               >
                 <ListItem.Content>
                   <ListItem.Title>{l.name}</ListItem.Title>
