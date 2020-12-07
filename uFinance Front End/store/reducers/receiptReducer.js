@@ -10,9 +10,10 @@ const receiptReducer = (state = initialState, action) => {
           case UPDATE_RECEIPT:
             return {
                 ...state,
-                cost: action.payload[0],
-                item: action.payload[1],
-                url: action.payload[2]
+                item: action.payload[0],
+                person: action.payload[1],
+                cost: action.payload[2],
+                receipt: action.payload[3],
 
             };
         default:

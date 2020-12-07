@@ -179,6 +179,7 @@ class IndividualGroup extends Component {
         let name1, amt1;
         let name2, amt2;
         console.log('index1:', index, ' index2:', index2);
+        console.log('members to pay: ', members_to_pay[index][0]);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
         console.log('index1:', index, ' index2:', index2)
@@ -249,7 +250,15 @@ class IndividualGroup extends Component {
 
     }
 
-    uploadPayment(item, person, amount, receipt){
+    uploadPayment(){
+      console.log('state item: ', this.state.item);
+
+      let item = this.state.item ? this.state.item: this.props.receiptState['item']
+      let person = this.state.person ? this.state.person: this.props.loginState['userid']
+      let amount = this.state.amount ? this.state.amount: this.props.receiptState['cost']
+      let receipt = this.state.receipt ? this.state.receipt: this.props.receiptState['receipt']
+      console.log('item: ', item, ' person: ', person, ' amount: ', amount, ' receipt: ', receipt);
+
       let obj = {
         operation: 'insert',
         member_id: person,
@@ -264,12 +273,18 @@ class IndividualGroup extends Component {
       }).catch(function(e){
         console.log(e)
       })
-      this.setState({item: '', person: '' , amount: '' , receipt: ''});
-
+      this.setState({item: null, person: null, amount: null, receipt: null});
+      this.props.updateReceipt('', '', '', '');
     }
 
     render () {
-      console.log('name: ', this.state.groupName);
+      console.log('redux stuff: ', this.props.receiptState['receipt'])
+      let item = this.props.receiptState['item']
+      let person = this.props.loginState['userid']
+      let amount = this.props.receiptState['cost']
+      let receipt = this.props.receiptState['receipt']
+
+      //this.setState({item: {this.props.receiptState['item']}, {person: this.props.loginState['userid']} , {amount: this.props.receiptState['cost']} , {receipt: this.props.receiptState['url']}});
       const component1 = () => <Text>Summary</Text>
       const component2 = () => <Text>Items</Text>
       const component3 = () => <Text>Add Expense</Text>
@@ -407,7 +422,7 @@ class IndividualGroup extends Component {
 
                 <Input
                   ref={itemInput}
-                  placeholder='Required'
+                  placeholder= {item}
                   onChangeText={value => this.setState({ item: value })}
                 />
                 <Card.Title>Who Paid?</Card.Title>
@@ -420,26 +435,26 @@ class IndividualGroup extends Component {
                 <Card.Title>Amount</Card.Title>
                 <Input
                   ref={amountInput}
-                  placeholder='Required'
+                  placeholder={amount}
                   onChangeText={value => this.setState({ amount: value })}
                 />
                 <Card.Title>Receipt</Card.Title>
                 <Input
                   ref={receiptInput}
-                  placeholder='Optional'
+                  placeholder={receipt}
                   onChangeText={value => this.setState({ receipt: value })}
                 />
 
                 <Button
                   title="Submit"
-                  onPress={() => {itemInput.current.clear();
+                  onPress={() => {console.log("****************************************************************");
+                                  console.log('input: ', this.state.item, this.state.person, this.state.amount, this.state.receipt);
+                                  this.uploadPayment();//this.state.item, this.state.person, this.state.amount, this.state.receipt);
+                                  itemInput.current.clear();
                                   personInput.current.clear();
                                   amountInput.current.clear();
-                                  receiptInput.current.clear();
-                                  this.uploadPayment(this.state.item, this.state.person, this.state.amount, this.state.receipt)}}
+                                  receiptInput.current.clear()}}
                 />
-
-
                 </Card> : null
             }
         </ScrollView>

@@ -1,7 +1,7 @@
 import { UPDATE_RECEIPT } from '../constants/updateReceipt.js';
-export function updateReceipt(cost, item) {
+export function updateReceipt(item, person, cost, receipt) {
     return {
         type: UPDATE_RECEIPT,
-        payload: [cost, item, url]
+        payload: [item, person, cost, receipt]
     }
 }
