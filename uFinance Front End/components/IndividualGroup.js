@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import {Picker} from '@react-native-picker/picker';
 import { Image, ScrollView, Dimensions, Linking, TeextInput } from 'react-native'
 import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox, Input } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
@@ -37,7 +38,7 @@ class IndividualGroup extends Component {
         groupName: props.route.params.name,
 
         item: null,
-        person: null,
+        person: props.loginState['userid'],
         amount: null,
         receipt: null,
 
@@ -48,6 +49,7 @@ class IndividualGroup extends Component {
         total_cost: 0,
         current_member_id: 0,
         members: {},
+        memberNames: [{}],
         summary: [],
         item_to_add: '',
         member_to_add: '',
@@ -74,9 +76,11 @@ class IndividualGroup extends Component {
     // get group expense info
     componentDidMount(){
       console.log('---------herererer')
+
       let members = this.props.memberState.members
       let groupid = this.props.memberState.group_id
       this.setState({members: members, groupid: groupid})
+
       let obj = {
         operation: 'get',
         group_id: this.props.memberState.group_id,
@@ -211,6 +215,10 @@ class IndividualGroup extends Component {
       }
       return payment_list
     }
+
+    getNames(namesList){
+    }
+
     handleTextChange(text, index){
       if (index===1){
         this.setState({item_to_add: text})
@@ -273,7 +281,7 @@ class IndividualGroup extends Component {
       }).catch(function(e){
         console.log(e)
       })
-      this.setState({item: null, person: null, amount: null, receipt: null});
+      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null});
       this.props.updateReceipt('', '', '', '');
     }
 
@@ -300,6 +308,8 @@ class IndividualGroup extends Component {
       const receiptInput = React.createRef();
       // seperate members to pay and receive groups
       let members = this.state.members
+      console.log('***********************************************', members)
+      console.log('members: ', Object.keys(members))
       let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
       let members_to_pay, members_to_receive
       [members_to_pay, members_to_receive] = this.get_separate_member_groups()
@@ -418,26 +428,38 @@ class IndividualGroup extends Component {
                     onPress={() => this.props.navigation.navigate('GroupPayment')}
                   />
                 </View>
-                <Card.Title>Item</Card.Title>
 
+                <Card.Title>Who Paid?</Card.Title>
+                <View style={styles.rowContainer}>
+                  <Picker
+                    selectedValue={this.state.person}
+                    style={styles.internalPickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setState({person: itemValue})
+                    }>{
+
+                      Object.keys(members).map( (name)=> {
+                        return <Picker.item label={name} value={name} />
+                      })
+
+                    }
+                  </Picker>
+                </View>
+
+                <Card.Title>Item</Card.Title>
                 <Input
                   ref={itemInput}
                   placeholder= {item}
                   onChangeText={value => this.setState({ item: value })}
                 />
-                <Card.Title>Who Paid?</Card.Title>
-                <Input
-                  ref={personInput}
-                  placeholder= {this.props.loginState['userid']}
 
-                  onChangeText={value => this.setState({ person: value })}
-                />
-                <Card.Title>Amount</Card.Title>
+                <Card.Title>Cost</Card.Title>
                 <Input
                   ref={amountInput}
                   placeholder={amount}
                   onChangeText={value => this.setState({ amount: value })}
                 />
+
                 <Card.Title>Receipt</Card.Title>
                 <Input
                   ref={receiptInput}
@@ -451,7 +473,6 @@ class IndividualGroup extends Component {
                                   console.log('input: ', this.state.item, this.state.person, this.state.amount, this.state.receipt);
                                   this.uploadPayment();//this.state.item, this.state.person, this.state.amount, this.state.receipt);
                                   itemInput.current.clear();
-                                  personInput.current.clear();
                                   amountInput.current.clear();
                                   receiptInput.current.clear()}}
                 />
@@ -485,6 +506,16 @@ class IndividualGroup extends Component {
 
 
 const styles = StyleSheet.create({
+  rowContainer: {
+    height: 64,
+    alignItems: 'center',
+  },
+
+  internalPickerContainer: {
+    flex: Platform.OS === 'ios' ? 1 : null, // for Android, not visible otherwise.
+    width: "100%",
+  },
+
   buttonContainer: {
     marginBottom: 10
   },
