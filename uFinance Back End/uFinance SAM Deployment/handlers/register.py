@@ -53,7 +53,7 @@ def lambda_handler(event, context):
 
     # Password
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper Password:Invalid character input"
+        error_message = "Improper Password: Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -69,7 +69,7 @@ def lambda_handler(event, context):
 
     # Username
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper ID:Invalid character input"
+        error_message = "Improper ID: Invalid character input"
         register_status = False
     else:
         register_status = True
