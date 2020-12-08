@@ -13,6 +13,10 @@ import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
 import { Card, ListItem, Button, Icon, Header } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux';
+import Api from '../API.js'
+import { updateMembers } from '../store/actions/updateMembers.js';
+import { bindActionCreators } from 'redux';
 
 const users = [
   {
@@ -32,6 +36,19 @@ class IndividualGroupSettings extends Component {
     }
   }
 
+  componentDidMount(){
+    let members = {...this.props.memberState.members}
+    let groupid = this.props.memberState.group_id
+    let oldMembers = []
+    let toDelete = []
+    Object.keys(members).map((key, index)=>{
+      oldMembers.push(key)
+      toDelete.push(0)
+    })
+    
+    this.setState({GroupName: groupid, oldMembers, toDelete})
+  }
+
   updateGroupName(newName){
     let newlst = this.state.GroupName
     newlst = newName
@@ -39,12 +56,16 @@ class IndividualGroupSettings extends Component {
   }
   updateNewNames(email, index){
     let newlst = this.state.newMembers
-    newlst[index] = email
+    newlst[index] = email.replace(/\s+/g, '')
     this.setState({newMembers: newlst})
   }
   updateToDelete(index){
+    let curr_members = this.state.oldMembers
+    if (curr_members[index] === this.props.loggedin.user_id){
+      return 
+    }
     let newlst = this.state.toDelete
-    if (newlst[index] == 1){ newlst[index] = 0 }
+    if (newlst[index] === 1){ newlst[index] = 0 }
     else{ newlst[index] = 1 } 
     console.log(newlst, '-----', index)
     this.setState({toDelete: newlst})
@@ -56,6 +77,44 @@ class IndividualGroupSettings extends Component {
     let newlst = this.state.newMembers
     newlst.splice(index, 1)
     this.setState({newMembers: newlst})
+  }
+  submitbtn(){
+    let remaining_members = []
+    let remove_members = []
+    let add_members = this.state.newMembers
+    let old_members = this.state.oldMembers
+    // remove empty boxes from add_members
+    let add_members_filtered = add_members.filter(obj => {
+      return obj !== ''
+    })
+    this.state.toDelete.map((index, i)=>{
+      if (index===1){
+        remove_members.push(old_members[i])
+      }
+      else if (index===0){
+        remaining_members.push(old_members[i])
+      }
+    })
+    console.log('add_members:', add_members_filtered)
+    console.log('remove_members:', remove_members)
+    console.log('remaining_members:', remaining_members)
+    let obj ={
+      operation: 'modify',
+      group_id: this.props.memberState.group_id,
+      add_members: add_members,
+      // remove_members: remove_members 
+    }
+    Api.post('group', obj).then(resp =>{
+      console.log('resp', resp)
+    })
+    // update members in redux to reflect changes for this current group 
+    let new_obj = {}
+    remaining_members.map((name, index)=>{
+      new_obj[name] = 0
+    })
+    console.log(new_obj, '=================')
+    // this.props.updateMembers(new_obj, this.state.GroupName)
+
   }
 
   render(){
@@ -81,7 +140,7 @@ class IndividualGroupSettings extends Component {
           </Card>
 
           {/* Delete Members Section --- */}
-          <Card>
+          {/* <Card>
             <Card.Title>Delete Members</Card.Title>
             <Card.Divider/>
             <View>
@@ -101,7 +160,7 @@ class IndividualGroupSettings extends Component {
                 ))
               }
             </View>
-          </Card>
+          </Card> */}
 
           {/* Add Members Section --- */}
           <Card>
@@ -140,6 +199,7 @@ class IndividualGroupSettings extends Component {
             <Button 
             title="Submit"
             titleStyle={styles.submitbtn}
+            onPress={()=>this.submitbtn()}
             />
           </View>
         {/* </LinearGradient> */}
@@ -234,4 +294,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default IndividualGroupSettings;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+  memberState: state.members, 
+});
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateMembers,
+  }, dispatch)
+);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(IndividualGroupSettings);

@@ -72,12 +72,12 @@ class Group extends Component{
     console.log(groupID)
     Api.post('group', obj).then(resp =>{
       console.log('group:', resp)
-      let member_lst = {}
+      let member_obj = {}
       resp['execution_result'].map((obj, index)=>{
-        member_lst[obj.member_id] = 0
+        member_obj[obj.member_id] = 0
       })
-      console.log(member_lst)
-      this.props.updateMembers(member_lst, groupID)
+      console.log(member_obj)
+      this.props.updateMembers(member_obj, groupID)
       console.log(this.props.memberState)
       this.props.navigation.navigate('IndividualGroup')
       

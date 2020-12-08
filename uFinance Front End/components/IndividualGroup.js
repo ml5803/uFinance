@@ -57,23 +57,25 @@ class IndividualGroup extends Component {
       this.get_separate_member_groups = this.get_separate_member_groups.bind(this)
       this.handleTextChange = this.handleTextChange.bind(this)
       this.addItem = this.addItem.bind(this)
-      // this.getInfo = this.getInfo.bind(this)
+      this.getInfo = this.getInfo.bind(this)
     }
 
-    // componentDidMount() {
-    //   this._unsubscribe = this.props.navigation.addListener('focus', () => {
-    //       this.getInfo()
-    //   });
-    // }
+    componentDidMount() {
+      // this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      //     this.getInfo()
+      // });
+      this.getInfo()
+    }
   
     // componentWillUnmount() {
     //   this._unsubscribe();
     // }
   
     // get group expense info
-    componentDidMount(){
+    getInfo(){
       console.log('---------herererer')
-      let members = this.props.memberState.members
+      let members = {...this.props.memberState.members}
+      console.log('members---:', members)
       let groupid = this.props.memberState.group_id
       this.setState({members: members, groupid: groupid})
       let obj = {
@@ -89,7 +91,7 @@ class IndividualGroup extends Component {
           let total_cost = this.state.total_cost
           for (let i=0; i < execution_data.length; i++){
             let member_id = execution_data[i].member_id
-            let cost = parseFloat(execution_data[i].expense_amt)
+            let cost = Math.round(parseFloat(execution_data[i].expense_amt)*100)/100
             let expense_id = execution_data[i].expense_id
             expense_objects[expense_id] = {
               member_id: member_id,
@@ -154,8 +156,10 @@ class IndividualGroup extends Component {
       let members_to_pay = []
       let members_to_receive = []
       console.log('avg', avg_cost)
+      console.log('members:', members)
+      console.log('total:', this.state.total_cost)
       for (let key in members){
-        let amt = parseFloat((members[key] - avg_cost).toFixed(5))
+        let amt = Math.round(parseFloat((members[key] - avg_cost))*100000)/100000
         // let amt = (members[key] - avg_cost)
         console.log('=======amt:', amt)
         if (amt > 0){
@@ -177,28 +181,33 @@ class IndividualGroup extends Component {
       while(index < members_to_pay.length || index2 < members_to_receive.length){
         let name1, amt1;
         let name2, amt2;
+        console.log(members_to_pay)
+        console.log(members_to_receive)
         console.log('index1:', index, ' index2:', index2);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
         console.log('index1:', index, ' index2:', index2)
         console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
         console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
-        let rounded_amt1 = parseFloat(amt1).toFixed(2)
-        let rounded_amt2 = parseFloat(amt2).toFixed(2)
+        let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
+        let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
+          console.log(rounded_amt1, ' < ', rounded_amt2)
           members_to_receive[index2][1] = parseFloat(amt2-amt1).toFixed(5)
           new_obj = {name1: name1, name2: name2, amt: rounded_amt1}
           payment_list.push(new_obj)
           index++
         }
         else if (rounded_amt1 > rounded_amt2){
+          console.log(rounded_amt1, ' > ', rounded_amt2)
           members_to_pay[index][1] = parseFloat(amt1-amt2).toFixed(5)
           new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index2++
         }
         else if(rounded_amt1 === rounded_amt2){
+          console.log(rounded_amt1, ' === ', rounded_amt2)
           new_obj = {name1: name1, name2: name2, amt: rounded_amt2}
           payment_list.push(new_obj)
           index++
@@ -247,22 +256,29 @@ class IndividualGroup extends Component {
     }
 
     uploadPayment(item, person, amount, receipt){
+      let parsedAmount = parseFloat(amount)
+      console.log('amount:', parsedAmount)
+      if (!parsedAmount){return }
       let obj = {
         operation: 'insert',
         member_id: person,
         group_id: this.state.groupid,
         expense_name: item,
-        expense_amt: amount,
+        expense_amt: parsedAmount,
         proof: receipt,
       }
+      let members = this.state.members
+      members[person] += parsedAmount
+      let total_cost = this.state.total_cost
+      total_cost += parsedAmount
+
       console.log('*** obj ***', obj);
       Api.post('expense', obj).then(resp => {
         console.log('resp:', resp);
       }).catch(function(e){
         console.log(e)
       })
-      this.setState({item: '', person: '' , amount: '' , receipt: ''});
-
+      this.setState({item: '', person: '' , amount: '' , receipt: '', members, total_cost});
     }
 
     render () {
