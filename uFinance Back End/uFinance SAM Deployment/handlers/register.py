@@ -122,6 +122,7 @@ def lambda_handler(event, context):
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
+        check_email
         query = """
                 INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
@@ -130,7 +131,7 @@ def lambda_handler(event, context):
         conn.commit()
     except Exception as e:
         print("Database connection failed due to {}".format(e))
-        error_message = "Database connection error"
+        error_message = e
         register_status = False
     finally:
         conn.close()
