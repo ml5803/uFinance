@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 import { Image, ScrollView } from 'react-native'
 import { Card, ListItem, Button, Icon, Avatar, Header } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -30,10 +31,15 @@ class Profile extends Component {
       super()
       this.state ={
         username: '',
+
+        language: 'java',
+
+        visible: false,
       }
       this.setUser = this.setUser.bind(this)
 
     }
+
 
     setUser(){
       this.setState({username: this.props.loginState['userid']})
@@ -41,6 +47,7 @@ class Profile extends Component {
     }
 
     render(){
+      var data = [["C", "Java", "JavaScript", "PHP"]];
       return (
 
         <ScrollView>
@@ -77,7 +84,9 @@ class Profile extends Component {
                   );
                 })
               }
+
             </Card>
+
 
             <Card>
               <Card.Title>Payment Owed</Card.Title>
@@ -86,6 +95,7 @@ class Profile extends Component {
                 oweMoney.map((u, i) => {
                   return (
                     <View key={i} style={styles.user}>
+
                       <View style={styles.inLineContainer}>
                           <Text style={styles.inLineTextSelf}>{this.props.loginState['userid']}</Text>
                           <Icon
@@ -132,6 +142,8 @@ class Profile extends Component {
                       }}
               />
           </Card>
+
+
         </ScrollView>
       );
     }

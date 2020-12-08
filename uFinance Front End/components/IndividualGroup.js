@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 
-import { Image, ScrollView, Dimensions, Linking } from 'react-native'
-import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox } from 'react-native-elements'
+import {Picker} from '@react-native-picker/picker';
+import { Image, ScrollView, Dimensions, Linking, TeextInput } from 'react-native'
+import { Card, ListItem, Button, Icon, ButtonGroup, Header, CheckBox, Input } from 'react-native-elements'
 import { RNCamera } from 'react-native-camera';
+import { connect } from 'react-redux';
+import { updateReceipt } from '../store/actions/updateReceipt.js';
+import { bindActionCreators } from 'redux';
 import Api from '../API.js';
 
 //import Icon from 'react-native-vector-icons/FontAwesome';
-
-
-import { Input } from 'react-native-elements';
 
 import {
   LineChart,
@@ -29,14 +30,15 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import { connect } from 'react-redux';
 
 class IndividualGroup extends Component {
-    constructor () {
-      super()
+    constructor (props) {
+      super(props)
       this.state = {
+        groupName: props.route.params.name,
+
         item: null,
-        person: null,
+        person: props.loginState['userid'],
         amount: null,
         receipt: null,
 
@@ -47,6 +49,7 @@ class IndividualGroup extends Component {
         total_cost: 0,
         current_member_id: 0,
         members: {},
+        memberNames: [{}],
         summary: [],
         item_to_add: '',
         member_to_add: '',
@@ -74,10 +77,16 @@ class IndividualGroup extends Component {
     // get group expense info
     getInfo(){
       console.log('---------herererer')
+<<<<<<< HEAD
       let members = {...this.props.memberState.members}
       console.log('members---:', members)
+=======
+
+      let members = this.props.memberState.members
+>>>>>>> 4542964b243112abff45e9e72a248b662f60e966
       let groupid = this.props.memberState.group_id
       this.setState({members: members, groupid: groupid})
+
       let obj = {
         operation: 'get',
         group_id: this.props.memberState.group_id,
@@ -184,13 +193,21 @@ class IndividualGroup extends Component {
         console.log(members_to_pay)
         console.log(members_to_receive)
         console.log('index1:', index, ' index2:', index2);
+        console.log('members to pay: ', members_to_pay[index][0]);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
         console.log('index1:', index, ' index2:', index2)
         console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
         console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
+<<<<<<< HEAD
         let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
         let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100
+=======
+        let rounded_amt1 = parseFloat(amt1).toFixed(2)
+        let rounded_amt2 = parseFloat(amt2).toFixed(2)
+        /*let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
+        let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100*/
+>>>>>>> 4542964b243112abff45e9e72a248b662f60e966
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
           console.log(rounded_amt1, ' < ', rounded_amt2)
@@ -216,6 +233,10 @@ class IndividualGroup extends Component {
       }
       return payment_list
     }
+
+    getNames(namesList){
+    }
+
     handleTextChange(text, index){
       if (index===1){
         this.setState({item_to_add: text})
@@ -255,10 +276,22 @@ class IndividualGroup extends Component {
 
     }
 
+<<<<<<< HEAD
     uploadPayment(item, person, amount, receipt){
       let parsedAmount = parseFloat(amount)
       console.log('amount:', parsedAmount)
       if (!parsedAmount){return }
+=======
+    uploadPayment(){
+      console.log('state item: ', this.state.item);
+
+      let item = this.state.item ? this.state.item: this.props.receiptState['item']
+      let person = this.state.person ? this.state.person: this.props.loginState['userid']
+      let amount = this.state.amount ? this.state.amount: this.props.receiptState['cost']
+      let receipt = this.state.receipt ? this.state.receipt: this.props.receiptState['receipt']
+      console.log('item: ', item, ' person: ', person, ' amount: ', amount, ' receipt: ', receipt);
+
+>>>>>>> 4542964b243112abff45e9e72a248b662f60e966
       let obj = {
         operation: 'insert',
         member_id: person,
@@ -278,10 +311,22 @@ class IndividualGroup extends Component {
       }).catch(function(e){
         console.log(e)
       })
+<<<<<<< HEAD
       this.setState({item: '', person: '' , amount: '' , receipt: '', members, total_cost});
+=======
+      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null});
+      this.props.updateReceipt('', '', '', '');
+>>>>>>> 4542964b243112abff45e9e72a248b662f60e966
     }
 
     render () {
+      console.log('redux stuff: ', this.props.receiptState['receipt'])
+      let item = this.props.receiptState['item']
+      let person = this.props.loginState['userid']
+      let amount = this.props.receiptState['cost']
+      let receipt = this.props.receiptState['receipt']
+
+      //this.setState({item: {this.props.receiptState['item']}, {person: this.props.loginState['userid']} , {amount: this.props.receiptState['cost']} , {receipt: this.props.receiptState['url']}});
       const component1 = () => <Text>Summary</Text>
       const component2 = () => <Text>Items</Text>
       const component3 = () => <Text>Add Expense</Text>
@@ -297,6 +342,8 @@ class IndividualGroup extends Component {
       const receiptInput = React.createRef();
       // seperate members to pay and receive groups
       let members = this.state.members
+      console.log('***********************************************', members)
+      console.log('members: ', Object.keys(members))
       let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
       let members_to_pay, members_to_receive
       [members_to_pay, members_to_receive] = this.get_separate_member_groups()
@@ -311,7 +358,7 @@ class IndividualGroup extends Component {
         <ScrollView>
             <Header
               leftComponent={{ icon: 'chevron-left', type:'FontAwesome', color: '#fff', onPress:() => this.props.navigation.navigate('Groups') }}
-              centerComponent={{ text: 'Group A', style: { color: '#fff', fontSize: 20,} }}
+              centerComponent={{ text: this.state.groupName, style: { color: '#fff', fontSize: 20,} }}
             />
             <View
               style={{
@@ -415,42 +462,54 @@ class IndividualGroup extends Component {
                     onPress={() => this.props.navigation.navigate('GroupPayment')}
                   />
                 </View>
-                <Card.Title>Item</Card.Title>
 
+                <Card.Title>Who Paid?</Card.Title>
+                <View style={styles.rowContainer}>
+                  <Picker
+                    selectedValue={this.state.person}
+                    style={styles.internalPickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setState({person: itemValue})
+                    }>{
+
+                      Object.keys(members).map( (name)=> {
+                        return <Picker.item label={name} value={name} />
+                      })
+
+                    }
+                  </Picker>
+                </View>
+
+                <Card.Title>Item</Card.Title>
                 <Input
                   ref={itemInput}
-                  placeholder='Required'
+                  placeholder= {item}
                   onChangeText={value => this.setState({ item: value })}
                 />
-                <Card.Title>Who Paid?</Card.Title>
-                <Input
-                  ref={personInput}
-                  placeholder='Required'
-                  onChangeText={value => this.setState({ person: value })}
-                />
-                <Card.Title>Amount</Card.Title>
+
+                <Card.Title>Cost</Card.Title>
                 <Input
                   ref={amountInput}
-                  placeholder='Required'
+                  placeholder={amount}
                   onChangeText={value => this.setState({ amount: value })}
                 />
+
                 <Card.Title>Receipt</Card.Title>
                 <Input
                   ref={receiptInput}
-                  placeholder='Optional'
+                  placeholder={receipt}
                   onChangeText={value => this.setState({ receipt: value })}
                 />
 
                 <Button
                   title="Submit"
-                  onPress={() => {itemInput.current.clear();
-                                  personInput.current.clear();
+                  onPress={() => {console.log("****************************************************************");
+                                  console.log('input: ', this.state.item, this.state.person, this.state.amount, this.state.receipt);
+                                  this.uploadPayment();//this.state.item, this.state.person, this.state.amount, this.state.receipt);
+                                  itemInput.current.clear();
                                   amountInput.current.clear();
-                                  receiptInput.current.clear();
-                                  this.uploadPayment(this.state.item, this.state.person, this.state.amount, this.state.receipt)}}
+                                  receiptInput.current.clear()}}
                 />
-
-
                 </Card> : null
             }
         </ScrollView>
@@ -481,6 +540,16 @@ class IndividualGroup extends Component {
 
 
 const styles = StyleSheet.create({
+  rowContainer: {
+    height: 64,
+    alignItems: 'center',
+  },
+
+  internalPickerContainer: {
+    flex: Platform.OS === 'ios' ? 1 : null, // for Android, not visible otherwise.
+    width: "100%",
+  },
+
   buttonContainer: {
     marginBottom: 10
   },
@@ -629,7 +698,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   loginState: state.loggedin,
-  memberState: state.members, 
+  memberState: state.members,
+  receiptState: state.receipt,
 });
 
-export default connect(mapStateToProps)(IndividualGroup);
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateReceipt,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(IndividualGroup);

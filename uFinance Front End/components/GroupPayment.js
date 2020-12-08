@@ -3,6 +3,9 @@ import { AppRegistry, CameraRoll, Dimensions, Image, TouchableOpacity, View, Sty
 import { RNCamera } from 'react-native-camera';
 import { Button } from 'react-native-vector-icons/Ionicons';
 import { RNS3 } from 'react-native-aws3';
+import { connect } from 'react-redux';
+import { updateReceipt } from '../store/actions/updateReceipt.js';
+import { bindActionCreators } from 'redux';
 import Api from '../API.js';
 
 //import S3 from "react-aws-s3";
@@ -16,6 +19,10 @@ class GroupPayment extends Component {
     this.state = {
       path: null,
       url: null,
+      splitURL:null,
+      cost: null,
+      splitCost:null,
+      item: null,
     };
   }
 
@@ -96,7 +103,7 @@ class GroupPayment extends Component {
         name: path[path.length - 1] , //returns jpg name
         type: 'image/jpeg'
       };
-
+      console.log('path: ', path)
       const options = {
         keyPrefix: 'photos/',
         bucket: TEST_BUCKET,
@@ -115,18 +122,34 @@ class GroupPayment extends Component {
         this.setState({url: response.body.postResponse.location});
         console.log('*** URL ***', this.state.url);
 
+        this.setState({splitURL: this.state.url.split("%2F")})
+        this.setState({url: this.state.splitURL[0] + '/' + this.state.splitURL[1]})
+
         let obj = {
-          operation: 'insert',
-          member_id: 'mike',
-          group_id: 'mikegroup',
-          expense_name: 'food',
-          expense_amt: '5',
-          proof: this.state.url,
+           url: this.state.url
         }
         console.log('*** obj ***', obj);
-        Api.post('expense', obj).then(resp => {
-          console.log('resp:', resp);
+        Api.post('extract', obj).then(resp => {
+
+
+          this.setState({splitCost: resp.response.total_cost.split("$")})
+          this.setState({cost: this.state.splitCost[this.state.splitCost.length - 1]})
+          //this.setState({cost: resp.response.total_cost})
+          this.setState({item: resp.response.place})
+
+          console.log('cost: ', this.state.cost)
+          console.log('place: ', this.state.item)
+          console.log('url: ', this.state.url)
+
+          this.props.updateReceipt(this.state.item, this.props.loginState['userid'], this.state.cost, this.state.url)
+          console.log('redux cost: ', this.props.receiptState['cost'])
+          console.log('redux place: ', this.props.receiptState['item'])
+          console.log('redux url: ', this.props.receiptState['receipt'])
+        }).catch(function(e){
+          console.log(e)
         })
+
+
       });
 
     }
@@ -156,4 +179,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GroupPayment;
+const mapStateToProps = state => ({
+  loginState: state.loggedin,
+  memberState: state.members,
+  receiptState: state.receipt,
+});
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateReceipt,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(GroupPayment);
