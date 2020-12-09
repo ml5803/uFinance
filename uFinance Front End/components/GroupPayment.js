@@ -131,6 +131,7 @@ class GroupPayment extends Component {
         console.log('*** obj ***', obj);
         Api.post('extract', obj).then(resp => {
 
+          console.log("response: ", resp);
 
           this.setState({splitCost: resp.response.total_cost.split("$")})
           this.setState({cost: this.state.splitCost[this.state.splitCost.length - 1]})

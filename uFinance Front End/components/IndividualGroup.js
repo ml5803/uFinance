@@ -77,13 +77,9 @@ class IndividualGroup extends Component {
     // get group expense info
     getInfo(){
       console.log('---------herererer')
-<<<<<<< HEAD
       let members = {...this.props.memberState.members}
       console.log('members---:', members)
-=======
 
-      let members = this.props.memberState.members
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
       let groupid = this.props.memberState.group_id
       this.setState({members: members, groupid: groupid})
 
@@ -199,15 +195,9 @@ class IndividualGroup extends Component {
         console.log('index1:', index, ' index2:', index2)
         console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
         console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
-<<<<<<< HEAD
         let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
         let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100
-=======
-        let rounded_amt1 = parseFloat(amt1).toFixed(2)
-        let rounded_amt2 = parseFloat(amt2).toFixed(2)
-        /*let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
-        let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100*/
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
+
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
           console.log(rounded_amt1, ' < ', rounded_amt2)
@@ -276,12 +266,6 @@ class IndividualGroup extends Component {
 
     }
 
-<<<<<<< HEAD
-    uploadPayment(item, person, amount, receipt){
-      let parsedAmount = parseFloat(amount)
-      console.log('amount:', parsedAmount)
-      if (!parsedAmount){return }
-=======
     uploadPayment(){
       console.log('state item: ', this.state.item);
 
@@ -291,32 +275,31 @@ class IndividualGroup extends Component {
       let receipt = this.state.receipt ? this.state.receipt: this.props.receiptState['receipt']
       console.log('item: ', item, ' person: ', person, ' amount: ', amount, ' receipt: ', receipt);
 
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
+      if (isNaN(amount)){ return}
+      amount = parseFloat(amount)
       let obj = {
         operation: 'insert',
         member_id: person,
         group_id: this.state.groupid,
         expense_name: item,
-        expense_amt: parsedAmount,
+        expense_amt: amount,
         proof: receipt,
       }
-      let members = this.state.members
-      members[person] += parsedAmount
-      let total_cost = this.state.total_cost
-      total_cost += parsedAmount
 
-      console.log('*** obj ***', obj);
+      let members = this.state.members
+      members[person] += amount
+      let total_cost = this.state.total_cost
+      total_cost += amount
+      console.log('total cost: ', total_cost)
+
+      console.log('*** obj ***', obj)
       Api.post('expense', obj).then(resp => {
         console.log('resp:', resp);
       }).catch(function(e){
         console.log(e)
       })
-<<<<<<< HEAD
-      this.setState({item: '', person: '' , amount: '' , receipt: '', members, total_cost});
-=======
-      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null});
+      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null, members: members, total_cost:total_cost});
       this.props.updateReceipt('', '', '', '');
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
     }
 
     render () {
@@ -491,6 +474,7 @@ class IndividualGroup extends Component {
                 <Input
                   ref={amountInput}
                   placeholder={amount}
+                  keyboardType="numeric"
                   onChangeText={value => this.setState({ amount: value })}
                 />
 
