@@ -29,7 +29,19 @@ class Login extends Component {
       isLoading: false,
       username: '',
       password: '',
+      errorMsg: '',
     }
+  }
+
+  // refresh page every time we are on this component 
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.setState({errorMsg:''})
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   updateLogged(){
@@ -42,12 +54,23 @@ class Login extends Component {
        if (resp['login_status']){
          this.props.changeLogged(true, resp['user_id'])
        }
+       else{
+        this.setState({errorMsg: 'Invalid email/password'})
+       }
      })
+  }
 
+  navigateToSignUp(username, password){
+    username.current.clear();
+    password.current.clear();
+    this.props.navigation.navigate('register')
   }
 
   render(){
     // let { loginState, actions } = this.props;
+    const username = React.createRef();
+    const password = React.createRef();
+    let errorMsg = this.state.errorMsg
     return (
       <ScrollView style={styles.container}>
           <View style={styles.logo}>
@@ -57,6 +80,7 @@ class Login extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
+                    ref={username}
                     placeholder='username'
                     underlineColorAndroid='transparent'
                     onChangeText={text => this.setState({username: text})}
@@ -66,6 +90,7 @@ class Login extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
+                    ref={password}
                     placeholder='Password'
                     underlineColorAndroid='transparent'
                     secureTextEntry={true}
@@ -75,16 +100,18 @@ class Login extends Component {
               </View>
                 
                 <View style={styles.buttonArea}>
+                    { errorMsg !== '' ?
+                      <Text style={{color: '#F08080'}}>{errorMsg}</Text>
+                      :
+                      <Text></Text>
+                    }
                     <TouchableOpacity style={styles.Loginbtn}
                     onPress={() => this.updateLogged()}>
                         <Text style={styles.btntext}>Login</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn}
-                    onPress={() => this.props.navigation.navigate('register')}>
+                    onPress={() => this.navigateToSignUp(username, password)}>
                         <Text style={styles.btntext}>Sign Up</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.btntext}>Forgot password</Text>
                     </TouchableOpacity>
                 </View>
 

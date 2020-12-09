@@ -54,6 +54,7 @@ class Register extends Component{
             last_name: this.state.lastName,
         }
         if (pass1.length > 3 && username !== '' && email !== '') {
+
             if (pass1 === pass2){
                 this.setState({errorMsg: ''})
                 console.log('good')
@@ -62,6 +63,9 @@ class Register extends Component{
                     this.setState({dataSource: resp})
                     if (resp['register_status']){
                         this.props.navigation.navigate('login')
+                    }
+                    else{
+                        this.setState({errorMsg: "UserID is taken"})
                     }
                 })
             }
@@ -72,7 +76,7 @@ class Register extends Component{
         }
         else{
             console.log('short')
-            this.setState({errorMsg: 'Password too short'})
+            this.setState({errorMsg: 'Must fill out all fields'})
         }
     }
 
@@ -84,8 +88,6 @@ class Register extends Component{
         const email = this.state.email
         const username =this.state.username
         let registered = this.state.registered
-
-        console.log(email, username, pass1)
         let valid = false
         if (pass1 === pass2 && pass1.length > 3){ valid = true }
         return(

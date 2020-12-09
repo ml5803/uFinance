@@ -77,13 +77,8 @@ class IndividualGroup extends Component {
     // get group expense info
     getInfo(){
       console.log('---------herererer')
-<<<<<<< HEAD
       let members = {...this.props.memberState.members}
       console.log('members---:', members)
-=======
-
-      let members = this.props.memberState.members
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
       let groupid = this.props.memberState.group_id
       this.setState({members: members, groupid: groupid})
 
@@ -164,9 +159,9 @@ class IndividualGroup extends Component {
       let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(5)
       let members_to_pay = []
       let members_to_receive = []
-      console.log('avg', avg_cost)
-      console.log('members:', members)
-      console.log('total:', this.state.total_cost)
+      // console.log('avg', avg_cost)
+      // console.log('members:', members)
+      // console.log('total:', this.state.total_cost)
       for (let key in members){
         let amt = Math.round(parseFloat((members[key] - avg_cost))*100000)/100000
         // let amt = (members[key] - avg_cost)
@@ -190,24 +185,17 @@ class IndividualGroup extends Component {
       while(index < members_to_pay.length || index2 < members_to_receive.length){
         let name1, amt1;
         let name2, amt2;
-        console.log(members_to_pay)
-        console.log(members_to_receive)
-        console.log('index1:', index, ' index2:', index2);
-        console.log('members to pay: ', members_to_pay[index][0]);
+        // console.log(members_to_pay)
+        // console.log(members_to_receive)
+        // console.log('index1:', index, ' index2:', index2);
+        // console.log('members to pay: ', members_to_pay[index][0]);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
-        console.log('index1:', index, ' index2:', index2)
-        console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
-        console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
-<<<<<<< HEAD
+        // console.log('index1:', index, ' index2:', index2)
+        // console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
+        // console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
         let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
         let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100
-=======
-        let rounded_amt1 = parseFloat(amt1).toFixed(2)
-        let rounded_amt2 = parseFloat(amt2).toFixed(2)
-        /*let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
-        let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100*/
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
           console.log(rounded_amt1, ' < ', rounded_amt2)
@@ -276,47 +264,36 @@ class IndividualGroup extends Component {
 
     }
 
-<<<<<<< HEAD
-    uploadPayment(item, person, amount, receipt){
-      let parsedAmount = parseFloat(amount)
-      console.log('amount:', parsedAmount)
-      if (!parsedAmount){return }
-=======
     uploadPayment(){
-      console.log('state item: ', this.state.item);
-
       let item = this.state.item ? this.state.item: this.props.receiptState['item']
       let person = this.state.person ? this.state.person: this.props.loginState['userid']
       let amount = this.state.amount ? this.state.amount: this.props.receiptState['cost']
       let receipt = this.state.receipt ? this.state.receipt: this.props.receiptState['receipt']
       console.log('item: ', item, ' person: ', person, ' amount: ', amount, ' receipt: ', receipt);
-
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
+      if (isNaN(amount)){ return}
+      amount = parseFloat(amount)
       let obj = {
         operation: 'insert',
         member_id: person,
         group_id: this.state.groupid,
         expense_name: item,
-        expense_amt: parsedAmount,
+        expense_amt: amount,
         proof: receipt,
       }
       let members = this.state.members
-      members[person] += parsedAmount
+      members[person] += amount
       let total_cost = this.state.total_cost
-      total_cost += parsedAmount
+      total_cost += amount
 
       console.log('*** obj ***', obj);
       Api.post('expense', obj).then(resp => {
         console.log('resp:', resp);
+        console.log('amount sent:', amount)
       }).catch(function(e){
-        console.log(e)
+        console.log('ERROR wth upload')
       })
-<<<<<<< HEAD
-      this.setState({item: '', person: '' , amount: '' , receipt: '', members, total_cost});
-=======
-      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null});
+      this.setState({item: null, person: this.props.loginState['userid'], amount: null, receipt: null, members, total_cost});
       this.props.updateReceipt('', '', '', '');
->>>>>>> 4542964b243112abff45e9e72a248b662f60e966
     }
 
     render () {
@@ -342,8 +319,8 @@ class IndividualGroup extends Component {
       const receiptInput = React.createRef();
       // seperate members to pay and receive groups
       let members = this.state.members
-      console.log('***********************************************', members)
-      console.log('members: ', Object.keys(members))
+      // console.log('***********************************************', members)
+      // console.log('members: ', Object.keys(members))
       let avg_cost = parseFloat(this.state.total_cost/Object.keys(members).length).toFixed(2)
       let members_to_pay, members_to_receive
       [members_to_pay, members_to_receive] = this.get_separate_member_groups()
@@ -352,8 +329,8 @@ class IndividualGroup extends Component {
         payment_list = this.distribute_cost(members_to_pay, members_to_receive)
       }
       let item_lst = this.state.summary
-      console.log('item:', this.state.item_to_add)
-      console.log('redux:--', this.state.members, this.state.groupid)
+      // console.log('item:', this.state.item_to_add)
+      // console.log('redux:--', this.state.members, this.state.groupid)
       return (
         <ScrollView>
             <Header
@@ -471,7 +448,6 @@ class IndividualGroup extends Component {
                     onValueChange={(itemValue, itemIndex) =>
                       this.setState({person: itemValue})
                     }>{
-
                       Object.keys(members).map( (name)=> {
                         return <Picker.item label={name} value={name} />
                       })
@@ -490,6 +466,7 @@ class IndividualGroup extends Component {
                 <Card.Title>Cost</Card.Title>
                 <Input
                   ref={amountInput}
+                  keyboardType='numeric'
                   placeholder={amount}
                   onChangeText={value => this.setState({ amount: value })}
                 />
