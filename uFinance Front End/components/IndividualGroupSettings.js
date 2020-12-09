@@ -31,8 +31,9 @@ class IndividualGroupSettings extends Component {
     this.state={
       GroupName: '',
       oldMembers: ['Jerry', 'Bob', 'Calvin'],
-      newMembers: [''],
-      toDelete: [0, 0, 0]
+      newMembers: [],
+      toDelete: [0, 0, 0],
+      error_msg: '',
     }
   }
 
@@ -41,12 +42,14 @@ class IndividualGroupSettings extends Component {
     let groupid = this.props.memberState.group_id
     let oldMembers = []
     let toDelete = []
+    let error_msg = ''
+    let GroupName = ''
     Object.keys(members).map((key, index)=>{
       oldMembers.push(key)
       toDelete.push(0)
     })
     
-    this.setState({GroupName: groupid, oldMembers, toDelete})
+    this.setState({GroupName, oldMembers, toDelete, error_msg})
   }
 
   updateGroupName(newName){
@@ -98,14 +101,35 @@ class IndividualGroupSettings extends Component {
     console.log('add_members:', add_members_filtered)
     console.log('remove_members:', remove_members)
     console.log('remaining_members:', remaining_members)
-    let obj ={
-      operation: 'modify',
-      group_id: this.props.memberState.group_id,
-      add_members: add_members,
-      // remove_members: remove_members 
+
+    console.log("Group Name;", this.state.GroupName)
+    let obj = {}
+    if (this.state.GroupName === ''){
+      obj ={
+        operation: 'modify',
+        group_id: this.props.memberState.group_id,
+        add_members: add_members,
+        remove_members: [] 
+      }
+    }
+    else{ 
+      obj ={
+        operation: 'modify',
+        group_id: this.props.memberState.group_id,
+        add_members: add_members,
+        group_name: this.state.GroupName,
+        remove_members: [] 
+      }
     }
     Api.post('group', obj).then(resp =>{
-      console.log('resp', resp)
+      if (resp['execution_status']){
+        console.log('success', resp)
+        this.props.navigation.navigate('Groups')
+      }
+      else{
+        console.log('error', resp)
+        this.setState({error_msg: resp['error_message']})
+      }
     })
     // update members in redux to reflect changes for this current group 
     let new_obj = {}
@@ -194,6 +218,10 @@ class IndividualGroupSettings extends Component {
             </View>
           </Card>
 
+          {this.state.error_msg!==''
+            ? <Card><Card.Title>{this.state.error_msg}</Card.Title></Card>
+            : null
+          }
           {/* Submit Button --- */}
           <View style={styles.boxContainer}>
             <Button 

@@ -30,6 +30,10 @@ class CreateGroup extends Component {
 
   handleSubmit(){
     let owner_id = this.props.loginState['userid']
+    if (this.state.groupName === ''){
+      this.setState({error_msg: 'Please add a group name'})
+      return
+    }
     // newMembers.push(owner_id)
     let members = this.state.members.filter(obj => {
       return obj !== ''
@@ -53,7 +57,7 @@ class CreateGroup extends Component {
         this.props.changeUpdateStatus(true)
        }
        else{
-        this.setState({error_msg: 'Duplicate members'})
+        this.setState({error_msg: resp['message']})
        }
      }).catch((error)=>{
        console.log("Api call error");
@@ -102,6 +106,8 @@ class CreateGroup extends Component {
           {/* Add members Section --- */}
           <Card>
             <Card.Title>members</Card.Title>
+            <Card.Divider/>
+              <Card.Title>WARNING: Cannot delete group members later</Card.Title>
             <Card.Divider/>
             <View style={styles.boxContainer}>
               {
