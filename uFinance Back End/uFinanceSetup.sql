@@ -5,7 +5,7 @@ USE uFinance_Prod;
 CREATE TABLE Users (
 	user_id varchar(30) NOT NULL PRIMARY KEY,
     password varchar(30) NOT NULL,
-    email varchar(30) NOT NULL UNIQUE,
+    email varchar(30) NOT NULL,
     first_name varchar(30),
     last_name varchar(30),
     date_joined datetime

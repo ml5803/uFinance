@@ -74,7 +74,7 @@ def lambda_handler(event, context):
         query_results = cur.fetchall()
         if len(query_results) == 0:
             login_status = False
-            error_message = "DNE"
+            error_message = "Combination of user_id and password does not exist."
         else:
             login_status = True
     except Exception as e:

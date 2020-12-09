@@ -97,8 +97,6 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
     for member in remove_members:
       tmp = query.format(group_id, member)
       cur.execute(tmp)
-    cur.execute(query)
-  
   conn.commit()
 
   return True

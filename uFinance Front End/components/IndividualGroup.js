@@ -191,11 +191,12 @@ class IndividualGroup extends Component {
         // console.log('members to pay: ', members_to_pay[index][0]);
         [name1, amt1] = [members_to_pay[index][0], members_to_pay[index][1]];
         [name2, amt2] = [members_to_receive[index2][0], members_to_receive[index2][1]];
-        // console.log('index1:', index, ' index2:', index2)
-        // console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
-        // console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
+        console.log('index1:', index, ' index2:', index2)
+        console.log('name1:', name1, amt1, parseFloat(amt1).toFixed(2))
+        console.log('name2:', name2, amt2, parseFloat(amt2).toFixed(2))
         let rounded_amt1 = Math.round(parseFloat(amt1)*100)/100
         let rounded_amt2 = Math.round(parseFloat(amt2)*100)/100
+
         let new_obj = {}
         if (rounded_amt1 < rounded_amt2){
           console.log(rounded_amt1, ' < ', rounded_amt2)
@@ -280,12 +281,14 @@ class IndividualGroup extends Component {
         expense_amt: amount,
         proof: receipt,
       }
+
       let members = this.state.members
       members[person] += amount
       let total_cost = this.state.total_cost
       total_cost += amount
+      console.log('total cost: ', total_cost)
 
-      console.log('*** obj ***', obj);
+      console.log('*** obj ***', obj)
       Api.post('expense', obj).then(resp => {
         console.log('resp:', resp);
         console.log('amount sent:', amount)
@@ -468,6 +471,7 @@ class IndividualGroup extends Component {
                   ref={amountInput}
                   keyboardType='numeric'
                   placeholder={amount}
+                  keyboardType="numeric"
                   onChangeText={value => this.setState({ amount: value })}
                 />
 
