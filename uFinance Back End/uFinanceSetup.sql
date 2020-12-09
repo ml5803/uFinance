@@ -20,7 +20,9 @@ CREATE TABLE Expense_Groups (
 CREATE TABLE Group_Members (
 	group_id INT NOT NULL,
     member_id varchar(30) NOT NULL,
-    PRIMARY KEY (group_id, member_id)
+    PRIMARY KEY (group_id, member_id),
+    FOREIGN KEY (group_id) REFERENCES Expense_Groups(group_id),
+    FOREIGN KEY (member_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE Expenses (
