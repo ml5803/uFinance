@@ -46,7 +46,10 @@ def lambda_handler(event, context):
     execution_status = True
   except pymysql.err.IntegrityError as e:
     print("Database connection failed due to {}".format(e))
-    error_message = "A member does not exist."
+    if e.args[0] == 1452:
+      error_message = "A member does not exist."
+    elif e.args[0] == 1062:
+      error_message = "A member already exists in the group."
     execution_status = False
   except Exception as e:
     print("Database connection failed due to {}".format(e))
@@ -121,16 +124,17 @@ def retrieve_queries(cursor, user_id):
 
 def delete_queries(cursor, connection, group_id):
   query1 = """
-            DELETE FROM Expense_Groups
-            WHERE group_id={}
-          """.format(group_id)
-  cursor.execute(query1)
-
-  query2 = """
             DELETE FROM Group_Members
             WHERE group_id={}
           """.format(group_id)
+  cursor.execute(query1)
+  
+  query2 = """
+            DELETE FROM Expense_Groups
+            WHERE group_id={}
+          """.format(group_id)
   cursor.execute(query2)
+
   connection.commit()
 
   return "Success"
@@ -155,12 +159,12 @@ def delete_queries(cursor, connection, group_id):
 #     }
 #   """
 # }
-# obj = {
-#   "body": """
-#     {
-#       \"operation\":\"delete\",
-#       \"group_id\": \"3\"
-#     }
-#   """
-# }
-# print(lambda_handler(obj, None))
+obj = {
+  "body": """
+    {
+      \"operation\":\"delete\",
+      \"group_id\": \"22\"
+    }
+  """
+}
+print(lambda_handler(obj, None))
