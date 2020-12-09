@@ -53,7 +53,7 @@ def lambda_handler(event, context):
 
     # Password
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper Password:Invalid character input"
+        error_message = "Improper Password: Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -69,7 +69,7 @@ def lambda_handler(event, context):
 
     # Username
     if re.search(pass_regex, PASSWORD):
-        error_message = "Imporper ID:Invalid character input"
+        error_message = "Improper ID: Invalid character input"
         register_status = False
     else:
         register_status = True
@@ -122,6 +122,7 @@ def lambda_handler(event, context):
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
+        check_email
         query = """
                 INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
@@ -130,7 +131,7 @@ def lambda_handler(event, context):
         conn.commit()
     except Exception as e:
         print("Database connection failed due to {}".format(e))
-        error_message = "Database connection error"
+        error_message = e
         register_status = False
     finally:
         conn.close()
