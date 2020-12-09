@@ -122,7 +122,6 @@ def lambda_handler(event, context):
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
-        check_email
         query = """
                 INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");

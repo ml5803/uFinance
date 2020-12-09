@@ -44,6 +44,10 @@ def lambda_handler(event, context):
       execution_result = delete_queries(cur, conn, GROUP_ID)
 
     execution_status = True
+  except pymysql.err.IntegrityError as e:
+    print("Database connection failed due to {}".format(e))
+    error_message = "A member does not exist."
+    execution_status = False
   except Exception as e:
     print("Database connection failed due to {}".format(e))
     error_message = "{}".format(e)
@@ -145,9 +149,9 @@ def delete_queries(cursor, connection, group_id):
 #   "body": """
 #     {
 #       \"operation\": \"insert\",
-#       \"group_name\": \"Sushi Bar\",
+#       \"group_name\": \"ramen\",
 #       \"owner_id\": \"jia101\",
-#       \"members\": [\"mike\", \"dan999\", \"rohan\"]
+#       \"members\": [\"Among_i\"]
 #     }
 #   """
 # }

@@ -36,6 +36,13 @@ def lambda_handler(event, context):
       execution_result = modify_queries(cur, conn, GROUP_ID, CHANGED_NAME, ADD_MEMBERS, REMOVE_MEMBERS)
 
     execution_status = True
+  except pymysql.err.IntegrityError as e:
+    print("Database connection failed due to {}".format(e))
+    if e.args[0] == 1452:
+      error_message = "A member does not exist."
+    elif e.args[0] == 1062:
+      error_message = "A member already exists in the group."
+    execution_status = False
   except Exception as e:
     print("Database connection failed due to {}".format(e))
     error_message = "{}".format(e)
@@ -88,6 +95,7 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
     for member in add_members:
       tmp = query.format(group_id, member)
       cur.execute(tmp)
+    print("HERE")
 
   if len(remove_members) > 0:
     query = """
@@ -111,15 +119,10 @@ def modify_queries(cur, conn, group_id, changed_name, add_members, remove_member
 #   """
 # }
 
-# obj = {
-#   "body": """
-#     {
-#       \"operation\": \"modify\",
-#       \"group_id\": \"7\",
-#       \"add_members\": [],
-#       \"remove_members\": [\"rock\", \"shiva\", \"jesus\"]
-#     }
-#   """
-# }
+obj = {
+  "body": """
+    {\"add_members\": [\"ramen\"], \"group_id\": 3, \"operation\": \"modify\", \"remove_members\": []}
+  """
+}
 
-# print(lambda_handler(obj, None))
+print(lambda_handler(obj, None))
