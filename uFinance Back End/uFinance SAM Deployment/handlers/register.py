@@ -2,6 +2,7 @@ import json
 import re
 import pymysql.cursors
 import datetime
+import hashlib as hl
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,7 +38,7 @@ def lambda_handler(event, context):
     email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     pass_regex = '[\^\'\"?\.\ ]'
 
-    # Basic input sanitization
+    #### Basic input sanitization ####
     # Email
     if re.search(email_regex, EMAIL):
         register_status = True
@@ -128,7 +129,7 @@ def lambda_handler(event, context):
         query = """
                 INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
                 VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
-                """.format(EMAIL, PASSWORD, USERNAME, FIRST_NAME, LAST_NAME, dt)
+                """.format(EMAIL, hl.sha256(PASSWORD.encode('utf-8')).hexdigest(), USERNAME, FIRST_NAME, LAST_NAME, dt)
         cur.execute(query)
         conn.commit()
     except Exception as e:
@@ -155,8 +156,8 @@ def lambda_handler(event, context):
         }
 
 # print(lambda_handler(
-        # {
-        #     "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\"}"
-        # },None
+#         {
+#             "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\"}"
+#         },None
 #     )
-# )  
+# ) 

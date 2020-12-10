@@ -1,6 +1,7 @@
 import json
 import re
 import pymysql.cursors
+import hashlib as hl
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,7 +38,8 @@ def lambda_handler(event, context):
     username_regex = '[\^\'\"?\.\ \@]'
     pass_regex = '[\^\'\"?\.\ ]'
 
-    # Basic input sanitization
+    #### Basic input sanitization ####
+    # Username
     if re.search(username_regex, USERNAME):
         error_message = "Improper username input"
         login_status = False
@@ -53,6 +55,7 @@ def lambda_handler(event, context):
             })
         }
 
+    # Password
     if re.search(pass_regex, PASSWORD):
         error_message = "Improper Password: Invalid character input"
         login_status = False
@@ -73,10 +76,11 @@ def lambda_handler(event, context):
     try:
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
+        pswd = hl.sha256(PASSWORD.encode('utf-8')).hexdigest()
         query = """
                 SELECT * FROM Users
                 WHERE user_id=\"{}\" AND password=\"{}\";
-                """.format(USERNAME, PASSWORD)
+                """.format(USERNAME, pswd)
         cur.execute(query)
         query_results = cur.fetchall()
         if len(query_results) == 0:
@@ -106,6 +110,6 @@ def lambda_handler(event, context):
 
 
 # print(lambda_handler({
-#     "body": "{\"username\": \"test123\", \"password\": \"12345\"}"
+#     "body": "{\"username\": \"rock\", \"password\": \"rock123\"}"
 #     }, None)
 # )
