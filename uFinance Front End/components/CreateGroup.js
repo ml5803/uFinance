@@ -24,15 +24,16 @@ class CreateGroup extends Component {
       members: [],
       username: '',
       error_msg: '',
+      submitDisabled: false,
     }
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit(){
+    this.setState({submitDisabled: true})
     let owner_id = this.props.loginState['userid']
     if (this.state.groupName === ''){
-      this.setState({error_msg: 'Please add a group name'})
-      return
+      return this.setState({error_msg: 'Please add a group name', submitDisabled: false})
     }
     // newMembers.push(owner_id)
     let members = this.state.members.filter(obj => {
@@ -50,7 +51,7 @@ class CreateGroup extends Component {
     console.log('g:',this.state.groupName)
     console.log('o:',this.state.username)
     console.log('m:',this.state.members)
-     Api.post('groups', obj).then(resp=>{
+    Api.post('groups', obj).then(resp=>{
        console.log(resp)
        if (resp['execution_status']){
         this.setState({groupName: '', members: [], error_msg: ''})
@@ -59,9 +60,12 @@ class CreateGroup extends Component {
        else{
         this.setState({error_msg: resp['message']})
        }
+       return this.setState({submitDisabled: false})
      }).catch((error)=>{
        console.log("Api call error");
+       return this.setState({submitDisabled: false})
     });
+    
   }
 
   updateNames(email, index){
@@ -83,8 +87,8 @@ class CreateGroup extends Component {
   render(){
     console.log('name', this.state.groupName)
     console.log(this.state.members)
-    console.log('loggedin..:',this.props.loginState)
-    console.log('updated:', this.props.updateState)
+    // console.log('loggedin..:',this.props.loginState)
+    // console.log('updated:', this.props.updateState)
     return (
       <ScrollView >
         {/* <LinearGradient style={template1.container} colors={['#264d73', '#00cca3']}> */}
@@ -146,6 +150,7 @@ class CreateGroup extends Component {
             title="Submit"
             titleStyle={styles.submitbtn}
             onPress={() => this.handleSubmit()}
+            disabled={this.state.submitDisabled}
             />
           </View>
         {/* </LinearGradient> */}

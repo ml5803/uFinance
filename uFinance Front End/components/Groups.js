@@ -10,12 +10,15 @@ import {
 } from 'react-native';
 import template1 from '../styles/template1.js'
 import LinearGradient from 'react-native-linear-gradient';
-import { ListItem, Avatar, Header, SearchBar } from 'react-native-elements'
+import { ListItem, Card, Header, SearchBar, Button } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Api from '../API.js'
 import { connect } from 'react-redux';
 import { updateMembers } from '../store/actions/updateMembers.js';
 import { bindActionCreators } from 'redux';
+import Modal from 'react-native-modal';
+
+
 
 class Group extends Component{
   constructor(){
@@ -24,16 +27,24 @@ class Group extends Component{
       search:'',
       group_lst: [],
       member_lst: [],
+      modalVisibile: false,
+      groupName: '',
+      groupID: '',
+      error_msg: '',
     }
     this.getGroups = this.getGroups.bind(this)
     this.clickGroup = this.clickGroup.bind(this)
+    this.deleteGroup = this.deleteGroup.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
   }
 
   // refresh page every time we are on this component 
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.getGroups()
+        this.setState({modalVisibile: false})
     });
+    // this.getGroups()
   }
 
   componentWillUnmount() {
@@ -85,6 +96,34 @@ class Group extends Component{
     })
   }
 
+  clickDelete(groupID, groupName){
+    console.log('clicked delete for', groupName, groupID, this.state.modalVisibile)
+    this.setState({groupName, groupID})
+    this.toggleModal()
+  }
+  toggleModal(){
+    this.setState({modalVisibile: !(this.state.modalVisibile)})
+  }
+  deleteGroup(){
+    let groupName = this.state.groupName
+    let groupID = this.state.groupID
+    console.log('g_name:', groupName, ' g_id:', groupID)
+    let obj={
+      operation: 'delete',
+      group_id: groupID
+    }
+    Api.post('groups', obj).then(resp =>{
+      console.log(resp)
+      if (resp['execution_status']){
+        this.props.navigation.navigate('Home')
+      }
+      else{
+        this.setState({error_msg: resp['message']})
+      }
+    })
+    
+  }
+
   render(){
     const { search, group_lst } = this.state;
     // If search === 0 then return whole list
@@ -110,15 +149,38 @@ class Group extends Component{
           value={search}
         />
         <View>
+          {/* Modal to confirm deletion of selected group  */}
+          <Modal isVisible={this.state.modalVisibile}>
+            <View style={{ flex: 1 }}>
+              <Card>
+                <Card.Title>
+                  <Text>Are you sure you want to delete {this.state.groupName}?</Text>
+                  {this.state.error_msg === '' ? null :
+                    <Text>{this.state.error_msg}</Text>
+                  }
+                </Card.Title>
+                <Button title="Close" onPress={this.toggleModal} />
+                <Button title="Delete" 
+                  onPress={this.deleteGroup} 
+                  buttonStyle={{backgroundColor: 'red'}}/>
+              </Card>
+            </View>
+          </Modal>
+
+          {/* list all the groups  */}
           {
             new_lst.map((l, i) => (
-              <ListItem key={i} bottomDivider 
-              // onPress={() => this.props.navigation.navigate('IndividualGroup')}
-              onPress={() => this.clickGroup(l.id, l.name)}
-              >
+              <ListItem key={i} bottomDivider onPress={() => this.clickGroup(l.id, l.name)}>
+                <Ionicons 
+                    name="close-circle-outline" 
+                    size={32}
+                    color={'red'}
+                    onPress={() => this.clickDelete(l.id, l.name)}
+                />
                 <ListItem.Content>
                   <ListItem.Title>{l.name}</ListItem.Title>
                 </ListItem.Content>
+                <ListItem.Chevron />
               </ListItem>
             ))
           }
