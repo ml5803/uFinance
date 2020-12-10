@@ -374,7 +374,7 @@ class IndividualGroup extends Component {
                     <View style={styles.user}>
                         <View style={styles.textBox}>
                             <Text style={{fontSize: 30}}>
-                              ${this.state.total_cost}
+                              ${Math.round(this.state.total_cost * 100) / 100}
                             </Text>
                         </View>
                     </View>

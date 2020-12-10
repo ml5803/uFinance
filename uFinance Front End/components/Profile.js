@@ -181,13 +181,7 @@ class Profile extends Component{
           // rightComponent={{ icon: 'settings', color: '#fff', onPress:() => this.props.navigation.navigate('IndividualGroupSettings') }}
         />
         <Card>
-          <Avatar
-            rounded
-            source={{
-              uri:
-                'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-            }}
-          />
+          
           <Card.Title>Welcome {this.props.loginState['userid']}!</Card.Title>
 
         </Card>
