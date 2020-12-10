@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
+# group_handlers handles all logic regarding group
+# event: json formatted parameters
+# context: aws variables
+# operations: get, modify, delete
+# returns 200, execution_result if successful
+# returns 400, error_msg if failed
+
 def lambda_handler(event, context):
   EVENT_BODY = json.loads(event.get("body"))
   OP_TYPE = EVENT_BODY.get("operation")
@@ -44,7 +51,7 @@ def lambda_handler(event, context):
       error_message = "A member already exists in the group."
     execution_status = False
   except Exception as e:
-    print("Database connection failed due to {}".format(e))
+    print("{}".format(e))
     error_message = "{}".format(e)
     execution_status = False
 

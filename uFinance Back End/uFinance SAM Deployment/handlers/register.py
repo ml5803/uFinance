@@ -7,10 +7,13 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-##### Needed #####
-# Check for similar username or email.
-# Encrypt the password with SHA256.
+# expense_handler handles all logic regarding register
+# event: json formatted parameters
+# context: aws variables
+# returns 200, execution_result if successful
+# returns 400, error_msg if failed
 
+# Encrypt the password with SHA256.
 def lambda_handler(event, context):
     # Parameter variables
     EVENT_BODY = json.loads(event.get("body"))
@@ -129,7 +132,7 @@ def lambda_handler(event, context):
         cur.execute(query)
         conn.commit()
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        print("{}".format(e))
         error_message = e
         register_status = False
     finally:

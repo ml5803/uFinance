@@ -9,11 +9,13 @@ Parameters:
     Default: ""
 
 Resources:
+  # S3 bucket used to storage image receipts
   uFinanceImageBucket:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: PublicRead
 
+  # API Gateway used to interface with frontend
   uFinanceAPIG:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -26,9 +28,8 @@ Resources:
       RestApiId: !Ref uFinanceAPIG
       Description: Deploy APIG for uFinance
       StageName: test
-
-  #WILL CHANGE INTEGRATION TYPES TO LAMBDAS ONCE WE MAKE THEM
-    
+  
+  # /register
   uFinanceAPIGRegisterResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -51,6 +52,7 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterAuthLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  # /login
   uFinanceAPIGLoginResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -73,6 +75,7 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginAuthLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  #expense
   uFinanceAPIGExpenseResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -95,6 +98,7 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExpenseHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  # /groups
   uFinanceAPIGroupsResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -117,6 +121,7 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GroupHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  # /group
   uFinanceAPIIndiGroupResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -139,6 +144,7 @@ Resources:
           Uri: !Sub  "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IndiGroupHandlerLambda.Arn}/invocations"
           Credentials: !GetAtt RootRole.Arn
 
+  #extract
   uFinanceReceiptExtractResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -199,8 +205,6 @@ Resources:
         ToPort: '22'
         CidrIp: 0.0.0.0/0
 
-  #WILL NEED TO ADD LAMBDA RESOURCES AND ASSIGN HANDLERS
-
   #Lambda Permissions
   RootRole: 
     Type: "AWS::IAM::Role"
@@ -233,6 +237,7 @@ Resources:
         - 
           Ref: "RootRole"
 
+  # /serverless Lambda handlers
   UploadS3Lambda: 
     Type: AWS::Lambda::Function
     Properties:

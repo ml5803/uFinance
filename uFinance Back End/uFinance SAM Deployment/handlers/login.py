@@ -6,9 +6,16 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-##### Needed #####
-# Encrypt the password with SHA256.
+# expense_handler handles all logic regarding group_expenses
+# event: json formatted parameters
+# context: aws variables
+# operations: insert, get, delete
+# returns 200, execution_result if successful
+# returns 400, error_msg if failed
+# possible error_codes: 
+#   Improper user_id, email, wrong combination of user_id, password
 
+# Encrypt the password with SHA256.
 def lambda_handler(event, context):
     # Parameter variables
     EVENT_BODY = json.loads(event.get("body"))
@@ -78,7 +85,7 @@ def lambda_handler(event, context):
         else:
             login_status = True
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        print("{}".format(e))
         login_status = False
 
     if login_status:

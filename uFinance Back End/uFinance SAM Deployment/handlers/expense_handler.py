@@ -7,7 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-##### Needed #####
+# expense_handler handles all logic regarding group_expenses
+# event: json formatted parameters
+# context: aws variables
+# operations: insert, get, delete
+# returns 200, execution_result if successful
+# returns 400, error_msg if failed
 
 def lambda_handler(event, context):
     # Parameter variables
@@ -46,7 +51,7 @@ def lambda_handler(event, context):
         conn.commit()
         execution_status = True
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        print("{}".format(e))
         error_message = "{}".format(e)
     finally:
         conn.close()
@@ -91,4 +96,4 @@ def query_maker(op_type, expense_id, group_id, member_id, dt, expense_name, expe
 
     return qry
 
-print(lambda_handler({'body':'{"operation":"get", "group_id": "mikegroup" }'},None))
+# print(lambda_handler({'body':'{"operation":"get", "group_id": "mikegroup" }'},None))

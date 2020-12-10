@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
+# expense_handler handles all logic regarding groups
+# event: json formatted parameters
+# context: aws variables
+# operations: insert, get, delete
+# returns 200, execution_result if successful
+# returns 400, error_msg if failed
+
 def lambda_handler(event, context):
   EVENT_BODY = json.loads(event.get("body"))
   OP_TYPE = EVENT_BODY.get("operation")
