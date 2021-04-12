@@ -6,6 +6,13 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
+# text handles all logic regarding AWS Textract
+# event: json formatted parameters
+# context: aws variables
+# operations: insert, get, delete
+# returns 200, response if successful
+# returns 400, response: error_msg if failed
+
 def lambda_handler(event, context):
   # Document
   EVENT_BODY = json.loads(event.get("body"))

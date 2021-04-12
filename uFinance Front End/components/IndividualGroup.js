@@ -396,7 +396,7 @@ class IndividualGroup extends Component {
                           <Button
                             title="Venmo"
                             titleStyle={styles.submitbtn}
-                            buttonStyle={{ backgroundColor: '#3d95ce', paddingLeft: '5px'}}
+                            buttonStyle={{ backgroundColor: '#3d95ce', alignSelf: 'flex-end'}}
                             onPress={() => {
                               AppLink.maybeOpenURL('venmo://paycharge?recipients=SleepyBotConfirmed&amount=2&note=Note', { appName: 'venmo', appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'com.venmo' }).then(() => {
                                 // do stuff
