@@ -83,10 +83,10 @@ def query_maker(op_type, expense_id, group_id, member_id, dt, expense_name, expe
             """.format(group_id, member_id, dt, expense_name, expense_amt, proof)
     elif op_type == "get":
         qry = """
-                SELECT expense_id, group_id, member_id, DATE_FORMAT(date_entered, '%m:%d:%Y %T') as date_entered, 
-                expense_name, CONVERT(expense_amount, CHAR) as expense_amt, proof
-                FROM Expenses 
-                WHERE group_id = \"{}\";
+                SELECT e.expense_id, e.group_id, e.member_id, DATE_FORMAT(date_entered, '%m:%d:%Y %T') as date_entered, 
+                e.expense_name, CONVERT(e.expense_amount, CHAR) as expense_amt, e.proof, u.venmo_id
+                FROM Expenses e LEFT JOIN Users u ON e.member_id = u.user_id
+                WHERE e.group_id = \"{}\";
             """.format(group_id)
     elif op_type == "delete":
         qry = """
