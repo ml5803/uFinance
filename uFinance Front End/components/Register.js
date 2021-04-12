@@ -65,7 +65,7 @@ class Register extends Component{
                         this.props.navigation.navigate('login')
                     }
                     else{
-                        this.setState({errorMsg: "UserID is taken"})
+                        this.setState({errorMsg: "UserID is taken or email is invalid"})
                     }
                 })
             }

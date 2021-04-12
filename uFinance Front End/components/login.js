@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
@@ -21,9 +21,9 @@ import Api from '../API.js'
 const { width: WIDTH } = Dimensions.get('window')
 
 class Login extends Component {
-  constructor(){
+  constructor() {
     super()
-    this.state ={
+    this.state = {
       text: 'nothing',
       dataSource: false,
       isLoading: false,
@@ -36,7 +36,7 @@ class Login extends Component {
   // refresh page every time we are on this component 
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.setState({errorMsg:''})
+      this.setState({ errorMsg: '' })
     });
   }
 
@@ -44,84 +44,84 @@ class Login extends Component {
     this._unsubscribe();
   }
 
-  updateLogged(){
+  updateLogged() {
     let obj = {
       username: this.state.username,
       password: this.state.password,
     }
-     Api.post('login', obj).then(resp => {
-       console.log('resp:', resp)
-       if (resp['login_status']){
-         this.props.changeLogged(true, resp['user_id'])
-       }
-       else{
-        this.setState({errorMsg: 'Invalid email/password'})
-       }
-     })
+    Api.post('login', obj).then(resp => {
+      console.log('resp:', resp)
+      if (resp['login_status']) {
+        this.props.changeLogged(true, resp['user_id'])
+      }
+      else {
+        this.setState({ errorMsg: 'Invalid email/password' })
+      }
+    })
   }
 
-  navigateToSignUp(username, password){
+  navigateToSignUp(username, password) {
     username.current.clear();
     password.current.clear();
     this.props.navigation.navigate('register')
   }
 
-  render(){
+  render() {
     // let { loginState, actions } = this.props;
     const username = React.createRef();
     const password = React.createRef();
     let errorMsg = this.state.errorMsg
     return (
       <ScrollView style={styles.container}>
-          <View style={styles.logo}>
-              <Text style={styles.logoText}>uFinance</Text>
+        <View style={styles.logo}>
+          <Text style={styles.logoText}>uFinance</Text>
+        </View>
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              ref={username}
+              placeholder='username'
+              underlineColorAndroid='transparent'
+              onChangeText={text => this.setState({ username: text })}
+            />
+            <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
           </View>
-          <View style={styles.form}>
-              <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    ref={username}
-                    placeholder='username'
-                    underlineColorAndroid='transparent'
-                    onChangeText={text => this.setState({username: text})}
-                />
-                <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    ref={password}
-                    placeholder='Password'
-                    underlineColorAndroid='transparent'
-                    secureTextEntry={true}
-                    onChangeText={text => this.setState({password: text})}
-                />
-                <Icon name="ios-lock-closed-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
-              </View>
-                
-                <View style={styles.buttonArea}>
-                    { errorMsg !== '' ?
-                      <Text style={{color: '#F08080'}}>{errorMsg}</Text>
-                      :
-                      <Text></Text>
-                    }
-                    <TouchableOpacity style={styles.Loginbtn}
-                    onPress={() => this.updateLogged()}>
-                        <Text style={styles.btntext}>Login</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn}
-                    onPress={() => this.navigateToSignUp(username, password)}>
-                        <Text style={styles.btntext}>Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              ref={password}
+              placeholder='Password'
+              underlineColorAndroid='transparent'
+              secureTextEntry={true}
+              onChangeText={text => this.setState({ password: text })}
+            />
+            <Icon name="ios-lock-closed-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
+          </View>
 
-                {/* <Text>{this.state.text}</Text>
-                <Text>{this.state.dataSource ? 'true' : 'false'}</Text> */}
+          <View style={styles.buttonArea}>
+            {errorMsg !== '' ?
+              <Text style={{ color: '#F08080' }}>{errorMsg}</Text>
+              :
+              <Text></Text>
+            }
+            <TouchableOpacity style={styles.Loginbtn}
+              onPress={() => this.updateLogged()}>
+              <Text style={styles.btntext}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn}
+              onPress={() => this.navigateToSignUp(username, password)}>
+              <Text style={styles.btntext}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
+
+          {/* <Text>{this.state.text}</Text>
+                <Text>{this.state.dataSource ? 'true' : 'false'}</Text> */}
+        </View>
       </ScrollView>
     );
   }
-  
+
 };
 
 const styles = StyleSheet.create({
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   //   backgroundColor: Colors.lighter,
   // },
   // contains everything
-  container: {    
+  container: {
     backgroundColor: '#0057d4',
   },
   logo: {
@@ -137,10 +137,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoText:{
+  logoText: {
     fontSize: 50,
     color: 'white',
-  },  
+  },
   // 2/3 of container 
   form: {
     // justifyContent: 'flex-start',
@@ -169,12 +169,12 @@ const styles = StyleSheet.create({
     // marginHorizontal: 25,
     marginTop: 10,
   },
-  inputIcon:{
+  inputIcon: {
     position: 'absolute',
     // width: WIDTH-55,
     height: '100%',
     top: 20,
-    right: 310,    
+    right: 310,
     // backgroundColor: 'red',
   },
   buttonArea: {
