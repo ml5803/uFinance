@@ -399,7 +399,7 @@ class IndividualGroup extends Component {
                         <Button
                             title="Venmo"
                             titleStyle={styles.submitbtn}
-                            buttonStyle={{ backgroundColor: '#3d95ce'}}
+                            buttonStyle={{ backgroundColor: '#3d95ce', height: 25}}
                             onPress={() => {
                               let recipient = this.state.venmo_ids[obj.name2]
                               let amount = obj.amt
