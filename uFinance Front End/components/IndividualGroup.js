@@ -386,41 +386,29 @@ class IndividualGroup extends Component {
                 {
                   payment_list.map((obj, i) => {
                     return (
-                      <View key={i} style={styles.user}>
-                        <View style={styles.inLineContainer}>
+                      <View key={i} style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                        <View style={styles.inLineContainer} >
+                          {console.log(obj)}
                           <Text style={styles.inLineTextSelf}>{obj.name1}</Text>
                           <Icon name='arrow-right-alt' />
                           <Text style={styles.inLineTextCost}>${obj.amt}</Text>
                           <Icon name='arrow-right-alt' />
                           <Text style={styles.inLineText}>{obj.name2}</Text>
-                          <Button
+                        </View>
+                        <Button
                             title="Venmo"
                             titleStyle={styles.submitbtn}
-                            buttonStyle={{ backgroundColor: '#3d95ce', alignSelf: 'flex-end'}}
+                            buttonStyle={{ backgroundColor: '#3d95ce'}}
                             onPress={() => {
                               AppLink.maybeOpenURL('venmo://paycharge?recipients=SleepyBotConfirmed&amount=2&note=Note', { appName: 'venmo', appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'com.venmo' }).then(() => {
                                 // do stuff
-                                console.log(1, '==================')
                               })
                                 .catch((err) => {
                                   // handle error
-                                  console.log(2, '==================')
+                                  console.log(err)
                                 });
                             }}
                           />
-                          {/* <TouchableOpacity onPress={() => {
-                            AppLink.maybeOpenURL('venmo://paycharge?recipients=SleepyBotConfirmed&amount=2&note=Note', { appName: 'venmo', appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'com.venmo' }).then(() => {
-                              // do stuff
-                              console.log(1, '==================')
-                            })
-                              .catch((err) => {
-                                // handle error
-                                console.log(2, '==================')
-                              });
-                          }}>
-                            <Text>Navigate</Text>
-                          </TouchableOpacity> */}
-                        </View>
                       </View>
                     );
                   })
@@ -567,7 +555,7 @@ const styles = StyleSheet.create({
 
   inLineTextSelf: {
     fontSize: 16,
-    color: "blue"
+    color: "navy"
   },
   inLineTextCost: {
     fontSize: 16,
