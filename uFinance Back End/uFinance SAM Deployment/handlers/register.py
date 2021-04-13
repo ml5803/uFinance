@@ -23,6 +23,7 @@ def lambda_handler(event, context):
     USERNAME = EVENT_BODY.get('username')
     FIRST_NAME = EVENT_BODY.get('first_name')
     LAST_NAME = EVENT_BODY.get('last_name')
+    VENMO_ID = EVENT_BODY.get('venmo_id')
     register_status = False
 
     # ENV Variables
@@ -127,9 +128,9 @@ def lambda_handler(event, context):
         conn =  pymysql.connect(host=ENDPOINT, user=USR, passwd=DB_PASS, port=PORT, database=DBNAME)
         cur = conn.cursor()
         query = """
-                INSERT INTO Users (email, password, user_id, first_name, last_name, date_joined)
-                VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
-                """.format(EMAIL, hl.sha256(PASSWORD.encode('utf-8')).hexdigest(), USERNAME, FIRST_NAME, LAST_NAME, dt)
+                INSERT INTO Users (email, password, user_id, first_name, last_name, venmo_id, date_joined)
+                VALUES (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\", \"{}\");
+                """.format(EMAIL, hl.sha256(PASSWORD.encode('utf-8')).hexdigest(), USERNAME, FIRST_NAME, LAST_NAME, VENMO_ID, dt)
         cur.execute(query)
         conn.commit()
     except Exception as e:
@@ -157,7 +158,7 @@ def lambda_handler(event, context):
 
 # print(lambda_handler(
 #         {
-#             "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\"}"
+#             "body": "{\"username\":\"rock\", \"password\":\"rock123\", \"email\":\"rock@gmail.com\", \"first_name\": \"Rock\", \"last_name\":\"Johnson\",\"venmo_id\":\"test\" }"
 #         },None
 #     )
 # ) 

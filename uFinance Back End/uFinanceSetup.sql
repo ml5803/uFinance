@@ -8,6 +8,7 @@ CREATE TABLE Users (
     email varchar(30) NOT NULL,
     first_name varchar(30),
     last_name varchar(30),
+    venmo_id varchar(50),
     date_joined datetime
 );
 
