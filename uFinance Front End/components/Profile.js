@@ -185,6 +185,9 @@ class Profile extends Component{
           <Card.Title>Welcome {this.props.loginState['userid']}!</Card.Title>
 
         </Card>
+        {
+          
+        }
 
         <Card>
           <Card.Title>Total Group Costs</Card.Title>

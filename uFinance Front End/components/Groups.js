@@ -82,14 +82,19 @@ class Group extends Component{
       "group_id": groupID,
     }
     console.log(groupID)
+    console.log('*****************')
     Api.post('group', obj).then(resp =>{
       console.log('group:', resp)
       let member_obj = {}
+      let venmo_ids_obj = {}
+      console.log(resp['execution_result'])
       resp['execution_result'].map((obj, index)=>{
         member_obj[obj.member_id] = 0
+        venmo_ids_obj[obj.member_id] = obj.venmo_id
       })
       console.log(member_obj)
-      this.props.updateMembers(member_obj, groupID)
+      this.props.updateMembers(member_obj, groupID, venmo_ids_obj)
+      console.log('MEMBER_STATE:------------------------------------------------------------')
       console.log(this.props.memberState)
       this.props.navigation.navigate('IndividualGroup', {name} )
       

@@ -49,6 +49,17 @@ class RegisterPage1 extends Component{
                         <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
                     </View>
 
+                    <Text style={styles.formtxt}>Venmo ID:</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                        style={styles.input}
+                        placeholder='venmo-id'
+                        value={this.props.venmo_id}
+                        underlineColorAndroid='transparent'
+                        onChangeText={text => this.props.venmoHandler(text)}
+                        />
+                        <Icon name="ios-person-outline" style={styles.inputIcon} size={30} color="#4F8EF7" />
+                    </View>
 
                     <View style={styles.buttonArea}>
                         <TouchableOpacity style={styles.btn}

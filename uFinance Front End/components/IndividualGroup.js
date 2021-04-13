@@ -52,6 +52,7 @@ class IndividualGroup extends Component {
       members: {},
       memberNames: [{}],
       summary: [],
+      venmo_ids: {},
       item_to_add: '',
       member_to_add: '',
       amount_to_add: '',
@@ -77,11 +78,11 @@ class IndividualGroup extends Component {
 
   // get group expense info
   getInfo() {
-    console.log('---------herererer')
     let members = { ...this.props.memberState.members }
     console.log('members---:', members)
     let groupid = this.props.memberState.group_id
-    this.setState({ members: members, groupid: groupid })
+    let venmo_ids = this.props.memberState.venmo_ids
+    this.setState({ members: members, groupid: groupid, venmo_ids: venmo_ids })
 
     let obj = {
       operation: 'get',
@@ -400,7 +401,10 @@ class IndividualGroup extends Component {
                             titleStyle={styles.submitbtn}
                             buttonStyle={{ backgroundColor: '#3d95ce'}}
                             onPress={() => {
-                              AppLink.maybeOpenURL('venmo://paycharge?recipients=SleepyBotConfirmed&amount=2&note=Note', { appName: 'venmo', appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'com.venmo' }).then(() => {
+                              let recipient = this.state.venmo_ids[obj.name2]
+                              let amount = obj.amt
+                              let note = 'Group payment from ' + obj.name1 + ' to ' + obj.name2
+                              AppLink.maybeOpenURL('venmo://paycharge?recipients='+recipient+'&amount='+amount+'&note='+ note, { appName: 'venmo', appStoreId: '529379082', appStoreLocale: 'us', playStoreId: 'com.venmo' }).then(() => {
                                 // do stuff
                               })
                                 .catch((err) => {

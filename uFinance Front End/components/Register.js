@@ -24,6 +24,7 @@ class Register extends Component{
             email: '',
             pass1: '',
             pass2: '',
+            venmo_id: '',
             nextPage: false,
         }
         this.updatePage = this.updatePage.bind(this)
@@ -36,6 +37,7 @@ class Register extends Component{
     updateFirstName = (fname) => { this.setState({ firstName: fname}) }
     updateLastName = (lname) => { this.setState({ lastName: lname}) }
     updateemail = (email) => { this.setState({ email: email}) }
+    updateVenmoId = (venmoID) => { this.setState({venmo_id: venmoID}) }
     updatePage() { 
         if (this.state.nextPage){ this.setState({ nextPage: false}) }
         else{ this.setState({ nextPage: true}) }
@@ -46,14 +48,16 @@ class Register extends Component{
         const pass2 = this.state.pass2
         const username = this.state.username
         const email = this.state.email
+        const venmo_id = this.state.venmo_id
         let obj = {
             email: email,
             password: pass1,
             username: username,
             first_name: this.state.firstName,
             last_name: this.state.lastName,
+            venmo_id: venmo_id,
         }
-        if (pass1.length > 3 && username !== '' && email !== '') {
+        if (pass1.length > 3 && username !== '' && email !== '' && venmo_id !== '') {
 
             if (pass1 === pass2){
                 this.setState({errorMsg: ''})
@@ -87,6 +91,7 @@ class Register extends Component{
         const lastName = this.state.lastName
         const email = this.state.email
         const username =this.state.username
+        const venmo_id = this.state.venmo_id
         let registered = this.state.registered
         let valid = false
         if (pass1 === pass2 && pass1.length > 3){ valid = true }
@@ -115,9 +120,10 @@ class Register extends Component{
                             fnamehandler={this.updateFirstName} 
                             lnamehandler={this.updateLastName} 
                             emailhandler={this.updateemail}
+                            venmoHandler={this.updateVenmoId}
                             nextPagehandler={this.updatePage}
                             navigation={this.props.navigation}
-                            firstName={firstName} lastName={lastName} email={email}
+                            firstName={firstName} lastName={lastName} email={email} venmo_id={venmo_id}
                         />
                     }
                 </View>
